@@ -175,11 +175,17 @@ ${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2)
    og:image 用绝对地址，社交平台和 AI 抓取器都不会替你补全相对路径。 */
 function headHTML() {
   const img = SITE.url + "og.png";
+  const verify = [
+    SITE.googleVerification &&
+      `<meta name="google-site-verification" content="${esc(SITE.googleVerification)}">`,
+    SITE.baiduVerification &&
+      `<meta name="baidu-site-verification" content="${esc(SITE.baiduVerification)}">`,
+  ].filter(Boolean);
   return `<title>${esc(SITE.title)}</title>
 <meta name="description" content="${esc(SITE.description)}">
 <meta name="keywords" content="${esc(SITE.keywords.join("，"))}">
 <meta name="theme-color" content="#10b981">
-<link rel="canonical" href="${esc(SITE.url)}">
+<link rel="canonical" href="${esc(SITE.url)}">${verify.length ? "\n" + verify.join("\n") : ""}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(SITE.brand)}">
 <meta property="og:locale" content="zh_CN">

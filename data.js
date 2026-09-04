@@ -37,6 +37,12 @@ export const SITE = {
   heroLead:
     "实测可用的第三方 AI 公益站清单。这些站点不由本站运营，用之前先看风险提示。",
   contactText: "联系作者",
+
+  /* 搜索引擎的所有权验证码。删掉就会掉验证状态，Search Console / 百度资源平台
+     会停止收数据，所以验证通过之后也得一直留着。没有的留空字符串，build 会
+     跳过那一行，不会往页面里塞空标签。 */
+  googleVerification: "X5psQCpL0MgNS2SGTUDBeddNupFq2alnYJaO9CkGnkI",
+  baiduVerification: "",
 };
 
 /* ---------------------------------------------------------------------------
