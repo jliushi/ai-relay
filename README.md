@@ -1,4 +1,4 @@
-# 中转站清单
+# 公益站清单
 
 单页静态站，无构建步骤、无服务器。仿 [ijry/ai-switch](https://github.com/ijry/ai-switch)
 的 relay 页重写（原项目 MIT 许可）。
@@ -47,7 +47,7 @@ gh api -X POST repos/{owner}/<仓库名>/pages -f "source[branch]=main" -f "sour
 
 - 卡片页脚的「含邀请参数」和链接上的 `rel="nofollow sponsored"` —— 这是返利披露，
   删掉就变成隐瞒返利。
-- 「先读这一段」风险提示 —— 里面写明了收录不等于担保、中转站能看到你的全部请求内容。
+- 「先读这一段」风险提示 —— 里面写明了收录不等于担保、公益站能看到你的全部请求内容。
 
 ## 自己维护数据的规则
 
