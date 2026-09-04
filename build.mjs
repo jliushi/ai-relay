@@ -386,7 +386,7 @@ const text = out
 console.log(`index.html    ${RELAYS.length} 张卡片 · ${FAQ.length} 条问答`);
 console.log(`sitemap.xml   1 条 URL`);
 console.log(`robots.txt    放行全部抓取器`);
-console.log(`llms.txt      ${llmsTxt().length} 字节`);
+console.log(`llms.txt      ${llmsTxt().length} 字`);
 console.log(`og.html       预览图源（截图命令见 README）`);
 console.log(`README.md     清单表格已同步`);
 console.log(`\n不执行 JS 时的可索引正文：${text.length} 字`);
