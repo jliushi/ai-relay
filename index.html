@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>中转站清单</title>
+<meta name="description" content="实测可用的第三方 AI 中转站清单，含倍率、注册额度、邀请规则。页面内链接含邀请参数。">
+<meta name="theme-color" content="#10b981">
+<meta property="og:type" content="website">
+<meta property="og:title" content="中转站清单">
+<meta property="og:description" content="实测可用的第三方 AI 中转站清单，含倍率、注册额度、邀请规则。">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<!-- 在样式之前同步跑，避免深色模式下首屏闪白 -->
+<script>
+(()=>{try{const s=localStorage.getItem("theme")||"auto";
+const d=window.matchMedia("(prefers-color-scheme: dark)").matches;
+if(s==="dark"||(s==="auto"&&d))document.documentElement.classList.add("dark");}catch(e){}})();
+</script>
+<style>
+/* ---------------------------------------------------------------------------
+   设计令牌。亮/暗两套值都挂在同名变量上，下面所有规则只读变量，
+   所以切换主题不需要任何一条规则写两遍。
+--------------------------------------------------------------------------- */
+:root {
+  --brand-1: #059669;
+  --brand-2: #10b981;
+  --brand-soft: rgba(16, 185, 129, .14);
+
+  --ink: #1c1917;
+  --muted: #57534e;
+  --line: rgba(28, 25, 23, .1);
+  --panel: #fff;
+  --bg: #fafaf9;
+  --bg-alt: #f5f5f4;
+
+  --warn-1: #a16207;
+  --warn-2: #eab308;
+  --warn-soft: rgba(234, 179, 8, .14);
+
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+html.dark {
+  --brand-1: #34d399;
+  --brand-2: #10b981;
+  --brand-soft: rgba(16, 185, 129, .2);
+
+  --ink: #fafaf9;
+  --muted: #a8a29e;
+  --line: rgba(250, 250, 249, .12);
+  --panel: #1c1917;
+  --bg: #0c0a09;
+  --bg-alt: #171412;
+
+  --warn-1: #fcd34d;
+  --warn-2: #eab308;
+  --warn-soft: rgba(234, 179, 8, .16);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, ul, ol { margin: 0; }
+ul, ol { list-style: none; padding: 0; }
+button { font: inherit; border: 0; background: none; }
+
+.wrap {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- 顶栏 ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 56px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .15s, background-color .15s;
+}
+
+.nav-link:hover {
+  color: var(--ink);
+  background: var(--bg-alt);
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .15s, background-color .15s;
+}
+
+.theme-btn:hover {
+  color: var(--ink);
+  background: var(--bg-alt);
+}
+
+.theme-btn svg { width: 17px; height: 17px; }
+/* 太阳给亮色模式、月亮给暗色模式，靠 .dark 开关，不用 JS 换图标 */
+.icon-moon { display: none; }
+html.dark .icon-sun { display: none; }
+html.dark .icon-moon { display: block; }
+
+/* ---------- hero ----------
+   这一块两种主题下都是深色：它自带渐变背景，不读 --bg。 */
+
+.hero {
+  padding: 30px 0 28px;
+  background:
+    radial-gradient(760px 300px at 8% -20%, rgba(16, 185, 129, .2), transparent 62%),
+    radial-gradient(620px 260px at 95% 4%, rgba(245, 158, 11, .14), transparent 60%),
+    linear-gradient(160deg, #1c1917 0%, #0c0a09 100%);
+}
+
+/* 按钮放在文案右侧而不是下方，hero 的高度就只由文字决定 */
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.hero-text { min-width: 0; }
+
+.eyebrow {
+  margin-bottom: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #6ee7b7;
+}
+
+.hero-title {
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -.025em;
+  background: linear-gradient(120deg, #fff 38%, #6ee7b7 76%, #fcd34d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.hero-lead {
+  margin-top: 10px;
+  max-width: 64ch;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #a8a29e;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 19px;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform .15s ease, background-color .15s ease, border-color .15s ease;
+}
+
+.btn:hover { transform: translateY(-1px); }
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.btn-warn {
+  border-color: rgba(252, 211, 77, .42);
+  color: #fcd34d;
+  background: rgba(245, 158, 11, .14);
+  cursor: pointer;
+}
+
+.btn-warn:hover {
+  border-color: #fcd34d;
+  background: rgba(245, 158, 11, .22);
+}
+
+.btn-ghost {
+  border-color: rgba(250, 250, 249, .26);
+  color: #fafaf9;
+}
+
+.btn-ghost:hover {
+  border-color: #6ee7b7;
+  background: rgba(16, 185, 129, .12);
+}
+
+/* ---------- 卡片区段 ---------- */
+
+.band {
+  padding: 32px 0 64px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.h2 {
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+
+.count {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-1);
+  background: var(--brand-soft);
+}
+
+.hint {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* 悬停是指针设备独有的提示，触屏上别说这句话——卡片照样能点开 */
+@media (hover: none) {
+  .hint { display: none; }
+}
+
+/* ---------- 卡片网格 ----------
+   不设 align-items: start —— 默认的 stretch 让同一行的卡片一样高，
+   须知少的站点不会在旁边留一张矮卡片。.foot 的 margin-top: auto
+   再把注册按钮压到被拉高那张卡片的底部。 */
+
+.grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+
+/* --a 是 400 级色，--d 是 700/800 级色，由 JS 按顺序注入。
+   两者谁当前景色随主题翻转：亮色模式下深色文字才够对比度，
+   暗色模式下浅色文字才够。 */
+.card {
+  --fg: var(--d);
+  --edge: var(--d);
+  --btn-bg: var(--d);
+  --btn-fg: #fff;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 18px 16px;
+  border: 1px solid rgba(var(--edge), .26);
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(var(--a), .14), transparent 58%),
+    linear-gradient(160deg, rgba(var(--a), .09), rgba(var(--a), 0) 52%),
+    var(--panel);
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+html.dark .card {
+  --fg: var(--a);
+  --edge: var(--a);
+  --btn-bg: var(--a);
+  --btn-fg: #0c0a09;
+}
+
+.card:hover,
+.card:focus-within {
+  border-color: rgba(var(--edge), .55);
+  box-shadow: 0 10px 28px rgba(var(--a), .16);
+  transform: translateY(-2px);
+}
+
+/* ---------- 卡片身份信息 ---------- */
+
+.card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.name {
+  font-size: 16.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+
+.rate {
+  flex-shrink: 0;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: rgb(var(--fg));
+  background: rgba(var(--a), .16);
+}
+
+.host {
+  font-size: 12.5px;
+  font-family: var(--mono);
+  color: var(--muted);
+}
+
+.models {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.model {
+  padding: 2px 8px;
+  border: 1px solid rgba(var(--edge), .3);
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-family: var(--mono);
+  color: var(--muted);
+  background: var(--panel);
+}
+
+/* ---------- 关键数字 ---------- */
+
+.facts {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fact-k {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.fact-v {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.fact-v-sm {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ---------- 展开开关 ----------
+   文案固定不变：指针设备上光悬停就能升起覆盖层而不改动 open 状态，
+   写「收起」会和屏幕上看到的东西矛盾。状态由箭头表示。 */
+
+.toggle {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(var(--fg));
+  cursor: pointer;
+  transition: color .22s ease;
+}
+
+.chev {
+  width: 12px;
+  height: 12px;
+  transition: transform .22s ease;
+}
+
+/* ---------- 须知覆盖层 ----------
+   卡片高度只由默认视图 .default 决定 —— 覆盖层是 absolute，一点高度都不占。
+   于是卡片既保持默认视图那么矮（不为最长的须知预留空白），悬停时又完全不变高，
+   因为 absolute 的盒子推不动任何东西。比卡片长的须知在覆盖层内部滚动。 */
+
+.body { position: relative; min-height: 0; }
+
+.over {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 1;
+  /* 一直留在 DOM 里、只是透明，所以文字能被搜索引擎和读屏软件拿到。
+     真正让它退出 tab 顺序和点击命中的是 visibility ——
+     只用 opacity 会留下一层看不见的东西吞掉点击。 */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .22s ease, visibility .22s;
+}
+
+/* 整张卡片被强调色淹没，连内边距一起盖住 —— 填充色做在卡片自己的 ::after 上，
+   而不是里面的某个盒子。所有必须保持可读的东西（覆盖层文字、开关、页脚）
+   都用 z-index 抬到它上面。 */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 13px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .22s ease, visibility .22s;
+  /* 只压暗、绝不提亮：白字压在这层上，最亮的那一端就是对比度下限 */
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, .22)),
+    rgb(var(--d));
+}
+
+.over-scroll {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  /* 给滚动条留位置，别让文字压在它下面；条本身做细一点 ——
+     默认那根不透明又重，压在强调色上很难看 */
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, .45) transparent;
+  overscroll-behavior: contain;
+  /* 把裁切边缘淡出，滚动过的卡片才不像是从半句话开始的。
+     用 mask 而不是渐变遮罩层：遮罩层会把背后的东西一起压暗，
+     而 mask 一条规则就能适配全部八种强调色。
+     两个 12px 停靠点由 JS 驱动：只有那一侧真的还有内容时
+     --fade-t / --fade-b 才变成 1，内容装得下的卡片完全不显示渐隐。 */
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, calc(1 - var(--fade-t, 0))) 0,
+    #000 12px,
+    #000 calc(100% - 12px),
+    rgba(0, 0, 0, calc(1 - var(--fade-b, 0))) 100%
+  );
+}
+
+/* WebKit 要自己那套伪元素，上面的 scrollbar-color 只管 Firefox */
+.over-scroll::-webkit-scrollbar { width: 6px; }
+.over-scroll::-webkit-scrollbar-track { background: transparent; }
+.over-scroll::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .42);
+}
+.over-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, .62);
+}
+
+/* 覆盖层挡住了身份信息，所以这里把站名再写一次 ——
+   否则读须知时会忘了自己在看哪一家 */
+.over-title {
+  margin-bottom: 10px;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: #fff;
+}
+
+.card.is-open::after,
+.card.is-open .over {
+  opacity: 1;
+  visibility: visible;
+}
+
+.card.is-open .chev { transform: rotate(180deg); }
+
+/* 悬停展开是指针设备独有的交互。触屏上按钮是唯一入口，
+   所以这条规则不能在那里生效 —— 黏住的 :hover 会让覆盖层升起后下不来。 */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover::after,
+  .card:focus-within::after,
+  .card:hover .over,
+  .card:focus-within .over {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .card:hover .chev,
+  .card:focus-within .chev { transform: rotate(180deg); }
+}
+
+/* 覆盖层里一切都是压在强调色上的白字 */
+.over .block-head { color: rgba(255, 255, 255, .82); }
+.over .list,
+.over .tested { color: rgba(255, 255, 255, .92); }
+.over .list li::marker { color: rgba(255, 255, 255, .55); }
+
+.block-head {
+  margin-bottom: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.block-head-tips { margin-top: 12px; }
+
+.list {
+  padding-left: 16px;
+  list-style: disc;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.list li + li { margin-top: 2px; }
+.list li::marker { color: rgba(var(--edge), .65); }
+
+.tested {
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.tested .block-head { display: block; margin-bottom: 3px; }
+
+/* ---------- 卡片页脚 ----------
+   覆盖层只盖住主体，不盖页脚 —— 页脚里的注册按钮要是被盖住，
+   鼠标一移上来就被覆盖层挡住，那个按钮就永远点不到了。
+   邀请参数披露也因此始终可见。 */
+
+.foot {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  transition: border-color .22s ease;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--btn-fg);
+  background: rgb(var(--btn-bg));
+  transition: filter .2s, background-color .22s ease, color .22s ease;
+}
+
+.cta:hover { filter: brightness(1.12); }
+
+.meta {
+  margin-top: 9px;
+  font-size: 12px;
+  color: var(--muted);
+  transition: color .22s ease;
+}
+
+.stale {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--warn-1);
+  background: var(--warn-soft);
+}
+
+/* ---------- 淹没状态 ----------
+   卡片一被强调色淹没，压在填充色上的东西都得改成白色。
+   注册按钮要反过来变成白底药丸：它平时的背景色正是现在压在它身后的那个色，
+   不改的话按钮就消失了。 */
+
+.card.is-open .toggle,
+.card.is-open .meta { color: rgba(255, 255, 255, .88); }
+
+.card.is-open .foot { border-top-color: rgba(255, 255, 255, .22); }
+
+.card.is-open .cta {
+  color: rgb(var(--d));
+  background: #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .toggle,
+  .card:focus-within .toggle,
+  .card:hover .meta,
+  .card:focus-within .meta { color: rgba(255, 255, 255, .88); }
+
+  .card:hover .foot,
+  .card:focus-within .foot { border-top-color: rgba(255, 255, 255, .22); }
+
+  .card:hover .cta,
+  .card:focus-within .cta {
+    color: rgb(var(--d));
+    background: #fff;
+  }
+}
+
+/* ---------- 风险提示弹窗 ----------
+   浏览器默认给 <dialog> 加了 2px 边框、1em 内边距和 fit-content 的盒子，
+   这些都得先清掉，里面的面板才能自己控制外观。 */
+
+.rd {
+  width: min(720px, calc(100vw - 32px));
+  max-height: min(82vh, 680px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  overflow: visible;
+}
+
+.rd::backdrop {
+  background: rgba(12, 10, 9, .62);
+  backdrop-filter: blur(2px);
+}
+
+.rd-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(82vh, 680px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 24px 60px rgba(12, 10, 9, .28);
+  overflow: hidden;
+}
+
+.rd-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--warn-soft);
+}
+
+.rd-title {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.rd-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .15s, background-color .15s;
+}
+
+.rd-x:hover {
+  color: var(--ink);
+  background: var(--line);
+}
+
+.rd-x svg { width: 16px; height: 16px; }
+
+.rd-body {
+  padding: 18px 20px 20px;
+  overflow-y: auto;
+}
+
+.rd-lead {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.rd-list {
+  margin-top: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.rd-list li {
+  padding-left: 13px;
+  border-left: 2px solid var(--warn-2);
+}
+
+.rd-item-head {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.rd-item-body {
+  display: block;
+  margin-top: 3px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.rd-foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--line);
+  text-align: right;
+  background: var(--bg-alt);
+}
+
+.rd-ok {
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--brand-2);
+  cursor: pointer;
+  transition: background-color .15s;
+}
+
+.rd-ok:hover { background: var(--brand-1); }
+
+/* ---------- 页面页脚 ---------- */
+
+.site-foot {
+  padding: 26px 0;
+  border-top: 1px solid var(--line);
+  background: var(--bg-alt);
+}
+
+.site-foot p {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.site-foot a {
+  color: var(--brand-1);
+  text-decoration: none;
+}
+
+.site-foot a:hover { text-decoration: underline; }
+
+/* ---------- 响应式 ---------- */
+
+@media (max-width: 860px) {
+  /* 一行放不下文案和按钮了，回到上下堆叠 */
+  .hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero { padding: 26px 0 24px; }
+  .hero-title { font-size: 28px; }
+}
+
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 460px) {
+  .wrap { padding: 0 18px; }
+  .hero-title { font-size: 26px; }
+  .btn { flex: 1 1 auto; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .chev, .over { transition: none; }
+  .card:hover, .card:focus-within { transform: none; }
+  .btn:hover { transform: none; }
+}
+</style>
+</head>
+<body>
+<!-- 顶栏 -->
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="./">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect width="24" height="24" rx="6" fill="#10b981"/>
+        <path d="M7 15.5 12 7l5 8.5" stroke="#fff" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      AI 中转站清单
+    </a>
+    <div class="topbar-right">
+      <a class="nav-link" href="https://github.com/jiangliushi666" target="_blank"
+         rel="noopener">GitHub</a>
+      <button class="theme-btn" type="button" id="theme-toggle" aria-label="切换深色模式">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Hero。这一段文字直接改这里就行，不经过 JS。 -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">第三方服务 · 非本站运营</p>
+        <h1 class="hero-title">中转站</h1>
+        <p class="hero-lead">
+          实测可用的第三方 AI 中转站清单。这些站点不由本站运营，用之前先看风险提示。
+        </p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-warn" type="button" id="open-risk">
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 1.6 15 14H1L8 1.6Zm0 3.9a.75.75 0 0 0-.75.75v3a.75.75 0 0 0 1.5 0v-3A.75.75 0 0 0 8 5.5Zm0 5.2a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/>
+          </svg>
+          先读这一段
+        </button>
+        <a class="btn btn-ghost" href="https://github.com/jiangliushi666" target="_blank"
+           rel="noopener">项目主页 →</a>
+      </div>
+    </div>
+  </section>
+  <!-- 卡片区。<ul> 由页面底部的 RELAYS 数组渲染。 -->
+  <section class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">实测站点</h2>
+        <span class="count" id="count"></span>
+        <span class="hint">鼠标移到卡片上看须知与提示</span>
+      </div>
+      <ul class="grid" id="grid"></ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>
+      本页仅汇总公开信息与个人实测结果，不代表任何形式的担保或推荐承诺。
+      页面内的注册链接含邀请参数。
+      源码在 <a href="https://github.com/jiangliushi666" target="_blank" rel="noopener">GitHub</a>。
+    </p>
+  </div>
+</footer>
+<!-- 风险提示。用原生 <dialog>：showModal() 免费带来焦点陷阱、Esc 关闭和背景 inert。 -->
+<dialog class="rd" id="risk">
+  <div class="rd-panel">
+    <header class="rd-head">
+      <h2 class="rd-title">先读这一段</h2>
+      <button class="rd-x" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" fill="none"/>
+        </svg>
+      </button>
+    </header>
+    <div class="rd-body">
+      <p class="rd-lead">
+        收录只代表某个时间点实测能用，不构成任何形式的担保或推荐承诺。
+      </p>
+      <ul class="rd-list">
+        <li>
+          <span class="rd-item-head">额度、倍率、邀请规则随时会变</span>
+          <span class="rd-item-body">站点也可能限流、跑路或直接关停。卡片上标了实测日期，超过三个月请以站点自己的公告为准。</span>
+        </li>
+        <li>
+          <span class="rd-item-head">中转站能看到你发过去的全部请求内容</span>
+          <span class="rd-item-body">涉密代码、生产环境凭据、客户数据不要经第三方中转，这跟用哪一家无关。</span>
+        </li>
+        <li>
+          <span class="rd-item-head">公益站按「随时可能停」来规划</span>
+          <span class="rd-item-body">别把它当主力，更别让它成为唯一的路。</span>
+        </li>
+        <li>
+          <span class="rd-item-head">出问题请找站点自己的支持渠道</span>
+          <span class="rd-item-body">本站无法代为处理充值、退款或封号申诉。</span>
+        </li>
+      </ul>
+    </div>
+    <footer class="rd-foot">
+      <button class="rd-ok" type="button" data-close>知道了</button>
+    </footer>
+  </div>
+</dialog>
+<script>
+/* ===========================================================================
+   要改的就是下面这个 RELAYS 数组 —— 页面上每张卡片对应一项。
+
+   aff 里的邀请码已经填好了。新增站点时去站内的「邀请 / 推广 / Referral」页面
+   复制自己的邀请链接，整条贴进 aff —— 各站的注册路径不一样（/register 和
+   /sign-up 都有），照抄站点给的那条，不要套用别家的路径。
+
+   维护规则（这些数字是第三方服务的当前状态，代码没法校验，而且过期得很快）：
+   1. 任何一条数字（倍率 / 额度 / 邀请）变了，必须同时更新 verifiedAt。
+   2. verifiedAt 距今超过三个月，卡片会自动挂一条「信息可能已变化」的提示 ——
+      要么重新实测并改日期，要么把这一项删掉。不要只改日期不实测。
+   3. invite 没有就删掉这一行，卡片会跳过这一块；不要自己脑补一个数字。
+   4. 卡片配色不写在这里 —— 下面的 PALETTE 按数组顺序取色，新增站点自动
+      拿到下一个颜色。
+   5. 页脚那句「含邀请参数」是返利披露，删掉就变成隐瞒返利，别删。
+=========================================================================== */
+
+const RELAYS = [
+  {
+    id: "agentrouter",
+    name: "AgentRouter",
+    host: "agentrouter.org",
+    aff: "https://agentrouter.org/register?aff=76NE",
+    rate: "1x 倍率",
+    signup: "注册即得 $100 额度",
+    invite: "每邀请一位新用户：新用户获得 $50 额度，邀请人获得 $100 额度。",
+    models: ["gpt-5.6", "opus 5"],
+    tested: "用 2026 年之前注册的 GitHub 老账号注册通过。",
+    notes: ["不需要加群，注册完就能用", "使用 GitHub 账号注册"],
+    tips: [
+      "拉取模型列表可能失败。取不到就直接手填模型名：gpt-5.6-sol、claude-opus-5。",
+      "每日签到需要重新登录一次，可领 25 额度。",
+    ],
+    verifiedAt: "2026-08-19",
+  },
+  {
+    id: "justwoker",
+    name: "justwoker",
+    host: "api.justwoker.icu",
+    aff: "https://api.justwoker.icu/register?aff=XiYg",
+    rate: "0.65x 倍率",
+    signup: "通过邀请链接注册即得 $70 额度",
+    models: ["opus 4.8", "opus 5"],
+    tested: "用注册满一年以上的 GitHub 账号注册通过。",
+    notes: ["有 opus-4.8 和 opus-5", "可以签到"],
+    verifiedAt: "2026-08-20",
+  },
+  {
+    id: "kktoken",
+    name: "kktoken 公益站",
+    host: "kktoken.cc",
+    aff: "https://kktoken.cc/sign-up?aff=8Zqi",
+    rate: "1x 倍率",
+    signup: "注册即得 $100 额度",
+    invite: "每邀请一位新用户获得 $25 额度。",
+    models: ["opus 5"],
+    tested: "实测可用。",
+    notes: ["只有 opus 5", "需要科学上网"],
+    tips: ["正常使用有机会获得平台赠送 $500 额度。"],
+    verifiedAt: "2026-09-01",
+  },
+  {
+    id: "tabitoken",
+    name: "tabitoken 公益站",
+    host: "tabitoken.com",
+    aff: "https://tabitoken.com/sign-up?aff=C8EJ",
+    rate: "1x 倍率",
+    signup: "注册即得 $20 额度",
+    invite: "每邀请一位新用户：新用户获得 $20 额度，邀请人获得 $20 额度。",
+    models: ["opus 4.8", "opus 5"],
+    tested: "用 GitHub 账号注册通过。",
+    notes: ["不需要加群，注册完就能用", "使用 GitHub 账号注册", "只支持 Claude Code"],
+    verifiedAt: "2026-08-20",
+  },
+];
+
+/* 用 R,G,B 三元组而不是 hex，这样下面每一处填充都能是同一色相不同透明度的
+   rgba() 压在 --panel 上 —— 一个条目同时管住亮色和暗色两种模式。
+   每条要两个三元组，一个干不了两件事：
+     tint —— 400 级色。暗色模式下的填充、描边和强调文字，压在深色面板上够 6:1。
+     deep —— 700/800 级色。亮色模式下的强调文字（tint 在白底上只有 ~2.5:1），
+             以及两种模式下实心按钮的背景色（配白字 >=5.4:1）。
+   八条，所以第六、第七个站点也拿到自己的颜色而不是从头重复。 */
+const PALETTE = [
+  { a: "52, 211, 153",  d: "4, 120, 87"    }, // emerald
+  { a: "167, 139, 250", d: "109, 40, 217"  }, // violet
+  { a: "251, 191, 36",  d: "146, 64, 14"   }, // amber
+  { a: "56, 189, 248",  d: "3, 105, 161"   }, // sky
+  { a: "251, 113, 133", d: "159, 18, 57"   }, // rose
+  { a: "45, 212, 191",  d: "15, 118, 110"  }, // teal
+  { a: "129, 140, 248", d: "67, 56, 202"   }, // indigo
+  { a: "232, 121, 249", d: "134, 25, 143"  }, // fuchsia
+];
+
+const esc = (s) =>
+  String(s).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* 超过三个月就在卡片上挂一条提示。按「现在」算而不是按写页面的时间算，
+   所以一张卡片会自己越过这条线，不需要谁去改它。 */
+const isStale = (iso) => {
+  const then = new Date(iso + "T00:00:00Z").getTime();
+  if (Number.isNaN(then)) return false;
+  return (Date.now() - then) / (1000 * 60 * 60 * 24 * 30.4375) > 3;
+};
+
+const fmtDate = (iso) =>
+  iso.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$1 年 $2 月 $3 日");
+
+/* 一张卡片的 HTML。覆盖层始终在 DOM 里、只是透明，所以里面的文字
+   读屏软件和搜索引擎都拿得到。 */
+function cardHTML(r, i) {
+  const c = PALETTE[i % PALETTE.length];
+  const list = (items) =>
+    `<ul class="list">${items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+
+  const notes = r.notes && r.notes.length
+    ? `<p class="block-head">须知</p>${list(r.notes)}` : "";
+  const tips = r.tips && r.tips.length
+    ? `<p class="block-head${r.notes && r.notes.length ? " block-head-tips" : ""}">使用提示</p>${list(r.tips)}`
+    : "";
+  const invite = r.invite
+    ? `<div class="fact"><span class="fact-k">邀请奖励</span>
+         <span class="fact-v fact-v-sm">${esc(r.invite)}</span></div>`
+    : "";
+  const stale = isStale(r.verifiedAt)
+    ? `<p class="stale">距上次实测已超过三个月，信息可能已变化，请以站点为准。</p>` : "";
+
+  /* 不是每一项都真的带邀请参数（有的站点根本没有邀请机制），所以披露、按钮文案
+     和 rel="sponsored" 都按链接里到底有没有 aff= 来决定。声明一条不存在的返利
+     虽然不算隐瞒，但同样是不准确的。 */
+  const paid = /[?&]aff=/.test(r.aff);
+  const rel = paid ? "noopener nofollow sponsored" : "noopener nofollow";
+  const ctaText = paid ? "通过邀请链接注册" : "前往注册";
+  const affNote = paid ? " · 含邀请参数" : "";
+
+  return `
+<li class="card" style="--a:${c.a};--d:${c.d}">
+  <div class="body">
+    <div class="default">
+      <header class="card-head">
+        <div class="title-row">
+          <h3 class="name">${esc(r.name)}</h3>
+          <span class="rate">${esc(r.rate)}</span>
+        </div>
+        <p class="host">${esc(r.host)}</p>
+      </header>
+      <ul class="models" aria-label="1x 覆盖模型">
+        ${r.models.map((m) => `<li class="model">${esc(m)}</li>`).join("")}
+      </ul>
+      <div class="facts">
+        <div class="fact">
+          <span class="fact-k">注册即得</span>
+          <span class="fact-v">${esc(r.signup)}</span>
+        </div>
+        ${invite}
+      </div>
+    </div>
+    <div class="over" id="fold-${esc(r.id)}">
+      <div class="over-scroll">
+        <!-- 单独一层包裹，ResizeObserver 挂在它上面才能看到内容变长；
+             只观察滚动容器只能捕捉到它自己的盒子变化。 -->
+        <div class="over-inner">
+          <p class="over-title">${esc(r.name)}</p>
+          ${notes}
+          ${tips}
+          <p class="tested"><span class="block-head">实测</span>${esc(r.tested)}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="toggle" type="button" aria-expanded="false" aria-controls="fold-${esc(r.id)}">
+    <span>须知与提示</span>
+    <svg class="chev" viewBox="0 0 12 12" aria-hidden="true">
+      <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <footer class="foot">
+    <a class="cta" href="${esc(r.aff)}" target="_blank" rel="${rel}">
+      ${ctaText} →
+    </a>
+    <p class="meta">实测于 ${esc(fmtDate(r.verifiedAt))}${affNote}</p>
+    ${stale}
+  </footer>
+</li>`;
+}
+
+const grid = document.getElementById("grid");
+grid.innerHTML = RELAYS.map(cardHTML).join("");
+document.getElementById("count").textContent = `共 ${RELAYS.length} 个`;
+
+/* 展开开关。指针设备上悬停本身就能升起覆盖层，这个按钮是触屏上的唯一入口。 */
+grid.addEventListener("click", (e) => {
+  const btn = e.target.closest(".toggle");
+  if (!btn) return;
+  const card = btn.closest(".card");
+  const open = card.classList.toggle("is-open");
+  btn.setAttribute("aria-expanded", String(open));
+});
+
+/* ---- 滚动边缘渐隐 ----
+   覆盖层会裁掉超出的内容，滚动过的卡片看起来就像从半句话开始的。
+   这里只在那一侧真的还有内容时把 --fade-t / --fade-b 置为 1，
+   剩下的交给 CSS 里的 mask。CSS 查不到滚动位置，所以只能由 JS 来做。 */
+function syncFade(el) {
+  // 留 1px 余量：分数像素布局下 scrollTop 很少正好等于最大值，
+  // 一条永远亮着的底部渐隐看起来像 bug。
+  el.style.setProperty("--fade-t", el.scrollTop <= 1 ? "0" : "1");
+  el.style.setProperty(
+    "--fade-b",
+    el.scrollTop + el.clientHeight >= el.scrollHeight - 1 ? "0" : "1"
+  );
+}
+
+const scrollers = [...grid.querySelectorAll(".over-scroll")];
+scrollers.forEach((el) => el.addEventListener("scroll", () => syncFade(el), { passive: true }));
+
+/* 重排会改变什么东西溢出：视口缩放，以及首屏之后才到位的网页字体。
+   滚动容器和它的内容各自都可能单独变化，所以两个都要观察。 */
+if (typeof ResizeObserver !== "undefined") {
+  const ro = new ResizeObserver(() => scrollers.forEach(syncFade));
+  scrollers.forEach((el) => {
+    ro.observe(el);
+    if (el.firstElementChild) ro.observe(el.firstElementChild);
+  });
+}
+scrollers.forEach(syncFade);
+
+/* ---- 风险提示弹窗 ---- */
+const risk = document.getElementById("risk");
+document.getElementById("open-risk").addEventListener("click", () => risk.showModal());
+risk.querySelectorAll("[data-close]").forEach((b) =>
+  b.addEventListener("click", () => risk.close())
+);
+// 点遮罩关闭。判断 target 是 <dialog> 自身，才不会把面板内部的点击也算上。
+risk.addEventListener("click", (e) => {
+  if (e.target === risk) risk.close();
+});
+
+/* ---- 深色模式 ----
+   只存「用户明确选过什么」。没存过就跟随系统，所以系统在夜间切到深色时页面
+   会一起变；一旦点过按钮，就以点选的为准，不再跟随。 */
+const root = document.documentElement;
+document.getElementById("theme-toggle").addEventListener("click", () => {
+  const dark = root.classList.toggle("dark");
+  try {
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  } catch (e) {}
+});
+
+/* 系统主题变化时跟着走。Safari 14 之前只有 addListener，某些环境干脆没有
+   matchMedia —— 跟随系统只是个增益，拿不到就算了，不该让它打断整段脚本。 */
+try {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const follow = (e) => {
+    let saved = null;
+    try {
+      saved = localStorage.getItem("theme");
+    } catch (err) {}
+    if (saved) return; // 用户已经选过了，别覆盖
+    root.classList.toggle("dark", e.matches);
+  };
+  if (mq.addEventListener) mq.addEventListener("change", follow);
+  else if (mq.addListener) mq.addListener(follow);
+} catch (e) {}
+</script>
+</body>
+</html>
