@@ -905,6 +905,94 @@ html.dark .card {
 .pick-list li::marker { color: var(--brand-2); }
 .pick-list li + li { margin-top: 6px; }
 
+/* ---------- 配置方法 ----------
+   跟「怎么挑」共用 .pick-lead / .pick-list，只加这一块特有的编号列表和代码框。 */
+
+.setup-band {
+  padding: 36px 0 44px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.setup-list {
+  margin-top: 20px;
+  max-width: 720px;
+  display: grid;
+  gap: 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.setup-step {
+  padding: 16px 18px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.setup-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 序号用等宽字体，一位数和两位数不会把标题推来推去 */
+.setup-n {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-1);
+  background: var(--brand-soft);
+}
+
+.setup-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.setup-body,
+.setup-note {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.setup-note { font-size: 12.5px; }
+
+/* 窄屏上让代码块自己横向滚动，别把整页撑宽 —— 配置行不适合折行 */
+.setup-code {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-alt);
+}
+
+.setup-code code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  white-space: pre;
+}
+
+.setup-pit-head {
+  margin: 26px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
 /* ---------- 常见问题 ----------
    用原生 <details>，折叠不需要 JS，键盘和读屏软件也直接可用。折叠起来的内容
    照样在 HTML 源码里，抓取器和搜索引擎都读得到。 */
@@ -1068,6 +1156,14 @@ html.dark .card {
     <div class="wrap">
       <h2 class="h2">怎么挑</h2>
 {{PICK}}
+    </div>
+  </section>
+
+  <!-- 配置方法。收录站一般只给链接，配置这一步是这一页能补上的空白。 -->
+  <section class="setup-band" id="setup">
+    <div class="wrap">
+      <h2 class="h2">配置方法</h2>
+{{SETUP}}
     </div>
   </section>
 

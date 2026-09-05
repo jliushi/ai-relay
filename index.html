@@ -110,10 +110,10 @@
         },
         {
           "@type": "Question",
-          "name": "这些公益站能用在 Claude Code 或 Codex 里吗？",
+          "name": "这些公益站能用在 Claude Code 或 Codex 里吗？怎么配？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "可以，它们提供的是兼容接口，把 base URL 和 API key 指到站点即可。清单里标了「只支持 Claude Code」的站点不要拿去接 Codex。具体的地址和配置步骤看各站自己的文档，各家路径不一样，别照抄别家的。"
+            "text": "可以，它们提供的是兼容接口。Claude Code 设两个环境变量就行：ANTHROPIC_BASE_URL 指到站点地址，ANTHROPIC_AUTH_TOKEN 填站点给的 key。Codex 要在 ~/.codex/config.toml 里加一个自定义 provider，用 base_url 和 env_key 两个字段。页面上「配置方法」那一节有可以直接抄的最小配置和几个常见坑。标了「只支持 Claude Code」的站点不要拿去接 Codex。"
           }
         },
         {
@@ -1038,6 +1038,94 @@ html.dark .card {
 .pick-list li::marker { color: var(--brand-2); }
 .pick-list li + li { margin-top: 6px; }
 
+/* ---------- 配置方法 ----------
+   跟「怎么挑」共用 .pick-lead / .pick-list，只加这一块特有的编号列表和代码框。 */
+
+.setup-band {
+  padding: 36px 0 44px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.setup-list {
+  margin-top: 20px;
+  max-width: 720px;
+  display: grid;
+  gap: 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.setup-step {
+  padding: 16px 18px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.setup-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 序号用等宽字体，一位数和两位数不会把标题推来推去 */
+.setup-n {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-1);
+  background: var(--brand-soft);
+}
+
+.setup-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.setup-body,
+.setup-note {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.setup-note { font-size: 12.5px; }
+
+/* 窄屏上让代码块自己横向滚动，别把整页撑宽 —— 配置行不适合折行 */
+.setup-code {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-alt);
+}
+
+.setup-code code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  white-space: pre;
+}
+
+.setup-pit-head {
+  margin: 26px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
 /* ---------- 常见问题 ----------
    用原生 <details>，折叠不需要 JS，键盘和读屏软件也直接可用。折叠起来的内容
    照样在 HTML 源码里，抓取器和搜索引擎都读得到。 */
@@ -1429,6 +1517,53 @@ html.dark .card {
     </div>
   </section>
 
+  <!-- 配置方法。收录站一般只给链接，配置这一步是这一页能补上的空白。 -->
+  <section class="setup-band" id="setup">
+    <div class="wrap">
+      <h2 class="h2">配置方法</h2>
+      <p class="pick-lead">拿到 key 之后要做的事只有一件：把请求指到公益站，而不是官方地址。Claude Code 靠两个环境变量，Codex 靠一段 config.toml。下面是两边的最小可用配置。</p>
+      <ol class="setup-list">
+        <li class="setup-step">
+          <div class="setup-head">
+            <span class="setup-n">1</span>
+            <h3 class="setup-title">Claude Code</h3>
+          </div>
+          <p class="setup-body">两个环境变量就够。BASE_URL 指到站点的 Anthropic 兼容端点，AUTH_TOKEN 填站点给的 key（会以 Bearer 形式发出去，多数公益站认这个而不是 x-api-key）。</p>
+          <pre class="setup-code"><code>export ANTHROPIC_BASE_URL=&quot;https://&lt;站点给的地址&gt;&quot;
+export ANTHROPIC_AUTH_TOKEN=&quot;&lt;站点给的 key&gt;&quot;
+export ANTHROPIC_MODEL=&quot;claude-opus-5&quot;   # 拉不到模型列表时手动指定
+
+claude</code></pre>
+          <p class="setup-note">想固定下来就写进 shell 配置，或者放进 ~/.claude/settings.json 的 env 块。别把 key 提交进仓库。</p>
+        </li>
+        <li class="setup-step">
+          <div class="setup-head">
+            <span class="setup-n">2</span>
+            <h3 class="setup-title">Codex</h3>
+          </div>
+          <p class="setup-body">Codex 走自定义 provider：在 ~/.codex/config.toml 里声明一个 provider，key 用 env_key 指向环境变量名，不直接写在文件里。</p>
+          <pre class="setup-code"><code>model = &quot;gpt-5.6&quot;
+model_provider = &quot;relay&quot;
+
+[model_providers.relay]
+name = &quot;relay&quot;
+base_url = &quot;https://&lt;站点给的地址&gt;/v1&quot;
+env_key = &quot;RELAY_API_KEY&quot;
+wire_api = &quot;chat&quot;</code></pre>
+          <p class="setup-note">然后 export RELAY_API_KEY=&quot;&lt;站点给的 key&gt;&quot;。wire_api 先试 chat —— 公益站转出来的多数只是 chat completions，responses 那套接口不一定有。</p>
+        </li>
+      </ol>
+      <h3 class="setup-pit-head">常见坑</h3>
+      <ul class="pick-list">
+        <li>base_url 结尾要不要 /v1，看端点类型：Anthropic 兼容的一般不带（Claude Code 自己会拼 /v1/messages），OpenAI 兼容的一般要带。填错的表现是 404，不是 401 —— 按状态码区分是配置错还是 key 错。</li>
+        <li>模型名照站点给的抄。拉取模型列表失败很常见，取不到就手填，例如 AgentRouter 上是 gpt-5.6-sol 和 claude-opus-5。</li>
+        <li>标了「只支持 Claude Code」的站不要接 Codex。它只转了 Anthropic 那套接口，接上只会拿到一串报错。</li>
+        <li>401 / 403 通常是 key 写错或额度用完，429 是站点在限流 —— 后者换一个站就好，别反复重试。</li>
+        <li>key 不要写进仓库，也不要写进会被提交的配置文件。用环境变量，或者站点支持的话用系统钥匙串。</li>
+      </ul>
+    </div>
+  </section>
+
   <!-- 常见问题。可索引正文的主要来源，同时生成 FAQPage 结构化数据。 -->
   <section class="faq-band" id="faq">
     <div class="wrap">
@@ -1451,8 +1586,8 @@ html.dark .card {
           <p class="faq-a">取决于你的用量，没法给准数。额度是按 token 计费扣的，用 Claude Code 跑长上下文的活消耗很快，几十美元的赠额可能几天就见底。清单里几家有每日签到能补一点，具体数额写在各张卡片的「使用提示」里。</p>
         </details>
         <details class="faq-item">
-          <summary>这些公益站能用在 Claude Code 或 Codex 里吗？</summary>
-          <p class="faq-a">可以，它们提供的是兼容接口，把 base URL 和 API key 指到站点即可。清单里标了「只支持 Claude Code」的站点不要拿去接 Codex。具体的地址和配置步骤看各站自己的文档，各家路径不一样，别照抄别家的。</p>
+          <summary>这些公益站能用在 Claude Code 或 Codex 里吗？怎么配？</summary>
+          <p class="faq-a">可以，它们提供的是兼容接口。Claude Code 设两个环境变量就行：ANTHROPIC_BASE_URL 指到站点地址，ANTHROPIC_AUTH_TOKEN 填站点给的 key。Codex 要在 ~/.codex/config.toml 里加一个自定义 provider，用 base_url 和 env_key 两个字段。页面上「配置方法」那一节有可以直接抄的最小配置和几个常见坑。标了「只支持 Claude Code」的站点不要拿去接 Codex。</p>
         </details>
         <details class="faq-item">
           <summary>用公益站安全吗？可以拿来跑公司代码吗？</summary>

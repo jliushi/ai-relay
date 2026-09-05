@@ -34,7 +34,7 @@
 
 ## 改数据
 
-站点、文案、FAQ、风险提示全部在 `data.js` 里，改完跑一次构建：
+站点、文案、FAQ、风险提示、配置方法全部在 `data.js` 里，改完跑一次构建：
 
 ```bash
 node build.mjs
@@ -68,7 +68,7 @@ Windows 上把 `chrome` 换成 `"C:/Program Files/Google/Chrome/Application/chro
 ## 目录
 
 ```
-data.js         站点清单、FAQ、风险提示、站点级文案 —— 唯一数据源，改这里
+data.js         站点清单、配置方法、FAQ、风险提示、站点级文案 —— 唯一数据源，改这里
 template.html   页面骨架：全部 CSS 和交互 JS，卡片位置是 {{CARDS}} 占位
 build.mjs       node build.mjs
 index.html      产物，卡片和 FAQ 已展开成静态标签
@@ -88,9 +88,9 @@ favicon.svg
 倍率、额度一个字都进不了 HTML。Google 会执行 JS 但优先级低且有渲染预算，百度基本
 不执行，GPTBot / ClaudeBot / PerplexityBot 这类抓取器多数只读原始 HTML。
 
-改成构建期展开之后，不执行 JS 时的可索引正文从 454 字变成 2100 字出头，四个站点的
-倍率、赠额、邀请规则、须知全部进入源码。`build.mjs` 每次运行都会把这个字数打出来，
-掉下去了就是哪里出了问题。
+改成构建期展开之后，不执行 JS 时的可索引正文从 454 字变成 4200 字出头，四个站点的
+倍率、赠额、邀请规则、须知，以及 Claude Code / Codex 的配置方法全部进入源码。
+`build.mjs` 每次运行都会把这个字数打出来，掉下去了就是哪里出了问题。
 
 同一份 `data.js` 还会生成 `llms.txt`（[llmstxt.org](https://llmstxt.org) 的约定，
 给大模型读的纯文本摘要）和页面里的 JSON-LD 结构化数据（`WebPage` + `ItemList` +

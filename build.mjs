@@ -10,7 +10,7 @@
 =========================================================================== */
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { SITE, RELAYS, RISKS, FAQ } from "./data.js";
+import { SITE, RELAYS, RISKS, FAQ, SETUP } from "./data.js";
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) =>
@@ -171,6 +171,32 @@ ${points.map((p) => `        <li>${p}</li>`).join("\n")}
       </ul>`;
 }
 
+/* ---------- 配置方法 ----------
+   代码块用 <pre><code>，不做语法高亮：高亮要么塞一个库进来，要么在构建期生成
+   一堆 <span>，两种都不值得 —— 这几行配置本身就没有需要着色的结构。 */
+function setupHTML() {
+  const steps = SETUP.steps
+    .map((s, i) => `        <li class="setup-step">
+          <div class="setup-head">
+            <span class="setup-n">${i + 1}</span>
+            <h3 class="setup-title">${esc(s.title)}</h3>
+          </div>
+          <p class="setup-body">${esc(s.body)}</p>
+          <pre class="setup-code"><code>${esc(s.code)}</code></pre>
+          <p class="setup-note">${esc(s.note)}</p>
+        </li>`)
+    .join("\n");
+
+  return `      <p class="pick-lead">${esc(SETUP.lead)}</p>
+      <ol class="setup-list">
+${steps}
+      </ol>
+      <h3 class="setup-pit-head">常见坑</h3>
+      <ul class="pick-list">
+${SETUP.pitfalls.map((p) => `        <li>${esc(p)}</li>`).join("\n")}
+      </ul>`;
+}
+
 /* ---------- 常见问题与风险提示 ---------- */
 
 const faqHTML = () =>
@@ -328,6 +354,24 @@ ${RELAYS.map((r) => `### ${r.name}
       r.tips?.length ? `\n- 使用提示：${r.tips.join("；")}` : ""
     }`).join("\n\n")}
 
+## 配置方法
+
+${SETUP.lead}
+
+${SETUP.steps.map((s) => `### ${s.title}
+
+${s.body}
+
+\`\`\`
+${s.code}
+\`\`\`
+
+${s.note}`).join("\n\n")}
+
+### 常见坑
+
+${SETUP.pitfalls.map((p) => `- ${p}`).join("\n")}
+
 ## 常见问题
 
 ${FAQ.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
@@ -410,6 +454,7 @@ const FILLS = {
   COUNT: String(RELAYS.length),
   CARDS: RELAYS.map(cardHTML).join("\n"),
   PICK: pickHTML(),
+  SETUP: setupHTML(),
   FAQ: faqHTML(),
   RISK_TITLE: esc(RISKS.title),
   RISK_LEAD: esc(RISKS.lead),

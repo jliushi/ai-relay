@@ -124,6 +124,56 @@ export const RELAYS = [
   },
 ];
 
+/* ---------------------------------------------------------------------------
+   配置方法。这一块不是为了凑字数：搜「公益站大全」的人拿到 key 之后下一步就卡
+   在这里，而收录站几乎都只给链接不给配置，所以这是本页能提供、别人没提供的东西。
+
+   写这里的东西要能被验证。环境变量名和 config.toml 的字段名是各自工具文档里的
+   稳定写法；各站自己的 base_url 具体路径不往这里写死 —— 站点会改，写死了就是
+   埋一个过期信息，让读者去看站点文档反而更准。
+--------------------------------------------------------------------------- */
+
+export const SETUP = {
+  lead: "拿到 key 之后要做的事只有一件：把请求指到公益站，而不是官方地址。Claude Code 靠两个环境变量，Codex 靠一段 config.toml。下面是两边的最小可用配置。",
+  steps: [
+    {
+      title: "Claude Code",
+      body: "两个环境变量就够。BASE_URL 指到站点的 Anthropic 兼容端点，AUTH_TOKEN 填站点给的 key（会以 Bearer 形式发出去，多数公益站认这个而不是 x-api-key）。",
+      code: [
+        "export ANTHROPIC_BASE_URL=\"https://<站点给的地址>\"",
+        "export ANTHROPIC_AUTH_TOKEN=\"<站点给的 key>\"",
+        "export ANTHROPIC_MODEL=\"claude-opus-5\"   # 拉不到模型列表时手动指定",
+        "",
+        "claude",
+      ].join("\n"),
+      note: "想固定下来就写进 shell 配置，或者放进 ~/.claude/settings.json 的 env 块。别把 key 提交进仓库。",
+    },
+    {
+      title: "Codex",
+      body: "Codex 走自定义 provider：在 ~/.codex/config.toml 里声明一个 provider，key 用 env_key 指向环境变量名，不直接写在文件里。",
+      code: [
+        "model = \"gpt-5.6\"",
+        "model_provider = \"relay\"",
+        "",
+        "[model_providers.relay]",
+        "name = \"relay\"",
+        "base_url = \"https://<站点给的地址>/v1\"",
+        "env_key = \"RELAY_API_KEY\"",
+        "wire_api = \"chat\"",
+      ].join("\n"),
+      note: "然后 export RELAY_API_KEY=\"<站点给的 key>\"。wire_api 先试 chat —— 公益站转出来的多数只是 chat completions，responses 那套接口不一定有。",
+    },
+  ],
+  /* 这几条都是实际踩过的，不是通用的「请检查你的配置」。 */
+  pitfalls: [
+    "base_url 结尾要不要 /v1，看端点类型：Anthropic 兼容的一般不带（Claude Code 自己会拼 /v1/messages），OpenAI 兼容的一般要带。填错的表现是 404，不是 401 —— 按状态码区分是配置错还是 key 错。",
+    "模型名照站点给的抄。拉取模型列表失败很常见，取不到就手填，例如 AgentRouter 上是 gpt-5.6-sol 和 claude-opus-5。",
+    "标了「只支持 Claude Code」的站不要接 Codex。它只转了 Anthropic 那套接口，接上只会拿到一串报错。",
+    "401 / 403 通常是 key 写错或额度用完，429 是站点在限流 —— 后者换一个站就好，别反复重试。",
+    "key 不要写进仓库，也不要写进会被提交的配置文件。用环境变量，或者站点支持的话用系统钥匙串。",
+  ],
+};
+
 /* 首屏那个「先读这一段」弹窗。build.mjs 会把这份内容同时写进页面和 llms.txt，
    所以改这里就够，不用两头对齐。 */
 export const RISKS = {
@@ -173,8 +223,8 @@ export const FAQ = [
     a: "取决于你的用量，没法给准数。额度是按 token 计费扣的，用 Claude Code 跑长上下文的活消耗很快，几十美元的赠额可能几天就见底。清单里几家有每日签到能补一点，具体数额写在各张卡片的「使用提示」里。",
   },
   {
-    q: "这些公益站能用在 Claude Code 或 Codex 里吗？",
-    a: "可以，它们提供的是兼容接口，把 base URL 和 API key 指到站点即可。清单里标了「只支持 Claude Code」的站点不要拿去接 Codex。具体的地址和配置步骤看各站自己的文档，各家路径不一样，别照抄别家的。",
+    q: "这些公益站能用在 Claude Code 或 Codex 里吗？怎么配？",
+    a: "可以，它们提供的是兼容接口。Claude Code 设两个环境变量就行：ANTHROPIC_BASE_URL 指到站点地址，ANTHROPIC_AUTH_TOKEN 填站点给的 key。Codex 要在 ~/.codex/config.toml 里加一个自定义 provider，用 base_url 和 env_key 两个字段。页面上「配置方法」那一节有可以直接抄的最小配置和几个常见坑。标了「只支持 Claude Code」的站点不要拿去接 Codex。",
   },
   {
     q: "用公益站安全吗？可以拿来跑公司代码吗？",
