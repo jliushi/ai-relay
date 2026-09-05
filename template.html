@@ -826,6 +826,85 @@ html.dark .card {
 
 .site-foot a:hover { text-decoration: underline; }
 
+/* ---------- 怎么挑 ---------- */
+
+.pick-band {
+  padding: 36px 0 44px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.pick-lead {
+  margin-top: 12px;
+  max-width: 76ch;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--muted);
+}
+
+.pick-lead strong { color: var(--ink); }
+
+/* 窄屏上让表格自己横向滚动，不把整页撑宽 */
+.table-wrap {
+  margin-top: 18px;
+  max-width: 720px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.cmp {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.cmp caption {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  text-align: left;
+  color: var(--muted);
+  background: var(--bg-alt);
+}
+
+.cmp th, .cmp td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.cmp thead th {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cmp tbody th { font-weight: 600; color: var(--ink); }
+.cmp tbody td { color: var(--muted); }
+.cmp tbody tr:last-child th,
+.cmp tbody tr:last-child td { border-bottom: 0; }
+
+/* 等效可用量是这张表的重点，给它品牌色 */
+.cmp-eff { font-weight: 700; color: var(--brand-1); }
+
+.pick-list {
+  margin-top: 18px;
+  max-width: 76ch;
+  padding-left: 18px;
+  list-style: disc;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--muted);
+}
+
+.pick-list li::marker { color: var(--brand-2); }
+.pick-list li + li { margin-top: 6px; }
+
 /* ---------- 常见问题 ----------
    用原生 <details>，折叠不需要 JS，键盘和读屏软件也直接可用。折叠起来的内容
    照样在 HTML 源码里，抓取器和搜索引擎都读得到。 */
@@ -981,6 +1060,14 @@ html.dark .card {
       <ul class="grid" id="grid">
 {{CARDS}}
       </ul>
+    </div>
+  </section>
+
+  <!-- 怎么挑。等效可用量那张表是这一页唯一的原创计算，整块由 build.mjs 生成。 -->
+  <section class="pick-band" id="pick">
+    <div class="wrap">
+      <h2 class="h2">怎么挑</h2>
+{{PICK}}
     </div>
   </section>
 

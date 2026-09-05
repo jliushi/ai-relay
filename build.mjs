@@ -109,6 +109,68 @@ function cardHTML(r, i) {
           </footer>
         </li>`;
 }
+/* 倍率和赠额从文案里解析，不另设字段 —— 两份数据分开写迟早对不上。解析不出来
+   就返回 null，页面上显示「—」，不猜。
+   等效可用量 = 赠额 ÷ 倍率。这是全页唯一一处原创计算，页面和 llms.txt 共用它。 */
+function rankRelays() {
+  const num = (s, re) => {
+    const m = String(s).match(re);
+    return m ? parseFloat(m[1].replace(/,/g, "")) : null;
+  };
+  return RELAYS.map((r) => {
+    const mult = num(r.rate, /([\d.]+)\s*x/i);
+    const credit = num(r.signup, /\$\s*([\d,.]+)/);
+    return { r, mult, credit, eff: mult && credit ? credit / mult : null };
+  }).sort((a, b) => (b.eff ?? -1) - (a.eff ?? -1));
+}
+
+/* ---------- 「怎么挑」对比表 ---------- */
+function pickHTML() {
+  const rows = rankRelays();
+  const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
+
+  const tbody = rows
+    .map(({ r, mult, credit, eff }) => `            <tr>
+              <th scope="row">${esc(r.name)}</th>
+              <td>${credit == null ? "—" : esc(money(credit))}</td>
+              <td>${mult == null ? "—" : esc(mult + "x")}</td>
+              <td class="cmp-eff">${eff == null ? "—" : esc((Number.isInteger(eff) ? "" : "≈ ") + money(eff))}</td>
+            </tr>`)
+    .join("\n");
+
+  // 要点也从数据里推，站点增减或须知改了文案会跟着变
+  const named = (list) => list.map((r) => r.name).join("、");
+  const gpt = RELAYS.filter((r) => r.models.some((m) => /gpt/i.test(m)));
+  const ccOnly = RELAYS.filter((r) => (r.notes || []).some((n) => /只支持\s*Claude Code/i.test(n)));
+  const checkin = RELAYS.filter((r) =>
+    [...(r.notes || []), ...(r.tips || [])].some((x) => /签到/.test(x)));
+
+  const points = [];
+  if (gpt.length)
+    points.push(`要跑 GPT 系模型的话，覆盖到的是 ${named(gpt)}，其余几家只有 Claude。`);
+  if (ccOnly.length)
+    points.push(`${named(ccOnly)}标了只支持 Claude Code，不要拿去接 Codex —— 它只转了 Anthropic 那套接口，接上只会拿到一串报错。`);
+  if (checkin.length)
+    points.push(`${named(checkin)}有每日签到，能小幅补额度，具体数额写在各张卡片的「使用提示」里。`);
+  points.push("别把某一家当唯一入口。公益站限流、改规则、直接关站都很常见，手上多备一两个，切换成本几乎为零。");
+
+  return `      <p class="pick-lead">「送多少」不是唯一指标。倍率决定同一笔额度实际能跑多少 token，所以真正该比的是<strong>赠额除以倍率</strong>——下表按这个等效可用量从高到低排。</p>
+      <div class="table-wrap">
+        <table class="cmp">
+          <caption>按等效可用量排序（等效可用量 = 注册赠额 ÷ 倍率）</caption>
+          <thead>
+            <tr><th scope="col">站点</th><th scope="col">注册赠额</th><th scope="col">倍率</th><th scope="col">等效可用量</th></tr>
+          </thead>
+          <tbody>
+${tbody}
+          </tbody>
+        </table>
+      </div>
+      <ul class="pick-list">
+${points.map((p) => `        <li>${p}</li>`).join("\n")}
+      </ul>`;
+}
+
 /* ---------- 常见问题与风险提示 ---------- */
 
 const faqHTML = () =>
@@ -238,6 +300,21 @@ ${RISKS.items.map((r) => `- **${r.head}**：${r.body}`).join("\n")}
 
 页面内每条注册链接都含邀请参数（返利），卡片页脚已标注。
 
+## 怎么挑：按等效可用量排序
+
+等效可用量 = 注册赠额 ÷ 倍率。倍率决定同一笔额度实际能跑多少 token，所以「送多少」不是唯一指标。
+
+| 站点 | 注册赠额 | 倍率 | 等效可用量 |
+| --- | --- | --- | --- |
+${rankRelays()
+  .map(({ r, mult, credit, eff }) => {
+    const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
+    return `| ${r.name} | ${credit == null ? "—" : money(credit)} | ${
+      mult == null ? "—" : mult + "x"
+    } | ${eff == null ? "—" : (Number.isInteger(eff) ? "" : "≈ ") + money(eff)} |`;
+  })
+  .join("\n")}
+
 ## 站点清单（共 ${RELAYS.length} 个）
 
 ${RELAYS.map((r) => `### ${r.name}
@@ -332,6 +409,7 @@ const FILLS = {
   CONTACT: esc(SITE.contactText),
   COUNT: String(RELAYS.length),
   CARDS: RELAYS.map(cardHTML).join("\n"),
+  PICK: pickHTML(),
   FAQ: faqHTML(),
   RISK_TITLE: esc(RISKS.title),
   RISK_LEAD: esc(RISKS.lead),
