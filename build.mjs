@@ -216,11 +216,38 @@ const riskItemsHTML = () =>
   ).join("\n");
 
 /* ---------- 结构化数据 ----------
-   三块拼在一个 @graph 里：WebPage 交代这一页是什么，ItemList 把四个站点标成
-   有序清单，FAQPage 供搜索结果的问答富摘要。AI 抓取器也吃这份 JSON —— 它比
-   正文更容易被准确解析，是 GEO 里性价比最高的一件事。 */
+   拼在一个 @graph 里，节点之间用 @id 互相引用：
+     WebSite   —— 整个站是什么，挂 publisher。
+     Person    —— 作者/发布者，sameAs 指向 GitHub，把这一页和一个实体绑定。
+     WebPage   —— 这一页是什么，isPartOf 指回 WebSite，about/mentions 交代
+                  它讲的是哪些实体（AI 公益站、Claude Code、Codex、各模型）。
+     HowTo     —— 「配置方法」那一节的机读版。配置步骤是本页原创、高检索意图的
+                  内容，标成 HowTo 后能进搜索结果的步骤富摘要，也最容易被 AI 引用。
+     ItemList  —— 四个站点的有序清单。
+     FAQPage   —— 供搜索结果的问答富摘要。
+   AI 抓取器也吃这份 JSON —— 它比正文更容易被准确解析，是 GEO 里性价比最高的一件事。 */
 function jsonLd() {
+  const dMod = RELAYS.reduce((a, r) => (r.verifiedAt > a ? r.verifiedAt : a), "1970-01-01");
+  const dPub = RELAYS.reduce((a, r) => (r.verifiedAt < a ? r.verifiedAt : a), "9999-12-31");
+  const img = SITE.url + "og.png";
+  const models = [...new Set(RELAYS.flatMap((r) => r.models))];
+
+  const person = { "@type": "Person", "@id": SITE.url + "#author" };
+  person.name = SITE.authorName;
+  person.url = SITE.author;
+  person.sameAs = [SITE.author];
+
   const graph = [
+    {
+      "@type": "WebSite",
+      "@id": SITE.url + "#website",
+      url: SITE.url,
+      name: SITE.brand,
+      description: SITE.description,
+      inLanguage: "zh-CN",
+      publisher: { "@id": person["@id"] },
+    },
+    person,
     {
       "@type": "WebPage",
       "@id": SITE.url,
@@ -228,10 +255,35 @@ function jsonLd() {
       name: SITE.title,
       description: SITE.description,
       inLanguage: "zh-CN",
-      dateModified: RELAYS.reduce((a, r) => (r.verifiedAt > a ? r.verifiedAt : a), "1970-01-01"),
-      author: { "@type": "Person", url: SITE.author },
-      // 每张卡片都挂着返利链接，结构化数据里也要如实标注
+      isPartOf: { "@id": SITE.url + "#website" },
+      datePublished: dPub,
+      dateModified: dMod,
+      author: { "@id": person["@id"] },
+      publisher: { "@id": person["@id"] },
+      primaryImageOfPage: { "@type": "ImageObject", url: img, width: 1200, height: 630 },
+      keywords: SITE.keywords.join("，"),
+      about: [
+        { "@type": "Thing", name: "AI 公益站" },
+        { "@type": "Thing", name: "AI 中转站" },
+      ],
+      mentions: [
+        { "@type": "SoftwareApplication", name: "Claude Code", applicationCategory: "DeveloperApplication" },
+        { "@type": "SoftwareApplication", name: "Codex", applicationCategory: "DeveloperApplication" },
+        ...models.map((m) => ({ "@type": "Thing", name: m })),
+      ],
       isAccessibleForFree: true,
+    },
+    {
+      "@type": "HowTo",
+      name: "在 Claude Code / Codex 中配置 AI 公益站",
+      description: SETUP.lead,
+      inLanguage: "zh-CN",
+      step: SETUP.steps.map((s, i) => ({
+        "@type": "HowToStep",
+        position: i + 1,
+        name: s.title,
+        text: [s.body, s.note].filter(Boolean).join(" "),
+      })),
     },
     {
       "@type": "ItemList",
@@ -272,7 +324,11 @@ function headHTML() {
   return `<title>${esc(SITE.title)}</title>
 <meta name="description" content="${esc(SITE.description)}">
 <meta name="keywords" content="${esc(SITE.keywords.join("，"))}">
+<meta name="author" content="${esc(SITE.authorName)}">
 <meta name="theme-color" content="#10b981">
+<!-- 放行富摘要：允许大图预览、不限制文本摘要长度。搜索结果的问答富摘要和 AI 引用
+     都受这条约束，收紧了等于自己把可见度砍掉。 -->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="${esc(SITE.url)}">${verify.length ? "\n" + verify.join("\n") : ""}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(SITE.brand)}">
@@ -281,10 +337,14 @@ function headHTML() {
 <meta property="og:title" content="${esc(SITE.title)}">
 <meta property="og:description" content="${esc(SITE.description)}">
 <meta property="og:image" content="${esc(img)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(SITE.brand)} — ${esc(RELAYS.map((r) => r.name.replace(/\s*公益站$/, "")).join(" / "))}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(SITE.title)}">
 <meta name="twitter:description" content="${esc(SITE.description)}">
 <meta name="twitter:image" content="${esc(img)}">
+<meta name="twitter:image:alt" content="${esc(SITE.brand)}">
 ${jsonLd()}`;
 }
 

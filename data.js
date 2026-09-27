@@ -12,6 +12,12 @@ export const SITE = {
   url: "https://jliushi.github.io/ai-relay/",
   repo: "https://github.com/jliushi/ai-relay",
   author: "https://github.com/jliushi",
+  authorName: "jliushi",
+
+  /* IndexNow 的密钥：仓库根目录那个 <key>.txt 文件的内容就是这串，两处必须一致。
+     .github/workflows/indexnow.yml 每次 push 会拿它去通知 Bing / Yandex 重新抓取。
+     换 key 就同时改这里、改那个 txt 文件名和内容。留空则跳过 IndexNow 通知。 */
+  indexNowKey: "5274d490c7073e9630ce4cc455bb9c41",
 
   brand: "AI 公益站清单",
   // 搜索结果里中文标题大约 30 字截断，关键词往前放。「大全」「清单」都留着 ——
