@@ -14,6 +14,7 @@ on:
     paths:
       - index.html
       - guide.html
+      - what-is-ai-relay.html
       - sitemap.xml
       - llms.txt
       - data.js
@@ -39,7 +40,8 @@ jobs:
               "keyLocation": "https://jliushi.github.io/ai-relay/5274d490c7073e9630ce4cc455bb9c41.txt",
               "urlList": [
                 "https://jliushi.github.io/ai-relay/",
-                "https://jliushi.github.io/ai-relay/guide.html"
+                "https://jliushi.github.io/ai-relay/guide.html",
+                "https://jliushi.github.io/ai-relay/what-is-ai-relay.html"
               ]
             }' \
             -w '\nHTTP %{http_code}\n'
