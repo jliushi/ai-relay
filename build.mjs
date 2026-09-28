@@ -10,7 +10,7 @@
 =========================================================================== */
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { SITE, RELAYS, RISKS, FAQ, SETUP, OFFICIAL_FREE } from "./data.js";
+import { SITE, RELAYS, RISKS, FAQ, SETUP, OFFICIAL_FREE, GUIDE } from "./data.js";
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) =>
@@ -374,6 +374,12 @@ const sitemap = () => `<?xml version="1.0" encoding="UTF-8"?>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>${SITE.url}${GUIDE.slug}</loc>
+    <lastmod>${new Date().toISOString().slice(0, 10)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
 `;
 
@@ -392,6 +398,7 @@ const llmsTxt = () => `# ${SITE.brand}
 > ${SITE.description}
 
 页面地址：${SITE.url}
+配置教程：${SITE.url}${GUIDE.slug}
 最近更新：${new Date().toISOString().slice(0, 10)}
 
 ## 收录标准与免责
@@ -522,6 +529,130 @@ function ogHTML() {
 `;
 }
 
+/* ---------- 独立教程页 guide.html ----------
+   复用主页的 <style> 和首屏主题 bootstrap（都从 template.html 抽出来传进来），
+   外观和暗色模式跟主页一致；不带切换按钮，跟随已保存 / 系统的主题。
+   专吃「Claude Code / Codex 中转站怎么配」这类长尾词，和首页两头互链。 */
+function guideHTML(sharedStyle, bootstrap) {
+  const url = SITE.url + GUIDE.slug;
+  const img = SITE.url + "og.png";
+  const dMod = RELAYS.reduce((a, r) => (r.verifiedAt > a ? r.verifiedAt : a), "1970-01-01");
+  const dPub = RELAYS.reduce((a, r) => (r.verifiedAt < a ? r.verifiedAt : a), "9999-12-31");
+
+  const sections = GUIDE.sections
+    .map((s) => {
+      const paras = (s.body || []).map((p) => `        <p class="guide-p">${esc(p)}</p>`).join("\n");
+      const code = s.code ? `        <pre class="setup-code"><code>${esc(s.code)}</code></pre>` : "";
+      const list = s.list
+        ? `        <ul class="pick-list">\n${s.list.map((x) => `          <li>${esc(x)}</li>`).join("\n")}\n        </ul>`
+        : "";
+      const after = s.after ? `        <p class="guide-p">${esc(s.after)}</p>` : "";
+      return `      <section class="guide-sec">\n        <h2 class="h2">${esc(s.h)}</h2>\n${[paras, code, list, after].filter(Boolean).join("\n")}\n      </section>`;
+    })
+    .join("\n");
+
+  const howToSteps = GUIDE.sections
+    .filter((s) => s.code)
+    .map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.h, text: [...(s.body || []), s.after].filter(Boolean).join(" ") }));
+
+  const graph = [
+    {
+      "@type": "TechArticle",
+      "@id": url,
+      headline: GUIDE.title,
+      description: GUIDE.description,
+      inLanguage: "zh-CN",
+      datePublished: dPub,
+      dateModified: dMod,
+      author: { "@type": "Person", name: SITE.authorName, url: SITE.author },
+      publisher: { "@type": "Person", name: SITE.authorName, url: SITE.author },
+      image: img,
+      mainEntityOfPage: url,
+      isPartOf: { "@id": SITE.url + "#website" },
+    },
+    { "@type": "HowTo", name: "在 Claude Code / Codex 中配置 AI 公益站", inLanguage: "zh-CN", step: howToSteps },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: SITE.brand, item: SITE.url },
+        { "@type": "ListItem", position: 2, name: "配置教程", item: url },
+      ],
+    },
+  ];
+  const ld = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2);
+
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(GUIDE.title)}</title>
+<meta name="description" content="${esc(GUIDE.description)}">
+<meta name="keywords" content="${esc(GUIDE.keywords.join("，"))}">
+<meta name="author" content="${esc(SITE.authorName)}">
+<meta name="theme-color" content="#10b981">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="${esc(url)}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="${esc(SITE.brand)}">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:url" content="${esc(url)}">
+<meta property="og:title" content="${esc(GUIDE.title)}">
+<meta property="og:description" content="${esc(GUIDE.description)}">
+<meta property="og:image" content="${esc(img)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(GUIDE.title)}">
+<meta name="twitter:description" content="${esc(GUIDE.description)}">
+<meta name="twitter:image" content="${esc(img)}">
+<script type="application/ld+json">
+${ld}
+</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+${bootstrap}
+<style>${sharedStyle}</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="./">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect width="24" height="24" rx="6" fill="#10b981"/>
+        <path d="M7 15.5 12 7l5 8.5" stroke="#fff" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      ${esc(SITE.brand)}
+    </a>
+    <div class="topbar-right">
+      <a class="nav-link" href="./">← 返回清单</a>
+      <a class="nav-link" href="${esc(SITE.author)}" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">配置教程</p>
+      <h1 class="hero-title">${esc(GUIDE.title)}</h1>
+      <p class="hero-lead">${esc(GUIDE.intro)} <a href="./#stations">去看清单 →</a></p>
+    </div>
+  </section>
+  <section class="pick-band">
+    <div class="wrap guide-body">
+${sections}
+      <p class="guide-p" style="margin-top:28px">配好了就回<a href="./#stations">首页清单</a>挑个站开跑；拿不准挑哪个，看<a href="./#pick">「怎么挑」</a>那一节按等效可用量排好的对比表。公益站随时可能变，别把某一家当唯一入口。</p>
+    </div>
+  </section>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>本页仅汇总公开信息与个人实测结果，不代表任何形式的担保或推荐承诺。源码在 <a href="${esc(SITE.repo)}" target="_blank" rel="noopener">GitHub</a>。</p>
+  </div>
+</footer>
+</body>
+</html>
+`;
+}
+
 /* ---------- 主流程 ---------- */
 
 const tpl = readFileSync("template.html", "utf8");
@@ -567,6 +698,16 @@ writeFileSync("robots.txt", robots());
 writeFileSync("llms.txt", llmsTxt());
 writeFileSync("og.html", ogHTML());
 
+/* 教程页复用主页的 <style> 和首屏主题 bootstrap，从 template.html 里抽出来，
+   保证外观和暗色模式与主页一致，CSS 只维护一份。 */
+const styleMatch = tpl.match(/<style>([\s\S]*?)<\/style>/);
+const bootMatch = tpl.match(/<script>[\s\S]*?<\/script>/);
+if (!styleMatch || !bootMatch) {
+  console.error("从 template.html 抽 <style> / 首屏 bootstrap 失败，guide.html 没生成");
+  process.exit(1);
+}
+writeFileSync("guide.html", guideHTML(styleMatch[1], bootMatch[0]));
+
 /* README 里的清单表格也从这份数据出。GitHub 的 README 会被 Google 索引，是这个
    仓库第二个入口，手抄一份迟早和页面对不上。 */
 const readme = readFileSync("README.md", "utf8");
@@ -599,7 +740,8 @@ const text = out
   .trim();
 
 console.log(`index.html    ${RELAYS.length} 张卡片 · ${FAQ.length} 条问答`);
-console.log(`sitemap.xml   1 条 URL`);
+console.log(`guide.html    配置教程页（${GUIDE.sections.length} 节）`);
+console.log(`sitemap.xml   2 条 URL`);
 console.log(`robots.txt    放行全部抓取器`);
 console.log(`llms.txt      ${llmsTxt().length} 字`);
 console.log(`og.html       预览图源（截图命令见 README）`);

@@ -289,3 +289,76 @@ export const OFFICIAL_FREE = {
   sourceUrl: "https://itsfree.ai/",
 };
 
+/* ---------------------------------------------------------------------------
+   独立教程页（guide.html）的内容。build.mjs 会用它单独生成一页，复用主页的
+   全部样式。这一页专门吃「Claude Code / Codex 中转站怎么配」这类高检索意图的
+   长尾词，逐步走一遍，比主页的「配置方法」更详细，并从两头互相内链。
+   易过期的具体数字仍不写死，配置字段名是各工具文档里的稳定写法。
+--------------------------------------------------------------------------- */
+export const GUIDE = {
+  slug: "guide.html",
+  title: "Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）",
+  description:
+    "手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。",
+  keywords: [
+    "Claude Code 中转站配置",
+    "Claude Code 公益站教程",
+    "Codex 中转站配置",
+    "Claude Code 环境变量",
+    "ANTHROPIC_BASE_URL",
+    "Claude Code 401",
+    "Codex config.toml",
+  ],
+  intro:
+    "这一页把「拿到公益站的 key 之后怎么接进 Claude Code 和 Codex」从头走一遍，包含最小可用配置和几个真会遇到的报错。还没有 key 的，先去" +
+    "首页的清单挑一个站注册——那边按等效可用量排好序、每条标了实测日期。",
+  sections: [
+    {
+      h: "一、先拿到一个站点的 key",
+      body: [
+        "公益站是第三方把 Claude、GPT 这类模型的接口转出来给人用的中转服务，注册通常送一笔额度。去首页清单挑一个，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。",
+        "登录后余额显示 0 是常事——多数站在登录那一刻才结算额度，退出重登一次一般就到账。同时记下这个站的「接口地址（Base URL）」，配置时要用。",
+      ],
+    },
+    {
+      h: "二、配置 Claude Code",
+      body: [
+        "Claude Code 认两个环境变量：BASE_URL 指到站点地址，AUTH_TOKEN 填站点给的 key（以 Bearer 形式发出，多数公益站认这个而不是 x-api-key）。拉不到模型列表时再手动指定模型名。",
+      ],
+      code:
+        'export ANTHROPIC_BASE_URL="https://<站点给的地址>"\n' +
+        'export ANTHROPIC_AUTH_TOKEN="<站点给的 key>"\n' +
+        'export ANTHROPIC_MODEL="claude-opus-5"   # 拉不到模型列表时手动指定\n\n' +
+        "claude",
+      after:
+        "想固定下来，写进 shell 配置，或放进 ~/.claude/settings.json 的 env 块。别把 key 提交进仓库。",
+    },
+    {
+      h: "三、配置 Codex",
+      body: [
+        "Codex 走自定义 provider：在 ~/.codex/config.toml 里声明一个 provider，key 用 env_key 指向环境变量名，不直接写进文件。",
+      ],
+      code:
+        'model = "gpt-5.6"\n' +
+        'model_provider = "relay"\n\n' +
+        "[model_providers.relay]\n" +
+        'name = "relay"\n' +
+        'base_url = "https://<站点给的地址>/v1"\n' +
+        'env_key = "RELAY_API_KEY"\n' +
+        'wire_api = "chat"',
+      after:
+        '然后 export RELAY_API_KEY="<站点给的 key>"。wire_api 先试 chat——公益站转出来的多数只是 chat completions。标了「只支持 Claude Code」的站不要接 Codex。',
+    },
+    {
+      h: "四、常见报错怎么排查",
+      list: [
+        "401 Unauthorized：鉴权没过。查 key 有没有复制全、额度是不是用完、模型名在不在这个站的可用清单里。地址错通常是 404，不是 401。",
+        "base_url 要不要加 /v1：Anthropic 兼容的一般不加（Claude Code 自己会拼 /v1/messages），OpenAI 兼容的一般要加。填错表现是 404。",
+        "400 / content blocked：站点上游做了语言或内容风控，换成纯中文或英文重试；反复触发就换个站。",
+        "429：站点在限流，换个站或等窗口刷新，别反复重试。",
+        "想切回官方订阅：环境变量优先级高于订阅登录，unset ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_MODEL 再重开终端。",
+      ],
+    },
+  ],
+};
+

@@ -1366,6 +1366,20 @@ html.dark .card {
 
 .of-source a { color: var(--brand-2); }
 
+/* ---------- 教程页 guide.html 专用 ---------- */
+.guide-body { max-width: 760px; }
+.guide-sec { margin-top: 28px; }
+.guide-sec:first-child { margin-top: 8px; }
+.guide-p {
+  margin-top: 12px;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--muted);
+}
+.guide-p a { color: var(--brand-2); }
+.guide-sec .setup-code { margin-top: 14px; }
+.guide-sec .pick-list { margin-top: 12px; }
+
 /* ---------- 响应式 ---------- */
 
 @media (max-width: 860px) {
@@ -1744,6 +1758,7 @@ wire_api = &quot;chat&quot;</code></pre>
         <li>401 / 403 通常是 key 写错或额度用完，429 是站点在限流 —— 后者换一个站就好，别反复重试。</li>
         <li>key 不要写进仓库，也不要写进会被提交的配置文件。用环境变量，或者站点支持的话用系统钥匙串。</li>
       </ul>
+      <p class="pick-lead" style="margin-top:22px">想要更详细的分步走一遍（含从注册拿 key 到跑通、以及常见报错排查），看 <a href="guide.html">完整配置教程 →</a></p>
     </div>
   </section>
 

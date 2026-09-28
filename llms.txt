@@ -3,6 +3,7 @@
 > 实测可用的第三方 AI 公益站大全，逐条记录倍率、注册即得额度、邀请规则与须知，并按赠额除以倍率算出等效可用量。覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可用于 Claude Code 和 Codex。每条都标注实测日期。
 
 页面地址：https://jliushi.github.io/ai-relay/
+配置教程：https://jliushi.github.io/ai-relay/guide.html
 最近更新：2026-09-28
 
 ## 收录标准与免责
