@@ -3,33 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）</title>
-<meta name="description" content="手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。">
-<meta name="keywords" content="Claude Code 中转站配置，Claude Code 公益站教程，Codex 中转站配置，Claude Code 环境变量，ANTHROPIC_BASE_URL，Claude Code 401，Codex config.toml">
+<title>AI 公益站是什么？和官方 API、中转站的区别，倍率与风险讲清楚</title>
+<meta name="description" content="一次讲清 AI 公益站（中转站）是什么、和官方 API 及镜像站有什么区别、倍率和等效可用量怎么算、免费额度能用多久、安全吗能不能跑公司代码，以及怎么判断一个公益站靠不靠谱。">
+<meta name="keywords" content="AI 公益站是什么，中转站是什么，公益站和官方 API 区别，倍率是什么，等效可用量，公益站安全吗，Claude 中转站">
 <meta name="author" content="jliushi">
 <meta name="theme-color" content="#10b981">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<link rel="canonical" href="https://jliushi.github.io/ai-relay/guide.html">
+<link rel="canonical" href="https://jliushi.github.io/ai-relay/what-is-ai-relay.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="AI 公益站清单">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:url" content="https://jliushi.github.io/ai-relay/guide.html">
-<meta property="og:title" content="Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）">
-<meta property="og:description" content="手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。">
+<meta property="og:url" content="https://jliushi.github.io/ai-relay/what-is-ai-relay.html">
+<meta property="og:title" content="AI 公益站是什么？和官方 API、中转站的区别，倍率与风险讲清楚">
+<meta property="og:description" content="一次讲清 AI 公益站（中转站）是什么、和官方 API 及镜像站有什么区别、倍率和等效可用量怎么算、免费额度能用多久、安全吗能不能跑公司代码，以及怎么判断一个公益站靠不靠谱。">
 <meta property="og:image" content="https://jliushi.github.io/ai-relay/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）">
-<meta name="twitter:description" content="手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。">
+<meta name="twitter:title" content="AI 公益站是什么？和官方 API、中转站的区别，倍率与风险讲清楚">
+<meta name="twitter:description" content="一次讲清 AI 公益站（中转站）是什么、和官方 API 及镜像站有什么区别、倍率和等效可用量怎么算、免费额度能用多久、安全吗能不能跑公司代码，以及怎么判断一个公益站靠不靠谱。">
 <meta name="twitter:image" content="https://jliushi.github.io/ai-relay/og.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "TechArticle",
-      "@id": "https://jliushi.github.io/ai-relay/guide.html",
-      "headline": "Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）",
-      "description": "手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。",
+      "@type": "Article",
+      "@id": "https://jliushi.github.io/ai-relay/what-is-ai-relay.html",
+      "headline": "AI 公益站是什么？和官方 API、中转站的区别，倍率与风险讲清楚",
+      "description": "一次讲清 AI 公益站（中转站）是什么、和官方 API 及镜像站有什么区别、倍率和等效可用量怎么算、免费额度能用多久、安全吗能不能跑公司代码，以及怎么判断一个公益站靠不靠谱。",
       "inLanguage": "zh-CN",
       "datePublished": "2026-09-04",
       "dateModified": "2026-09-04",
@@ -44,29 +44,10 @@
         "url": "https://github.com/jliushi"
       },
       "image": "https://jliushi.github.io/ai-relay/og.png",
-      "mainEntityOfPage": "https://jliushi.github.io/ai-relay/guide.html",
+      "mainEntityOfPage": "https://jliushi.github.io/ai-relay/what-is-ai-relay.html",
       "isPartOf": {
         "@id": "https://jliushi.github.io/ai-relay/#website"
       }
-    },
-    {
-      "@type": "HowTo",
-      "name": "在 Claude Code / Codex 中配置 AI 公益站",
-      "inLanguage": "zh-CN",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "三、配置 Claude Code",
-          "text": "Claude Code 认两个环境变量：BASE_URL 指到站点地址，AUTH_TOKEN 填站点给的 key（以 Bearer 形式发出，多数公益站认这个而不是 x-api-key）。拉不到模型列表时再手动指定模型名。 想固定下来，写进 shell 配置，或放进 ~/.claude/settings.json 的 env 块。别把 key 提交进仓库。"
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "四、配置 Codex",
-          "text": "Codex 走自定义 provider：在 ~/.codex/config.toml 里声明一个 provider，key 用 env_key 指向环境变量名，不直接写进文件。 然后 export RELAY_API_KEY=\"<站点给的 key>\"。wire_api 先试 chat——公益站转出来的多数只是 chat completions。标了「只支持 Claude Code」的站不要接 Codex。"
-        }
-      ]
     },
     {
       "@type": "BreadcrumbList",
@@ -80,8 +61,8 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "配置教程",
-          "item": "https://jliushi.github.io/ai-relay/guide.html"
+          "name": "公益站是什么",
+          "item": "https://jliushi.github.io/ai-relay/what-is-ai-relay.html"
         }
       ]
     }
@@ -1251,61 +1232,43 @@ html.dark .card {
 <main>
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">配置教程</p>
-      <h1 class="hero-title">Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）</h1>
-      <p class="hero-lead">这一页把「拿到公益站的 key 之后怎么接进 Claude Code 和 Codex」从头走一遍，包含最小可用配置和几个真会遇到的报错。还没有 key 的，先去首页的清单挑一个站注册——那边按等效可用量排好序、每条标了实测日期。 <a href="./#stations">去看清单 →</a></p>
+      <p class="eyebrow">科普</p>
+      <h1 class="hero-title">AI 公益站是什么？和官方 API、中转站的区别，倍率与风险讲清楚</h1>
+      <p class="hero-lead">这一页不讲怎么配（那是教程页的事），只把「AI 公益站到底是什么、值不值得用、怎么看倍率、安不安全」这些概念一次讲清楚。想直接上手的，去首页清单挑站、去教程页照着配。 <a href="./#stations">去看清单 →</a></p>
     </div>
   </section>
   <section class="pick-band">
     <div class="wrap guide-body">
       <section class="guide-sec">
-        <h2 class="h2">一、公益站是什么？先把风险讲清楚</h2>
-        <p class="guide-p">公益站（也叫中转站）是第三方搭的 API 中转服务，把 Claude、GPT 这类模型的接口转出来给人用，注册通常送一笔额度，好处是有免费额度、不需要国外支付方式。区别在于它不是官方渠道：额度、倍率、邀请规则都由站方定，站点也可能随时改规则、限流甚至关停。</p>
-        <p class="guide-p">配之前先记住一条：公益站能看到你发过去的全部请求内容。个人项目、开源代码、写 demo 无所谓；涉密代码、生产环境凭据、客户数据不要经任何第三方中转，这跟用哪一家无关。也别把某一家当唯一入口，手上多备一两个。</p>
+        <h2 class="h2">AI 公益站 / 中转站是什么？</h2>
+        <p class="guide-p">AI 公益站（也叫中转站）是第三方搭的 API 中转服务：它在中间接住你的请求，转发给 Claude、GPT 这类模型的接口，再把结果传回来。因为夹在中间，所以能做到官方做不到的两件事——注册就送一笔免费额度、不需要国外的手机号和支付方式。</p>
+        <p class="guide-p">代价是它不是官方渠道：额度由站方发放，能用哪些模型、扣多少、送多少、邀请怎么算，全由站方定，也随时可能改。「公益」多是站长自掏腰包或用各种渠道的额度补贴，撑不撑得住看站长，跑路很常见。</p>
       </section>
       <section class="guide-sec">
-        <h2 class="h2">二、先拿到一个站点的 key</h2>
-        <p class="guide-p">去首页清单挑一个站，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。清单按等效可用量（赠额÷倍率）排好了序，每条标了实测日期。</p>
-        <p class="guide-p">登录后余额显示 0 是常事——多数站在登录那一刻才结算额度，退出重登一次一般就到账。同时记下这个站的「接口地址（Base URL）」，配置时要用。</p>
+        <h2 class="h2">和官方 API、镜像站有什么区别？</h2>
+        <p class="guide-p">官方 API 是模型厂商自己的接口，稳定、按官方价付费、要国外支付方式。镜像站通常只是把官方接口换个域名做反代，解决的是「连不上」，计费和额度还是官方那套。公益站则是自己发额度、自己定倍率的一层中转——省钱和免注册门槛靠的就是它，稳定性和长期性也牺牲在这里。</p>
       </section>
       <section class="guide-sec">
-        <h2 class="h2">三、配置 Claude Code</h2>
-        <p class="guide-p">Claude Code 认两个环境变量：BASE_URL 指到站点地址，AUTH_TOKEN 填站点给的 key（以 Bearer 形式发出，多数公益站认这个而不是 x-api-key）。拉不到模型列表时再手动指定模型名。</p>
-        <pre class="setup-code"><code>export ANTHROPIC_BASE_URL=&quot;https://&lt;站点给的地址&gt;&quot;
-export ANTHROPIC_AUTH_TOKEN=&quot;&lt;站点给的 key&gt;&quot;
-export ANTHROPIC_MODEL=&quot;claude-opus-5&quot;   # 拉不到模型列表时手动指定
-
-claude</code></pre>
-        <p class="guide-p">想固定下来，写进 shell 配置，或放进 ~/.claude/settings.json 的 env 块。别把 key 提交进仓库。</p>
+        <h2 class="h2">倍率是什么？等效可用量怎么算？</h2>
+        <p class="guide-p">倍率是相对官方价格的计费系数。1x 表示按官方价扣你的额度，0.65x 表示只按官方价的 65% 扣。所以同一笔额度，倍率越低能跑的 token 越多。</p>
+        <p class="guide-p">因此挑站不能只看「送多少」，要算等效可用量 = 注册赠额 ÷ 倍率。举例：送 $70、0.65x 的站，等效约 $107.7，比送 $100、1x 的还耐用。首页的「怎么挑」就是按这个数排序的。</p>
       </section>
       <section class="guide-sec">
-        <h2 class="h2">四、配置 Codex</h2>
-        <p class="guide-p">Codex 走自定义 provider：在 ~/.codex/config.toml 里声明一个 provider，key 用 env_key 指向环境变量名，不直接写进文件。</p>
-        <pre class="setup-code"><code>model = &quot;gpt-5.6&quot;
-model_provider = &quot;relay&quot;
-
-[model_providers.relay]
-name = &quot;relay&quot;
-base_url = &quot;https://&lt;站点给的地址&gt;/v1&quot;
-env_key = &quot;RELAY_API_KEY&quot;
-wire_api = &quot;chat&quot;</code></pre>
-        <p class="guide-p">然后 export RELAY_API_KEY=&quot;&lt;站点给的 key&gt;&quot;。wire_api 先试 chat——公益站转出来的多数只是 chat completions。标了「只支持 Claude Code」的站不要接 Codex。</p>
+        <h2 class="h2">免费额度能用多久？安全吗？能跑公司代码吗？</h2>
+        <p class="guide-p">能用多久取决于用量：额度按 token 计费扣，用 Claude Code 跑长上下文消耗很快，几十美元可能几天就见底；有每日签到的站能小幅续命。</p>
+        <p class="guide-p">安全上记住一条：公益站能看到你发过去的全部请求内容。个人项目、开源代码、写 demo 无所谓；涉密代码、生产环境凭据、客户数据不要经任何第三方中转，这跟用哪一家无关。</p>
       </section>
       <section class="guide-sec">
-        <h2 class="h2">五、验证配好了没</h2>
-        <p class="guide-p">配完开一个新终端（让环境变量生效），进任意项目目录跑起来，问一句「你好」。能正常回复就成了。报错就对着下一节按状态码排查——先看是 4xx 还是超时，能最快分清是配置、key、额度还是网络的问题。</p>
-      </section>
-      <section class="guide-sec">
-        <h2 class="h2">六、常见报错怎么排查</h2>
+        <h2 class="h2">怎么判断一个公益站靠不靠谱？</h2>
         <ul class="pick-list">
-          <li>401 Unauthorized：鉴权没过。查 key 有没有复制全、额度是不是用完、模型名在不在这个站的可用清单里。地址错通常是 404，不是 401。</li>
-          <li>base_url 要不要加 /v1：Anthropic 兼容的一般不加（Claude Code 自己会拼 /v1/messages），OpenAI 兼容的一般要加。填错表现是 404。</li>
-          <li>400 / content blocked：站点上游做了语言或内容风控，换成纯中文或英文重试；反复触发就换个站。</li>
-          <li>429：站点在限流，换个站或等窗口刷新，别反复重试。</li>
-          <li>想切回官方订阅：环境变量优先级高于订阅登录，unset ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_MODEL 再重开终端。</li>
+          <li>有没有明确的注册/额度规则，还是全靠群里口口相传——规则含糊的谨慎。</li>
+          <li>倍率和模型是否公开可查，别信「无限额度」这种话术。</li>
+          <li>社区口碑：高峰期是不是频繁 429、有没有跑路记录（Linux.do 这类社区能搜到）。</li>
+          <li>别把某一家当唯一入口，手上多备一两个，切换成本几乎为零。</li>
+          <li>看实测日期：信息超过三个月大概率已经变了，以站点当前公告为准。</li>
         </ul>
       </section>
-      <p class="guide-p" style="margin-top:28px">配好了就回<a href="./#stations">首页清单</a>挑个站开跑；拿不准挑哪个，看<a href="./#pick">「怎么挑」</a>那一节按等效可用量排好的对比表。公益站随时可能变，别把某一家当唯一入口。</p>
+      <p class="guide-p" style="margin-top:28px">概念清楚了，就去<a href="./#stations">首页清单</a>按等效可用量挑一个，照<a href="guide.html">配置教程</a>接进 Claude Code 或 Codex。记住：公益站是省钱的备用渠道，不是主力。</p>
     </div>
   </section>
 </main>
