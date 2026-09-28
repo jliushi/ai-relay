@@ -2,8 +2,10 @@
 
 实测可用的第三方 AI 公益站（中转站）清单，含倍率、注册即得额度、邀请规则与须知。
 覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可用于 Claude Code 和 Codex。每条都标注实测日期。
+和一般的白嫖导航不同：这里按**等效可用量（注册赠额 ÷ 倍率）**排序——倍率低的站，同一笔额度能跑更多 token，光看「送多少」会挑错。
 
 **页面：https://jliushi.github.io/ai-relay/**
+**配置教程（Claude Code / Codex 从拿 key 到跑通 + 避坑）：https://jliushi.github.io/ai-relay/guide.html**
 
 零构建依赖、纯静态、无服务器。仿 [ijry/ai-switch](https://github.com/ijry/ai-switch)
 的 relay 页用原生 HTML/CSS/JS 重写（原项目 MIT 许可）。
@@ -72,6 +74,7 @@ data.js         站点清单、配置方法、FAQ、风险提示、站点级文�
 template.html   页面骨架：全部 CSS 和交互 JS，卡片位置是 {{CARDS}} 占位
 build.mjs       node build.mjs
 index.html      产物，卡片和 FAQ 已展开成静态标签
+guide.html      产物，独立配置教程页（复用主页 CSS），吃「怎么配」长尾词
 sitemap.xml     产物
 robots.txt      产物，放行全部抓取器
 llms.txt        产物，给大模型读的站点摘要
