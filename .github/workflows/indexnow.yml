@@ -13,6 +13,7 @@ on:
     branches: [main]
     paths:
       - index.html
+      - guide.html
       - sitemap.xml
       - llms.txt
       - data.js
@@ -36,6 +37,9 @@ jobs:
               "host": "jliushi.github.io",
               "key": "5274d490c7073e9630ce4cc455bb9c41",
               "keyLocation": "https://jliushi.github.io/ai-relay/5274d490c7073e9630ce4cc455bb9c41.txt",
-              "urlList": ["https://jliushi.github.io/ai-relay/"]
+              "urlList": [
+                "https://jliushi.github.io/ai-relay/",
+                "https://jliushi.github.io/ai-relay/guide.html"
+              ]
             }' \
             -w '\nHTTP %{http_code}\n'
