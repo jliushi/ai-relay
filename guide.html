@@ -57,13 +57,13 @@
         {
           "@type": "HowToStep",
           "position": 1,
-          "name": "二、配置 Claude Code",
+          "name": "三、配置 Claude Code",
           "text": "Claude Code 认两个环境变量：BASE_URL 指到站点地址，AUTH_TOKEN 填站点给的 key（以 Bearer 形式发出，多数公益站认这个而不是 x-api-key）。拉不到模型列表时再手动指定模型名。 想固定下来，写进 shell 配置，或放进 ~/.claude/settings.json 的 env 块。别把 key 提交进仓库。"
         },
         {
           "@type": "HowToStep",
           "position": 2,
-          "name": "三、配置 Codex",
+          "name": "四、配置 Codex",
           "text": "Codex 走自定义 provider：在 ~/.codex/config.toml 里声明一个 provider，key 用 env_key 指向环境变量名，不直接写进文件。 然后 export RELAY_API_KEY=\"<站点给的 key>\"。wire_api 先试 chat——公益站转出来的多数只是 chat completions。标了「只支持 Claude Code」的站不要接 Codex。"
         }
       ]
@@ -1256,12 +1256,17 @@ html.dark .card {
   <section class="pick-band">
     <div class="wrap guide-body">
       <section class="guide-sec">
-        <h2 class="h2">一、先拿到一个站点的 key</h2>
-        <p class="guide-p">公益站是第三方把 Claude、GPT 这类模型的接口转出来给人用的中转服务，注册通常送一笔额度。去首页清单挑一个，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。</p>
+        <h2 class="h2">一、公益站是什么？先把风险讲清楚</h2>
+        <p class="guide-p">公益站（也叫中转站）是第三方搭的 API 中转服务，把 Claude、GPT 这类模型的接口转出来给人用，注册通常送一笔额度，好处是有免费额度、不需要国外支付方式。区别在于它不是官方渠道：额度、倍率、邀请规则都由站方定，站点也可能随时改规则、限流甚至关停。</p>
+        <p class="guide-p">配之前先记住一条：公益站能看到你发过去的全部请求内容。个人项目、开源代码、写 demo 无所谓；涉密代码、生产环境凭据、客户数据不要经任何第三方中转，这跟用哪一家无关。也别把某一家当唯一入口，手上多备一两个。</p>
+      </section>
+      <section class="guide-sec">
+        <h2 class="h2">二、先拿到一个站点的 key</h2>
+        <p class="guide-p">去首页清单挑一个站，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。清单按等效可用量（赠额÷倍率）排好了序，每条标了实测日期。</p>
         <p class="guide-p">登录后余额显示 0 是常事——多数站在登录那一刻才结算额度，退出重登一次一般就到账。同时记下这个站的「接口地址（Base URL）」，配置时要用。</p>
       </section>
       <section class="guide-sec">
-        <h2 class="h2">二、配置 Claude Code</h2>
+        <h2 class="h2">三、配置 Claude Code</h2>
         <p class="guide-p">Claude Code 认两个环境变量：BASE_URL 指到站点地址，AUTH_TOKEN 填站点给的 key（以 Bearer 形式发出，多数公益站认这个而不是 x-api-key）。拉不到模型列表时再手动指定模型名。</p>
         <pre class="setup-code"><code>export ANTHROPIC_BASE_URL=&quot;https://&lt;站点给的地址&gt;&quot;
 export ANTHROPIC_AUTH_TOKEN=&quot;&lt;站点给的 key&gt;&quot;
@@ -1271,7 +1276,7 @@ claude</code></pre>
         <p class="guide-p">想固定下来，写进 shell 配置，或放进 ~/.claude/settings.json 的 env 块。别把 key 提交进仓库。</p>
       </section>
       <section class="guide-sec">
-        <h2 class="h2">三、配置 Codex</h2>
+        <h2 class="h2">四、配置 Codex</h2>
         <p class="guide-p">Codex 走自定义 provider：在 ~/.codex/config.toml 里声明一个 provider，key 用 env_key 指向环境变量名，不直接写进文件。</p>
         <pre class="setup-code"><code>model = &quot;gpt-5.6&quot;
 model_provider = &quot;relay&quot;
@@ -1284,7 +1289,11 @@ wire_api = &quot;chat&quot;</code></pre>
         <p class="guide-p">然后 export RELAY_API_KEY=&quot;&lt;站点给的 key&gt;&quot;。wire_api 先试 chat——公益站转出来的多数只是 chat completions。标了「只支持 Claude Code」的站不要接 Codex。</p>
       </section>
       <section class="guide-sec">
-        <h2 class="h2">四、常见报错怎么排查</h2>
+        <h2 class="h2">五、验证配好了没</h2>
+        <p class="guide-p">配完开一个新终端（让环境变量生效），进任意项目目录跑起来，问一句「你好」。能正常回复就成了。报错就对着下一节按状态码排查——先看是 4xx 还是超时，能最快分清是配置、key、额度还是网络的问题。</p>
+      </section>
+      <section class="guide-sec">
+        <h2 class="h2">六、常见报错怎么排查</h2>
         <ul class="pick-list">
           <li>401 Unauthorized：鉴权没过。查 key 有没有复制全、额度是不是用完、模型名在不在这个站的可用清单里。地址错通常是 404，不是 401。</li>
           <li>base_url 要不要加 /v1：Anthropic 兼容的一般不加（Claude Code 自己会拼 /v1/messages），OpenAI 兼容的一般要加。填错表现是 404。</li>
