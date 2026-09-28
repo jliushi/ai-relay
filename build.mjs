@@ -10,7 +10,7 @@
 =========================================================================== */
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { SITE, RELAYS, RISKS, FAQ, SETUP } from "./data.js";
+import { SITE, RELAYS, RISKS, FAQ, SETUP, OFFICIAL_FREE } from "./data.js";
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) =>
@@ -214,6 +214,22 @@ const riskItemsHTML = () =>
           <span class="rd-item-body">${esc(r.body)}</span>
         </li>`
   ).join("\n");
+
+/* ---------- 跑路保底：官方免费层 ----------
+   外链到官方，不带返利，所以 rel 只用 noopener，不加 sponsored。 */
+function officialFreeHTML() {
+  const items = OFFICIAL_FREE.items
+    .map((it) => `        <li class="of-item">
+          <a class="of-name" href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.name)} →</a>
+          <span class="of-note">${esc(it.note)}</span>
+        </li>`)
+    .join("\n");
+  return `      <p class="pick-lead">${esc(OFFICIAL_FREE.lead)}</p>
+      <ul class="of-list">
+${items}
+      </ul>
+      <p class="of-source">${esc(OFFICIAL_FREE.source.replace(/itsfree\.ai/, ""))}<a href="${esc(OFFICIAL_FREE.sourceUrl)}" target="_blank" rel="noopener">itsfree.ai</a>。</p>`;
+}
 
 /* ---------- 结构化数据 ----------
    拼在一个 @graph 里，节点之间用 @id 互相引用：
@@ -435,6 +451,14 @@ ${SETUP.pitfalls.map((p) => `- ${p}`).join("\n")}
 ## 常见问题
 
 ${FAQ.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
+
+## ${OFFICIAL_FREE.title}
+
+${OFFICIAL_FREE.lead}
+
+${OFFICIAL_FREE.items.map((it) => `- **${it.name}**（${it.url}）：${it.note}`).join("\n")}
+
+${OFFICIAL_FREE.source}（${OFFICIAL_FREE.sourceUrl}）
 `;
 /* ---------- og.html ----------
    社交分享和部分 AI 抓取器要一张 1200x630 的预览图。这里生成的是那张图的
@@ -515,6 +539,8 @@ const FILLS = {
   CARDS: RELAYS.map(cardHTML).join("\n"),
   PICK: pickHTML(),
   SETUP: setupHTML(),
+  OFFICIAL_FREE: officialFreeHTML(),
+  OFFICIAL_FREE_TITLE: esc(OFFICIAL_FREE.title),
   FAQ: faqHTML(),
   RISK_TITLE: esc(RISKS.title),
   RISK_LEAD: esc(RISKS.lead),

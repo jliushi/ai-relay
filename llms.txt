@@ -3,7 +3,7 @@
 > 实测可用的第三方 AI 公益站大全，逐条记录倍率、注册即得额度、邀请规则与须知，并按赠额除以倍率算出等效可用量。覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可用于 Claude Code 和 Codex。每条都标注实测日期。
 
 页面地址：https://jliushi.github.io/ai-relay/
-最近更新：2026-09-27
+最近更新：2026-09-28
 
 ## 收录标准与免责
 
@@ -166,3 +166,16 @@ Claude Code 里环境变量的优先级高于订阅登录，所以只要设了 A
 ### 国内不挂梯子能用这些公益站吗？
 
 看具体站点。有的站自带国内可直连的镜像域名，有的必须科学上网，卡片的「须知」里标了「需要科学上网」的就是后者。镜像地址各站不一样、也经常换，本页不写死——以站点自己的公告为准，填错镜像地址反而会扣费或连不上。
+
+## 跑路保底：官方免费层
+
+公益站随时可能改规则或直接关站。手上留一两个官方免费层当保底——注册即用、长期有效、请求不经第三方中转。模型和公益站不完全重合（多是 Gemini / GLM 这类），但胜在稳。额度与规则以官方为准。
+
+- **Google AI Studio**（https://aistudio.google.com/）：Gemini 系列，免费额度大、上下文长，提供 OpenAI 兼容端点。
+- **Groq**（https://console.groq.com/）：推理速度极快的免费层，OpenAI 兼容，适合要低延迟的场景。
+- **OpenRouter**（https://openrouter.ai/）：聚合多家模型，有一批标 :free 的免费模型，一个 key 全用。
+- **Cloudflare Workers AI**（https://developers.cloudflare.com/workers-ai/）：每天有免费额度，跑在边缘节点，适合接进自己的应用。
+- **ModelScope 魔搭（阿里）**（https://modelscope.cn/）：国内直连、免梯子，每日有免费调用额度，模型偏国产。
+- **智谱开放平台（GLM）**（https://open.bigmodel.cn/）：GLM 系列有免费模型，国内直连，中文场景强。
+
+更全的官方免费额度目录（含数十家 provider）见 itsfree.ai。（https://itsfree.ai/）

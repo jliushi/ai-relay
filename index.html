@@ -1318,6 +1318,54 @@ html.dark .card {
   color: var(--muted);
 }
 
+/* ---------- 跑路保底：官方免费层 ---------- */
+.of-band {
+  padding: 40px 0 64px;
+  border-top: 1px solid var(--line);
+}
+
+.of-list {
+  margin-top: 18px;
+  max-width: 820px;
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.of-item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 14px 18px;
+}
+
+.of-name {
+  display: inline-block;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--brand-2);
+  text-decoration: none;
+}
+
+.of-name:hover { text-decoration: underline; }
+
+.of-note {
+  display: block;
+  margin-top: 5px;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.of-source {
+  margin-top: 14px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.of-source a { color: var(--brand-2); }
+
 /* ---------- 响应式 ---------- */
 
 @media (max-width: 860px) {
@@ -1753,6 +1801,41 @@ wire_api = &quot;chat&quot;</code></pre>
           <p class="faq-a">看具体站点。有的站自带国内可直连的镜像域名，有的必须科学上网，卡片的「须知」里标了「需要科学上网」的就是后者。镜像地址各站不一样、也经常换，本页不写死——以站点自己的公告为准，填错镜像地址反而会扣费或连不上。</p>
         </details>
       </div>
+    </div>
+  </section>
+
+  <!-- 跑路保底：官方免费层。和风险提示「别把公益站当唯一入口」呼应，外链官方、不带返利。 -->
+  <section class="of-band" id="official-free">
+    <div class="wrap">
+      <h2 class="h2">跑路保底：官方免费层</h2>
+      <p class="pick-lead">公益站随时可能改规则或直接关站。手上留一两个官方免费层当保底——注册即用、长期有效、请求不经第三方中转。模型和公益站不完全重合（多是 Gemini / GLM 这类），但胜在稳。额度与规则以官方为准。</p>
+      <ul class="of-list">
+        <li class="of-item">
+          <a class="of-name" href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio →</a>
+          <span class="of-note">Gemini 系列，免费额度大、上下文长，提供 OpenAI 兼容端点。</span>
+        </li>
+        <li class="of-item">
+          <a class="of-name" href="https://console.groq.com/" target="_blank" rel="noopener">Groq →</a>
+          <span class="of-note">推理速度极快的免费层，OpenAI 兼容，适合要低延迟的场景。</span>
+        </li>
+        <li class="of-item">
+          <a class="of-name" href="https://openrouter.ai/" target="_blank" rel="noopener">OpenRouter →</a>
+          <span class="of-note">聚合多家模型，有一批标 :free 的免费模型，一个 key 全用。</span>
+        </li>
+        <li class="of-item">
+          <a class="of-name" href="https://developers.cloudflare.com/workers-ai/" target="_blank" rel="noopener">Cloudflare Workers AI →</a>
+          <span class="of-note">每天有免费额度，跑在边缘节点，适合接进自己的应用。</span>
+        </li>
+        <li class="of-item">
+          <a class="of-name" href="https://modelscope.cn/" target="_blank" rel="noopener">ModelScope 魔搭（阿里） →</a>
+          <span class="of-note">国内直连、免梯子，每日有免费调用额度，模型偏国产。</span>
+        </li>
+        <li class="of-item">
+          <a class="of-name" href="https://open.bigmodel.cn/" target="_blank" rel="noopener">智谱开放平台（GLM） →</a>
+          <span class="of-note">GLM 系列有免费模型，国内直连，中文场景强。</span>
+        </li>
+      </ul>
+      <p class="of-source">更全的官方免费额度目录（含数十家 provider）见 。<a href="https://itsfree.ai/" target="_blank" rel="noopener">itsfree.ai</a>。</p>
     </div>
   </section>
 </main>

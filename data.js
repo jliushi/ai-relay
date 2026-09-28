@@ -267,3 +267,25 @@ export const FAQ = [
   },
 ];
 
+/* ---------------------------------------------------------------------------
+   跑路保底：官方 / 大厂自己的免费层。
+   公益站随时可能改规则或关站，这一节给的是模型厂商或云厂商官方的免费额度——
+   注册即用、长期有效、请求不经第三方中转。和风险提示里「别把公益站当唯一入口」
+   是一条线：真断供了，这些是能立刻顶上的保底。
+   刻意不写死额度数字（会过期），只给一句定位 + 官方链接，具体以官方为准。
+--------------------------------------------------------------------------- */
+export const OFFICIAL_FREE = {
+  title: "跑路保底：官方免费层",
+  lead: "公益站随时可能改规则或直接关站。手上留一两个官方免费层当保底——注册即用、长期有效、请求不经第三方中转。模型和公益站不完全重合（多是 Gemini / GLM 这类），但胜在稳。额度与规则以官方为准。",
+  items: [
+    { name: "Google AI Studio", note: "Gemini 系列，免费额度大、上下文长，提供 OpenAI 兼容端点。", url: "https://aistudio.google.com/" },
+    { name: "Groq", note: "推理速度极快的免费层，OpenAI 兼容，适合要低延迟的场景。", url: "https://console.groq.com/" },
+    { name: "OpenRouter", note: "聚合多家模型，有一批标 :free 的免费模型，一个 key 全用。", url: "https://openrouter.ai/" },
+    { name: "Cloudflare Workers AI", note: "每天有免费额度，跑在边缘节点，适合接进自己的应用。", url: "https://developers.cloudflare.com/workers-ai/" },
+    { name: "ModelScope 魔搭（阿里）", note: "国内直连、免梯子，每日有免费调用额度，模型偏国产。", url: "https://modelscope.cn/" },
+    { name: "智谱开放平台（GLM）", note: "GLM 系列有免费模型，国内直连，中文场景强。", url: "https://open.bigmodel.cn/" },
+  ],
+  source: "更全的官方免费额度目录（含数十家 provider）见 itsfree.ai。",
+  sourceUrl: "https://itsfree.ai/",
+};
+
