@@ -22,7 +22,7 @@
 <meta property="og:image" content="https://jliushi.github.io/ai-relay/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="AI 公益站清单 — AgentRouter / justwoker / kktoken / tabitoken">
+<meta property="og:image:alt" content="AI 公益站清单 — AgentRouter / justwoker / kktoken / tabitoken / DSH API">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AI 公益站大全 — Claude Code / Codex 免费额度实测清单">
 <meta name="twitter:description" content="实测可用的 AI 公益站（中转站）清单：注册即送免费额度，覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可接入 Claude Code 和 Codex。逐站记录赠额、倍率、注册条件、邀请规则和实测日期，附最小配置方法。">
@@ -63,7 +63,7 @@
         "@id": "https://jliushi.github.io/ai-relay/#website"
       },
       "datePublished": "2026-09-04",
-      "dateModified": "2026-09-04",
+      "dateModified": "2026-09-30",
       "author": {
         "@id": "https://jliushi.github.io/ai-relay/#author"
       },
@@ -109,6 +109,26 @@
         {
           "@type": "Thing",
           "name": "opus 4.8"
+        },
+        {
+          "@type": "Thing",
+          "name": "deepseek-v4"
+        },
+        {
+          "@type": "Thing",
+          "name": "glm-5.3"
+        },
+        {
+          "@type": "Thing",
+          "name": "kimi-k3"
+        },
+        {
+          "@type": "Thing",
+          "name": "minimax-m3"
+        },
+        {
+          "@type": "Thing",
+          "name": "hy4"
         }
       ],
       "isAccessibleForFree": true
@@ -136,7 +156,7 @@
     {
       "@type": "ItemList",
       "name": "实测可用的 AI 公益站",
-      "numberOfItems": 4,
+      "numberOfItems": 5,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -165,6 +185,13 @@
           "name": "tabitoken 公益站",
           "url": "https://tabitoken.com",
           "description": "仅 Claude Code · 不支持 Codex；GitHub 账号曾通过；账号年龄未记录；1x 倍率；注册即得 $20 额度；覆盖模型：opus 4.8、opus 5"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "DSH API",
+          "url": "https://api.dshapi.icu",
+          "description": "Claude Code + Codex 均可：同一个 base URL 同时开 OpenAI（/v1/chat/completions、/v1/responses）与 Anthropic（/v1/messages）。；邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。；0.08x 倍率（国模分组）；按量计费，注册不发赠额；覆盖模型：deepseek-v4、glm-5.3、kimi-k3、minimax-m3、hy4"
         }
       ]
     },
@@ -531,12 +558,12 @@ html.dark .cta { color: #1b1410; }
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap hero-grid">
       <div class="hero-intro">
-        <p class="eyebrow">实测更新于 2026-09-04 · 非实时监控</p>
-        <h1 class="hero-title" id="hero-title">Claude Code / Codex <span class="nw">免费额度</span><span class="hero-sub">4 个实测公益站，注册送 <span class="nw">$20–$100</span></span></h1>
+        <p class="eyebrow">实测更新于 2026-09-30 · 非实时监控</p>
+        <h1 class="hero-title" id="hero-title">Claude Code / Codex <span class="nw">免费额度</span><span class="hero-sub">5 个实测公益站，注册送 <span class="nw">$20–$100</span></span></h1>
         <p class="hero-lead">公益站是第三方搭的 API 中转：注册就送一笔额度，把 key 填进 Claude Code 或 Codex 就能用 Opus 5 / GPT-5.6。清单已按等效额度排好序，点「注册」直达。</p>
       </div>
       <section class="pick" id="pick" aria-labelledby="pick-title">
-        <div class="pick-head"><h2 class="pick-title" id="pick-title">4 个实测站点</h2><span class="pick-sort">按等效额度排序</span></div>
+        <div class="pick-head"><h2 class="pick-title" id="pick-title">5 个实测站点</h2><span class="pick-sort">按等效额度排序</span></div>
         <ol class="pick-rows">
           <li class="pick-row">
             <span class="pick-rank" aria-hidden="true">1</span>
@@ -578,6 +605,16 @@ html.dark .cta { color: #1b1410; }
             <p class="pick-credit"><strong class="numeric">$20</strong><span>注册送 · 1x 倍率</span></p>
             <a class="pick-cta" href="https://tabitoken.com/sign-up?aff=C8EJ" target="_blank" rel="noopener nofollow sponsored" aria-label="tabitoken 公益站：通过邀请链接注册（新窗口）">注册 <span aria-hidden="true">↗</span></a>
           </li>
+          <li class="pick-row">
+            <span class="pick-rank" aria-hidden="true">5</span>
+            <div class="pick-info">
+              <h3 class="pick-name"><a href="#relay-dshapi">DSH API</a><span class="pick-host">api.dshapi.icu</span></h3>
+              <ul class="pick-tags" aria-label="模型与限制"><li class="tag">deepseek-v4</li><li class="tag">glm-5.3</li><li class="tag">kimi-k3</li><li class="tag">minimax-m3</li><li class="tag">hy4</li></ul>
+              <p class="pick-cond">邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。</p>
+            </div>
+            <p class="pick-credit"><strong class="numeric">—</strong><span>注册送 · 0.08x 倍率</span></p>
+            <a class="pick-cta" href="https://api.dshapi.icu/r/T8KiaeGU" target="_blank" rel="noopener nofollow" aria-label="DSH API：前往注册（新窗口）">注册 <span aria-hidden="true">↗</span></a>
+          </li>
         </ol>
         <p class="pick-foot">等效额度 = 注册赠额 ÷ 倍率，只在各站计费基准一致时可比，不是实际 token 数。注册链接含邀请参数。<a href="#stations">看每个站的详细条件 ↓</a></p>
       </section>
@@ -597,14 +634,14 @@ html.dark .cta { color: #1b1410; }
   </section>
   <section class="band" id="stations" aria-labelledby="stations-title">
     <div class="wrap">
-      <div class="section-head"><div><p class="section-kicker">DETAILS / 站点详情</p><h2 class="h2" id="stations-title">每个站的注册条件与使用提示</h2></div><span class="section-note">共 4 个站点 · 实测于 2026-09-04</span></div>
+      <div class="section-head"><div><p class="section-kicker">DETAILS / 站点详情</p><h2 class="h2" id="stations-title">每个站的注册条件与使用提示</h2></div><span class="section-note">共 5 个站点 · 实测于 2026-09-30</span></div>
       <p class="pick-lead">注册方式、网络要求、签到与邀请规则都在卡片里。这些是实测时的记录，以站点当前公告为准。</p>
       <form class="filter-bar" id="filters" role="search" aria-label="筛选站点" hidden>
         <label class="filter-field" for="search">搜索站点、模型或条件<input id="search" type="search" placeholder="例如 AgentRouter、GitHub、签到" autocomplete="off"></label>
-        <label class="filter-field" for="model-filter">模型范围<select id="model-filter"><option value="all">全部模型</option><option value="gpt-5.6">gpt-5.6</option><option value="opus 5">opus 5</option><option value="opus 4.8">opus 4.8</option></select></label>
+        <label class="filter-field" for="model-filter">模型范围<select id="model-filter"><option value="all">全部模型</option><option value="gpt-5.6">gpt-5.6</option><option value="opus 5">opus 5</option><option value="opus 4.8">opus 4.8</option><option value="deepseek-v4">deepseek-v4</option><option value="glm-5.3">glm-5.3</option><option value="kimi-k3">kimi-k3</option><option value="minimax-m3">minimax-m3</option><option value="hy4">hy4</option></select></label>
         <button class="filter-reset" type="reset">重置</button>
       </form>
-      <div class="result-line"><p id="result-count" role="status" aria-live="polite" aria-atomic="true">显示全部 4 个站点</p><p>「待核对」不代表已确认兼容</p></div>
+      <div class="result-line"><p id="result-count" role="status" aria-live="polite" aria-atomic="true">显示全部 5 个站点</p><p>「待核对」不代表已确认兼容</p></div>
       <ul class="grid" id="grid">
         <li class="card" id="relay-agentrouter" data-verified="2026-09-04" data-models="[&quot;gpt-5.6&quot;,&quot;opus 5&quot;]">
           <div class="card-main">
@@ -657,6 +694,19 @@ html.dark .cta { color: #1b1410; }
             <details class="card-details"><summary>邀请规则与实测记录</summary><p>每邀请一位新用户：新用户获得 $20 额度，邀请人获得 $20 额度。</p><p class="tested">实测记录：用 GitHub 账号注册通过。</p></details>
           </div>
           <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="2026-09-04">2026-09-04</time><br>邀请链接 · 注册可能给邀请人带来额度</p><a class="cta" href="https://tabitoken.com/sign-up?aff=C8EJ" target="_blank" rel="noopener nofollow sponsored" aria-label="tabitoken 公益站：通过邀请链接注册（新窗口）">注册 tabitoken <span aria-hidden="true">↗</span></a></div></footer>
+        </li>
+        <li class="card" id="relay-dshapi" data-verified="2026-09-30" data-models="[&quot;deepseek-v4&quot;,&quot;glm-5.3&quot;,&quot;kimi-k3&quot;,&quot;minimax-m3&quot;,&quot;hy4&quot;]">
+          <div class="card-main">
+            <header class="card-head"><div><h3 class="name">DSH API</h3><p class="host">api.dshapi.icu</p></div><span class="card-index" aria-hidden="true">05</span></header>
+            <ul class="models" aria-label="记录中的模型"><li class="model">deepseek-v4</li><li class="model">glm-5.3</li><li class="model">kimi-k3</li><li class="model">minimax-m3</li><li class="model">hy4</li></ul>
+            <div class="credit-line"><span class="credit-value">未记录</span><span class="credit-label">注册赠额</span><span class="rate">0.08x 倍率（国模分组）</span></div>
+            <p class="signup-note">按量计费，注册不发赠额</p>
+            <dl class="card-facts"><div><dt>工具接入</dt><dd>Claude Code + Codex 均可：同一个 base URL 同时开 OpenAI（/v1/chat/completions、/v1/responses）与 Anthropic（/v1/messages）。</dd></div><div><dt>注册观察</dt><dd>邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。</dd></div></dl>
+<div class="restrictions"><p class="block-head">使用条件与限制</p><ul class="list"><li>按量计费而非发免费额度，注册不送钱，需充值后使用</li><li>支付宝 / 微信充值，余额不过期</li><li>面板无公开 /api/status，只能靠 /v1/models 的 401 判断存活</li></ul></div>
+<ul class="list"><li>分组倍率在后台「可用渠道」页看，国模 0.08x、open ai pro 0.22x。</li><li>Claude Code 填 base URL 到尾不带 /v1，Codex CLI 则要带 /v1。</li></ul>
+            <details class="card-details"><summary>邀请规则与实测记录</summary><p>邀请返佣 10%，不冻结、无上限、无每日发放上限。</p><p class="tested">实测记录：四个端点实测均 200：/v1/models 1.61s、/v1/chat/completions 2.19s、/v1/responses 2.37s、/v1/messages 3.94s。账号累计 30,734 次请求 / 40.7 亿 token / 实付 ¥28.67（平台标准价 ¥359.51）。</p></details>
+          </div>
+          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="2026-09-30">2026-09-30</time><br>不含邀请参数</p><a class="cta" href="https://api.dshapi.icu/r/T8KiaeGU" target="_blank" rel="noopener nofollow" aria-label="DSH API：前往注册（新窗口）">注册 DSH API <span aria-hidden="true">↗</span></a></div></footer>
         </li>
       </ul>
       <div class="empty-state" id="empty-state" hidden><h3>没有匹配的站点</h3><p>试试站点名称、模型名，或清除筛选查看全部记录。</p><button type="button" class="filter-reset" id="clear-filters">清除筛选</button></div>

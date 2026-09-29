@@ -142,6 +142,32 @@ export const RELAYS = [
     notes: ["不需要加群，注册完就能用", "使用 GitHub 账号注册", "只支持 Claude Code"],
     verifiedAt: "2026-09-04",
   },
+  {
+    id: "dshapi",
+    name: "DSH API",
+    host: "api.dshapi.icu",
+    aff: "https://api.dshapi.icu/r/T8KiaeGU",
+    rate: "0.08x 倍率（国模分组）",
+    signup: "按量计费，注册不发赠额",
+    invite:
+      "邀请返佣 10%，不冻结、无上限、无每日发放上限。",
+    models: ["deepseek-v4", "glm-5.3", "kimi-k3", "minimax-m3", "hy4"],
+    tools:
+      "Claude Code + Codex 均可：同一个 base URL 同时开 OpenAI（/v1/chat/completions、/v1/responses）与 Anthropic（/v1/messages）。",
+    eligibility: "邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。",
+    tested:
+      "四个端点实测均 200：/v1/models 1.61s、/v1/chat/completions 2.19s、/v1/responses 2.37s、/v1/messages 3.94s。账号累计 30,734 次请求 / 40.7 亿 token / 实付 ¥28.67（平台标准价 ¥359.51）。",
+    notes: [
+      "按量计费而非发免费额度，注册不送钱，需充值后使用",
+      "支付宝 / 微信充值，余额不过期",
+      "面板无公开 /api/status，只能靠 /v1/models 的 401 判断存活",
+    ],
+    tips: [
+      "分组倍率在后台「可用渠道」页看，国模 0.08x、open ai pro 0.22x。",
+      "Claude Code 填 base URL 到尾不带 /v1，Codex CLI 则要带 /v1。",
+    ],
+    verifiedAt: "2026-09-30",
+  },
 ];
 
 /* ---------------------------------------------------------------------------
