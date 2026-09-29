@@ -3,10 +3,11 @@ Run `python -m http.server 8767` in this repo, then `python tests/browser.py`.
 Screenshots are written to the ignored .claude/screenshots directory.
 """
 from pathlib import Path
+import os
 from playwright.sync_api import sync_playwright
 
 BASE = Path(__file__).resolve().parents[1]
-URL = "http://127.0.0.1:8767"
+URL = os.environ.get("AI_RELAY_URL", "http://127.0.0.1:8767").rstrip("/")
 SHOTS = BASE / ".claude" / "screenshots"
 SHOTS.mkdir(parents=True, exist_ok=True)
 
@@ -73,7 +74,7 @@ with sync_playwright() as p:
     assert stale.locator(".stale").count() == 4
     page.set_viewport_size({"width": 1200, "height": 630})
     page.goto(URL + "/og.html", wait_until="networkidle")
-    page.screenshot(path=str(BASE / "og.png"))
+    page.screenshot(path=str(SHOTS / "og.png"))
     assert not errors, errors
     browser.close()
 print("PASS: filtering/reset, anchor recovery, keyboard details, theme persistence, no-JS, stale dates, responsive pages, zero JS errors.")
