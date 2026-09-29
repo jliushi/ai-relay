@@ -28,8 +28,9 @@
 | AgentRouter 公益站 | $100 | 1x | $100 |
 | kktoken 公益站 | $100 | 1x | $100 |
 | tabitoken 公益站 | $20 | 1x | $20 |
+| DSH API | — | 0.08x | — |
 
-## 站点清单（共 4 个）
+## 站点清单（共 5 个）
 
 ### AgentRouter 公益站
 
@@ -83,6 +84,20 @@
 - 实测：用 GitHub 账号注册通过。
 - 实测日期：2026-09-04
 - 须知：不需要加群，注册完就能用；使用 GitHub 账号注册；只支持 Claude Code
+
+### DSH API
+
+- 域名：api.dshapi.icu
+- 工具接入：Claude Code + Codex 均可：同一个 base URL 同时开 OpenAI（/v1/chat/completions、/v1/responses）与 Anthropic（/v1/messages）。
+- 注册观察：邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。
+- 倍率：0.08x 倍率（国模分组）
+- 注册即得：按量计费，注册不发赠额
+- 邀请奖励：邀请返佣 10%，不冻结、无上限、无每日发放上限。
+- 记录中的模型：deepseek-v4、glm-5.3、kimi-k3、minimax-m3、hy4
+- 实测：四个端点实测均 200：/v1/models 1.61s、/v1/chat/completions 2.19s、/v1/responses 2.37s、/v1/messages 3.94s。账号累计 30,734 次请求 / 40.7 亿 token / 实付 ¥28.67（平台标准价 ¥359.51）。
+- 实测日期：2026-09-30
+- 须知：按量计费而非发免费额度，注册不送钱，需充值后使用；支付宝 / 微信充值，余额不过期；面板无公开 /api/status，只能靠 /v1/models 的 401 判断存活
+- 使用提示：分组倍率在后台「可用渠道」页看，国模 0.08x、open ai pro 0.22x。；Claude Code 填 base URL 到尾不带 /v1，Codex CLI 则要带 /v1。
 
 ## 配置方法
 

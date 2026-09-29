@@ -19,6 +19,7 @@
 | [justwoker 公益站](https://api.justwoker.icu/register?aff=XiYg) | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-09-04 |
 | [kktoken 公益站](https://kktoken.cc/sign-up?aff=8Zqi) | `kktoken.cc` | 1x 倍率 | 注册即得 $100 额度 | opus 5 | 2026-09-04 |
 | [tabitoken 公益站](https://tabitoken.com/sign-up?aff=C8EJ) | `tabitoken.com` | 1x 倍率 | 注册即得 $20 额度 | opus 4.8、opus 5 | 2026-09-04 |
+| [DSH API](https://api.dshapi.icu/r/T8KiaeGU) | `api.dshapi.icu` | 0.08x 倍率（国模分组） | 按量计费，注册不发赠额 | deepseek-v4、glm-5.3、kimi-k3、minimax-m3、hy4 | 2026-09-30 |
 <!-- RELAYS:END -->
 
 上面的表格由 `node build.mjs` 从 `data.js` 生成，不要手改。倍率是站点标示的计费系数，基准价格、输入输出与缓存计费口径需要逐站核对；不能仅凭倍率保证实际可用 token 数。
