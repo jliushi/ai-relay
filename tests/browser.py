@@ -19,6 +19,10 @@ with sync_playwright() as p:
     page.goto(URL, wait_until="networkidle")
     page.screenshot(path=str(SHOTS / "desktop.png"), full_page=True)
     assert page.locator(".card:visible").count() == 4
+    # Landing view: every station, its credit and a sign-up link sit in the first screen.
+    assert page.locator(".pick-row").count() == 4
+    last_cta = page.locator(".pick-row .pick-cta").last.bounding_box()
+    assert last_cta["y"] + last_cta["height"] <= 900, last_cta
     assert page.locator("dialog").count() == 0
     assert page.locator("html.dark").count() == 0
     page.locator("#search").fill("GitHub")
@@ -32,7 +36,7 @@ with sync_playwright() as p:
     assert page.locator(".card:visible").count() == 4
     assert page.locator("#search").evaluate("el => el === document.activeElement")
     page.locator("#search").fill("nomatch")
-    page.locator('.cmp a[href="#relay-kktoken"]').click()
+    page.locator('.pick a[href="#relay-kktoken"]').click()
     page.wait_for_timeout(30)
     assert page.locator("#relay-kktoken").is_visible()
     assert page.locator(".card:visible").count() == 4
