@@ -2,7 +2,7 @@
 
 实测可用的第三方 AI 公益站（中转站）清单，含倍率、注册即得额度、邀请规则与须知。
 覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可用于 Claude Code 和 Codex。每条都标注实测日期。
-和一般的白嫖导航不同：这里按**等效可用量（注册赠额 ÷ 倍率）**排序——倍率低的站，同一笔额度能跑更多 token，光看「送多少」会挑错。
+和一般的白嫖导航不同：这里先比较工具接入说明与注册观察，再按**等效可用量（注册赠额 ÷ 倍率）**提供参考排序。只有模型、基准价格与计费口径可比时，折算才有意义；它不是实际 token 数或耐用程度保证。
 
 **页面：https://jliushi.github.io/ai-relay/**
 **配置教程（Claude Code / Codex 从拿 key 到跑通 + 避坑）：https://jliushi.github.io/ai-relay/guide.html**
@@ -21,9 +21,7 @@
 | [tabitoken 公益站](https://tabitoken.com/sign-up?aff=C8EJ) | `tabitoken.com` | 1x 倍率 | 注册即得 $20 额度 | opus 4.8、opus 5 | 2026-09-04 |
 <!-- RELAYS:END -->
 
-上面的表格由 `node build.mjs` 从 `data.js` 生成，不要手改。倍率是相对官方价格的
-计费系数：1x 按官方价扣额度，0.65x 只按官方价的 65% 扣，所以同样一笔赠额，
-倍率低的站点能跑的 token 更多。
+上面的表格由 `node build.mjs` 从 `data.js` 生成，不要手改。倍率是站点标示的计费系数，基准价格、输入输出与缓存计费口径需要逐站核对；不能仅凭倍率保证实际可用 token 数。
 
 ## 用之前先知道
 
@@ -45,8 +43,7 @@ git add -A && git commit -m "update: 实测数据" && git push
 
 推上去 GitHub Pages 会自动重新发布，几分钟生效。
 
-新增站点直接往 `RELAYS` 里加一项，配色按数组顺序自动取下一个色（八色循环，
-见 `build.mjs` 里的 `PALETTE`）。`aff` 整条贴站点给你的邀请链接——各站注册路径
+新增站点直接往 `RELAYS` 里加一项；`tools` 记录工具接入说明，`eligibility` 记录注册观察，不要把模型列表当作客户端兼容性实测。`aff` 整条贴站点给你的邀请链接——各站注册路径
 不一样（`/register` 和 `/sign-up` 都有），照抄，别套用别家的。
 
 `verifiedAt` 距今超过三个月，卡片会自动挂出「信息可能已变化」的提示。这条由浏览器

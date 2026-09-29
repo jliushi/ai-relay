@@ -18,159 +18,66 @@ const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-/* 用 R,G,B 三元组而不是 hex，这样每一处填充都能是同一色相不同透明度的 rgba()
-   压在 --panel 上 —— 一个条目同时管住亮色和暗色两种模式。每条要两个三元组：
-     a —— 400 级色。暗色模式下的填充、描边和强调文字，压在深色面板上够 6:1。
-     d —— 700/800 级色。亮色模式下的强调文字（a 在白底上只有 ~2.5:1），
-          以及两种模式下实心按钮的背景（配白字 >=5.4:1）。
-   八条，所以第六、第七个站点也拿到自己的颜色而不是从头重复。 */
-const PALETTE = [
-  { a: "52, 211, 153",  d: "4, 120, 87"   }, // emerald
-  { a: "167, 139, 250", d: "109, 40, 217" }, // violet
-  { a: "251, 191, 36",  d: "146, 64, 14"  }, // amber
-  { a: "56, 189, 248",  d: "3, 105, 161"  }, // sky
-  { a: "251, 113, 133", d: "159, 18, 57"  }, // rose
-  { a: "45, 212, 191",  d: "15, 118, 110" }, // teal
-  { a: "129, 140, 248", d: "67, 56, 202"  }, // indigo
-  { a: "232, 121, 249", d: "134, 25, 143" }, // fuchsia
-];
-
 const fmtDate = (iso) =>
   iso.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$1 年 $2 月 $3 日");
-
-/* 链接里没有 aff= 的项就不是返利链接：披露、按钮文案和 rel="sponsored" 都跟着
-   变。声明一条不存在的返利虽然不算隐瞒，但一样是不准确的。 */
+const latestDate = RELAYS.reduce((latest, r) => r.verifiedAt > latest ? r.verifiedAt : latest, "1970-01-01");
 const isPaid = (aff) => /[?&]aff=/.test(aff);
+const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
 
-/* ---------- 卡片 ----------
-   覆盖层始终在 DOM 里、只是透明，所以里面的须知和提示同样是可索引正文。
-   verifiedAt 写成 data-verified，交给浏览器判断有没有过三个月。 */
+/* 赠额与倍率只解析原始文案，不能解析时不猜数字。折算值不是实际 token 数。 */
+function relayCredit(r) {
+  const num = (s, re) => {
+    const match = String(s).match(re);
+    const value = match ? Number(match[1].replace(/,/g, "")) : NaN;
+    return Number.isFinite(value) && value >= 0 ? value : null;
+  };
+  const mult = num(r.rate, /([\d.]+)\s*x/i);
+  const credit = num(r.signup, /\$\s*([\d,.]+)/);
+  return { r, mult, credit, eff: mult > 0 && credit !== null ? credit / mult : null };
+}
+const rankRelays = () => RELAYS.map(relayCredit).sort((a, b) => (b.eff ?? -1) - (a.eff ?? -1));
+
+/* 重要须知常驻，不再使用悬停覆盖层。邀请奖励和实测原文保留在原生 details 中。 */
 function cardHTML(r, i) {
-  const c = PALETTE[i % PALETTE.length];
   const paid = isPaid(r.aff);
-  const list = (items) =>
-    `<ul class="list">${items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
-
-  const notes = r.notes?.length
-    ? `<p class="block-head">须知</p>\n          ${list(r.notes)}`
-    : "";
-  const tips = r.tips?.length
-    ? `<p class="block-head${r.notes?.length ? " block-head-tips" : ""}">使用提示</p>\n          ${list(r.tips)}`
-    : "";
-  const invite = r.invite
-    ? `
-            <div class="fact">
-              <span class="fact-k">邀请奖励</span>
-              <span class="fact-v fact-v-sm">${esc(r.invite)}</span>
-            </div>`
-    : "";
-
-  return `        <li class="card" style="--a:${c.a};--d:${c.d}" data-verified="${esc(r.verifiedAt)}">
-          <div class="body">
-            <div class="default">
-              <header class="card-head">
-                <div class="title-row">
-                  <h3 class="name">${esc(r.name)}</h3>
-                  <span class="rate">${esc(r.rate)}</span>
-                </div>
-                <p class="host">${esc(r.host)}</p>
-              </header>
-              <ul class="models" aria-label="1x 覆盖模型">${r.models
-                .map((m) => `<li class="model">${esc(m)}</li>`)
-                .join("")}</ul>
-              <div class="facts">
-                <div class="fact">
-                  <span class="fact-k">注册即得</span>
-                  <span class="fact-v">${esc(r.signup)}</span>
-                </div>${invite}
-              </div>
-            </div>
-            <div class="over" id="fold-${esc(r.id)}">
-              <div class="over-scroll">
-                <div class="over-inner">
-                  <p class="over-title">${esc(r.name)}</p>
-                  ${notes}
-                  ${tips}
-                  <p class="tested"><span class="block-head">实测</span>${esc(r.tested)}</p>
-                </div>
-              </div>
-            </div>
+  const { credit } = relayCredit(r);
+  const notes = r.notes?.length ? `<div class="restrictions"><p class="block-head">使用条件与限制</p><ul class="list">${r.notes.map(note => `<li>${esc(note)}</li>`).join("")}</ul></div>` : "";
+  const tips = r.tips?.length ? `<ul class="list">${r.tips.map(tip => `<li>${esc(tip)}</li>`).join("")}</ul>` : "";
+  return `        <li class="card" id="relay-${esc(r.id)}" data-verified="${esc(r.verifiedAt)}" data-models="${esc(JSON.stringify(r.models))}">
+          <div class="card-main">
+            <header class="card-head"><div><h3 class="name">${esc(r.name)}</h3><p class="host">${esc(r.host)}</p></div><span class="card-index" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span></header>
+            <ul class="models" aria-label="记录中的模型">${r.models.map(model => `<li class="model">${esc(model)}</li>`).join("")}</ul>
+            <div class="credit-line"><span class="credit-value">${credit === null ? "未记录" : esc(money(credit))}</span><span class="credit-label">注册赠额</span><span class="rate">${esc(r.rate)}</span></div>
+            <p class="signup-note">${esc(r.signup)}</p>
+            <dl class="card-facts"><div><dt>工具接入</dt><dd>${esc(r.tools)}</dd></div><div><dt>注册观察</dt><dd>${esc(r.eligibility)}</dd></div></dl>
+${notes}
+${tips}
+            <details class="card-details"><summary>邀请规则与实测记录</summary><p>${r.invite ? esc(r.invite) : "未记录邀请奖励，请向站点确认。"}</p><p class="tested">实测记录：${esc(r.tested)}</p></details>
           </div>
-          <button class="toggle" type="button" aria-expanded="false" aria-controls="fold-${esc(r.id)}">
-            <span>须知与提示</span>
-            <svg class="chev" viewBox="0 0 12 12" aria-hidden="true">
-              <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor"
-                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <footer class="foot">
-            <a class="cta" href="${esc(r.aff)}" target="_blank"
-               rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}">${
-                 paid ? "通过邀请链接注册" : "前往注册"} →</a>
-            <p class="meta">实测于 ${esc(fmtDate(r.verifiedAt))}${paid ? " · 含邀请参数" : ""}</p>
-          </footer>
+          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="${esc(r.verifiedAt)}">${esc(r.verifiedAt)}</time><br>${paid ? "邀请链接 · 注册可能给邀请人带来额度" : "不含邀请参数"}</p><a class="cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">${paid ? "邀请注册" : "前往注册"} <span aria-hidden="true">↗</span></a></div></footer>
         </li>`;
 }
-/* 倍率和赠额从文案里解析，不另设字段 —— 两份数据分开写迟早对不上。解析不出来
-   就返回 null，页面上显示「—」，不猜。
-   等效可用量 = 赠额 ÷ 倍率。这是全页唯一一处原创计算，页面和 llms.txt 共用它。 */
-function rankRelays() {
-  const num = (s, re) => {
-    const m = String(s).match(re);
-    return m ? parseFloat(m[1].replace(/,/g, "")) : null;
-  };
-  return RELAYS.map((r) => {
-    const mult = num(r.rate, /([\d.]+)\s*x/i);
-    const credit = num(r.signup, /\$\s*([\d,.]+)/);
-    return { r, mult, credit, eff: mult && credit ? credit / mult : null };
-  }).sort((a, b) => (b.eff ?? -1) - (a.eff ?? -1));
-}
 
-/* ---------- 「怎么挑」对比表 ---------- */
+/* 首屏表格按折算额度排序，但明确给出比较前提；门槛和工具说明先于金额。 */
 function pickHTML() {
-  const rows = rankRelays();
-  const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
-
-  const tbody = rows
-    .map(({ r, mult, credit, eff }) => `            <tr>
-              <th scope="row">${esc(r.name)}</th>
-              <td>${credit == null ? "—" : esc(money(credit))}</td>
-              <td>${mult == null ? "—" : esc(mult + "x")}</td>
-              <td class="cmp-eff">${eff == null ? "—" : esc((Number.isInteger(eff) ? "" : "≈ ") + money(eff))}</td>
-            </tr>`)
-    .join("\n");
-
-  // 要点也从数据里推，站点增减或须知改了文案会跟着变
-  const named = (list) => list.map((r) => r.name).join("、");
-  const gpt = RELAYS.filter((r) => r.models.some((m) => /gpt/i.test(m)));
-  const ccOnly = RELAYS.filter((r) => (r.notes || []).some((n) => /只支持\s*Claude Code/i.test(n)));
-  const checkin = RELAYS.filter((r) =>
-    [...(r.notes || []), ...(r.tips || [])].some((x) => /签到/.test(x)));
-
-  const points = [];
-  if (gpt.length)
-    points.push(`要跑 GPT 系模型的话，覆盖到的是 ${named(gpt)}，其余几家只有 Claude。`);
-  if (ccOnly.length)
-    points.push(`${named(ccOnly)}标了只支持 Claude Code，不要拿去接 Codex —— 它只转了 Anthropic 那套接口，接上只会拿到一串报错。`);
-  if (checkin.length)
-    points.push(`${named(checkin)}有每日签到，能小幅补额度，具体数额写在各张卡片的「使用提示」里。`);
-  points.push("别把某一家当唯一入口。公益站限流、改规则、直接关站都很常见，手上多备一两个，切换成本几乎为零。");
-
-  return `      <p class="pick-lead">「送多少」不是唯一指标。倍率决定同一笔额度实际能跑多少 token，所以真正该比的是<strong>赠额除以倍率</strong>——下表按这个等效可用量从高到低排。</p>
-      <div class="table-wrap">
-        <table class="cmp">
-          <caption>按等效可用量排序（等效可用量 = 注册赠额 ÷ 倍率）</caption>
-          <thead>
-            <tr><th scope="col">站点</th><th scope="col">注册赠额</th><th scope="col">倍率</th><th scope="col">等效可用量</th></tr>
-          </thead>
+  const rows = rankRelays().map(({ r, mult, credit, eff }) => `            <tr>
+              <th scope="row"><a href="#relay-${esc(r.id)}">${esc(r.name.replace(/\s*公益站$/, ""))} ↗</a><small>实测 ${esc(r.verifiedAt)}</small></th>
+              <td class="cmp-tools">${esc(r.tools)}</td>
+              <td class="cmp-access">${esc(r.eligibility)}${(r.notes || []).some(note => note.includes("科学上网")) ? "<small>需要科学上网</small>" : ""}</td>
+              <td class="numeric">${credit === null ? "—" : esc(money(credit))}${/邀请/.test(r.signup) ? "<small>需通过邀请链接</small>" : ""}</td>
+              <td class="numeric">${mult === null ? "—" : esc(mult + "x")}</td>
+              <td class="numeric cmp-eff">${eff === null ? "—" : esc((Number.isInteger(eff) ? "" : "≈ ") + money(eff))}</td>
+            </tr>`).join("\n");
+  return `      <p class="pick-lead">先看接入说明与注册观察，再看赠额。模型列表不等于客户端兼容性实测；「待核对」请先向站点确认。</p>
+      <div class="table-wrap" role="region" aria-label="站点对比表，可横向滚动" tabindex="0">
+        <table class="cmp"><caption>按等效可用量排序 · 窄屏可左右滑动查看完整条件</caption>
+          <thead><tr><th scope="col">站点 / 实测日期</th><th scope="col">工具接入说明</th><th scope="col">注册观察 / 网络要求</th><th scope="col">注册赠额</th><th scope="col">倍率</th><th scope="col">等效可用量*</th></tr></thead>
           <tbody>
-${tbody}
+${rows}
           </tbody>
         </table>
       </div>
-      <ul class="pick-list">
-${points.map((p) => `        <li>${p}</li>`).join("\n")}
-      </ul>`;
+      <p class="calc-note"><strong>* 仅作额度折算：</strong>等效可用量 = 注册赠额 ÷ 倍率。只有模型、基准价格、输入输出及缓存计费口径可比时才有意义；不是实际 token 数、可提现金额或耐用程度保证。</p>`;
 }
 
 /* ---------- 配置方法 ----------
@@ -312,7 +219,7 @@ function jsonLd() {
         position: i + 1,
         name: r.name,
         url: `https://${r.host}`,
-        description: [r.rate, r.signup, `覆盖模型：${r.models.join("、")}`].join("；"),
+        description: [r.tools, r.eligibility, r.rate, r.signup, `覆盖模型：${r.models.join("、")}`].join("；"),
       })),
     },
     {
@@ -343,7 +250,7 @@ function headHTML() {
 <meta name="description" content="${esc(SITE.description)}">
 <meta name="keywords" content="${esc(SITE.keywords.join("，"))}">
 <meta name="author" content="${esc(SITE.authorName)}">
-<meta name="theme-color" content="#10b981">
+<meta name="theme-color" content="#f7f5ef">
 <!-- 放行富摘要：允许大图预览、不限制文本摘要长度。搜索结果的问答富摘要和 AI 引用
      都受这条约束，收紧了等于自己把可见度砍掉。 -->
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -414,7 +321,7 @@ ${RISKS.items.map((r) => `- **${r.head}**：${r.body}`).join("\n")}
 
 ## 怎么挑：按等效可用量排序
 
-等效可用量 = 注册赠额 ÷ 倍率。倍率决定同一笔额度实际能跑多少 token，所以「送多少」不是唯一指标。
+等效可用量 = 注册赠额 ÷ 倍率。仅在模型、基准价格与计费口径可比时作额度参考，不是实际 token 数、可提现金额或耐用程度保证。工具接口与注册条件应优先核对。
 
 | 站点 | 注册赠额 | 倍率 | 等效可用量 |
 | --- | --- | --- | --- |
@@ -432,9 +339,11 @@ ${rankRelays()
 ${RELAYS.map((r) => `### ${r.name}
 
 - 域名：${r.host}
+- 工具接入：${r.tools}
+- 注册观察：${r.eligibility}
 - 倍率：${r.rate}
 - 注册即得：${r.signup}${r.invite ? `\n- 邀请奖励：${r.invite}` : ""}
-- 1x 覆盖模型：${r.models.join("、")}
+- 记录中的模型：${r.models.join("、")}
 - 实测：${r.tested}
 - 实测日期：${r.verifiedAt}${r.notes?.length ? `\n- 须知：${r.notes.join("；")}` : ""}${
       r.tips?.length ? `\n- 使用提示：${r.tips.join("；")}` : ""
@@ -488,39 +397,35 @@ function ogHTML() {
     width: 1200px; height: 630px; display: flex; overflow: hidden;
     font-family: Inter, -apple-system, "Segoe UI", "PingFang SC",
                  "Microsoft YaHei", sans-serif;
-    background:
-      radial-gradient(900px 520px at 6% -18%, rgba(16,185,129,.26), transparent 62%),
-      radial-gradient(760px 460px at 96% 6%, rgba(245,158,11,.18), transparent 60%),
-      linear-gradient(160deg, #1c1917 0%, #0c0a09 100%);
+    background: #f7f5ef; color: #20344a; border: 20px solid #20344a;
   }
   .og { margin: auto; padding: 0 82px; width: 100%; }
   .eyebrow {
     font-size: 21px; font-weight: 600; letter-spacing: .13em;
-    text-transform: uppercase; color: #6ee7b7;
+    text-transform: uppercase; color: #a83d20;
   }
   h1 {
     margin: 22px 0 0; font-size: 92px; line-height: 1.06; font-weight: 800;
     letter-spacing: -.03em;
-    background: linear-gradient(118deg, #fff 34%, #6ee7b7 72%, #fcd34d);
-    -webkit-background-clip: text; color: transparent;
+    color: #20344a;
   }
-  .lead { margin-top: 26px; font-size: 30px; line-height: 1.5; color: #d6d3d1; }
+  .lead { margin-top: 26px; font-size: 30px; line-height: 1.5; color: #5c6670; }
   .row { margin-top: 46px; display: flex; gap: 12px; flex-wrap: wrap; }
   .chip {
-    padding: 9px 20px; border: 1px solid rgba(110,231,183,.34); border-radius: 999px;
-    font-size: 22px; color: #a7f3d0; background: rgba(16,185,129,.1);
+    padding: 9px 20px; border: 1px solid #d8dbd7; border-radius: 999px;
+    font-size: 22px; color: #20344a; background: #fffefa;
   }
   .foot {
     margin-top: 52px; display: flex; justify-content: space-between;
-    font-size: 22px; color: #a8a29e;
+    font-size: 22px; color: #5c6670;
   }
 </style>
 </head>
 <body>
   <div class="og">
-    <p class="eyebrow">第三方服务 · 实测清单</p>
+    <p class="eyebrow">第三方服务目录 · 非实时状态</p>
     <h1>${esc(SITE.brand)}</h1>
-    <p class="lead">Claude Code / Codex 免费额度 · 倍率、赠额与邀请规则逐条实测</p>
+    <p class="lead">先核对工具与门槛，再比较赠额和倍率。</p>
     <div class="row">${RELAYS.map((r) => `<span class="chip">${esc(r.name)}</span>`).join("")}</div>
     <div class="foot">
       <span>${esc(SITE.url.replace(/^https?:\/\//, "").replace(/\/$/, ""))}</span>
@@ -595,7 +500,7 @@ function pageHTML(page, sharedStyle, bootstrap) {
 <meta name="description" content="${esc(page.description)}">
 <meta name="keywords" content="${esc(page.keywords.join("，"))}">
 <meta name="author" content="${esc(SITE.authorName)}">
-<meta name="theme-color" content="#10b981">
+<meta name="theme-color" content="#f7f5ef">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="${esc(url)}">
 <meta property="og:type" content="article">
@@ -617,11 +522,12 @@ ${bootstrap}
 <style>${sharedStyle}</style>
 </head>
 <body>
+<a class="skip" href="#main">跳到主要内容</a>
 <header class="topbar">
   <div class="wrap topbar-inner">
     <a class="brand" href="./">
       <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect width="24" height="24" rx="6" fill="#10b981"/>
+        <rect width="24" height="24" rx="6" fill="#20344a"/>
         <path d="M7 15.5 12 7l5 8.5" stroke="#fff" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -629,11 +535,11 @@ ${bootstrap}
     </a>
     <div class="topbar-right">
       <a class="nav-link" href="./">← 返回清单</a>
-      <a class="nav-link" href="${esc(SITE.author)}" target="_blank" rel="noopener">GitHub</a>
+      <a class="nav-link desktop-nav" href="${esc(SITE.author)}" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
 </header>
-<main>
+<main id="main">
   <section class="hero">
     <div class="wrap">
       <p class="eyebrow">${esc(page.eyebrow)}</p>
@@ -672,6 +578,9 @@ const FILLS = {
   HERO_LEAD: esc(SITE.heroLead),
   CONTACT: esc(SITE.contactText),
   COUNT: String(RELAYS.length),
+  LATEST_DATE: esc(latestDate),
+  MODEL_OPTIONS: [...new Set(RELAYS.flatMap(r => r.models))].map(model => `<option value="${esc(model)}">${esc(model)}</option>`).join(""),
+  AFF_DISCLOSURE: RELAYS.some(r => isPaid(r.aff)) ? "部分注册链接含邀请参数，注册可能给邀请人带来额度；已在相应卡片标注。" : "注册链接不含邀请参数。",
   CARDS: RELAYS.map(cardHTML).join("\n"),
   PICK: pickHTML(),
   SETUP: setupHTML(),

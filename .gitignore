@@ -1,3 +1,6 @@
 # 待发布的文章草稿。仓库是公开的，草稿留在本地就行 ——
 # 想让它一起进版本控制，删掉这一行。
 draft-post.md
+
+# Local browser test screenshots, not published assets.
+.claude/screenshots/
