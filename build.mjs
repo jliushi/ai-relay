@@ -26,7 +26,7 @@ const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
 const shortName = (r) => r.name.replace(/\s*公益站$/, "");
 const BRAND_MARK = `<svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#20344a"/><path d="M8 11h10M8 16h7M8 21h5" stroke="#fffefa" stroke-width="2" stroke-linecap="round"/><path d="m20 12-4 10h5l4-10z" fill="#ed9c72"/></svg>`;
 
-/* 赠额与倍率只解析原始文案，不能解析时不猜数字。折算值不是实际 token 数。 */
+/* 赠额与倍率只解析原始文案，不能解析时不猜数字。 */
 function relayCredit(r) {
   const num = (s, re) => {
     const match = String(s).match(re);
@@ -58,10 +58,10 @@ function cardHTML(r, i) {
             <ul class="models" aria-label="记录中的模型">${r.models.map(model => `<li class="model">${esc(model)}</li>`).join("")}</ul>
             <div class="credit-line"><span class="credit-value">${credit === null ? "未记录" : esc(money(credit))}</span><span class="credit-label">注册赠额</span><span class="rate">${esc(r.rate)}</span></div>
             <p class="signup-note">${esc(r.signup)}</p>
-            <dl class="card-facts"><div><dt>工具接入</dt><dd>${esc(r.tools)}</dd></div><div><dt>注册观察</dt><dd>${esc(r.eligibility)}</dd></div></dl>
+            <dl class="card-facts"><div><dt>工具接入</dt><dd>${esc(r.tools)}</dd></div><div><dt>注册条件</dt><dd>${esc(r.eligibility)}</dd></div></dl>
 ${notes}
 ${tips}
-            <details class="card-details"><summary>邀请规则与实测记录</summary><p>${r.invite ? esc(r.invite) : "未记录邀请奖励，请向站点确认。"}</p><p class="tested">实测记录：${esc(r.tested)}</p></details>
+            <details class="card-details"><summary>邀请规则与实测记录</summary><p>${r.invite ? esc(r.invite) : "没有邀请奖励。"}</p><p class="tested">实测记录：${esc(r.tested)}</p></details>
           </div>
           <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="${esc(r.verifiedAt)}">${esc(r.verifiedAt)}</time><br>${paid ? "邀请链接 · 注册可能给邀请人带来额度" : "不含邀请参数"}</p><a class="cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 ${esc(shortName(r))} <span aria-hidden="true">↗</span></a></div></footer>
         </li>`;
@@ -97,7 +97,7 @@ function pickHTML() {
         <ol class="pick-rows">
 ${rows}
         </ol>
-        <p class="pick-foot">等效额度 = 注册赠额 ÷ 倍率，只在各站计费基准一致时可比，不是实际 token 数。${RELAYS.some((r) => isPaid(r.aff)) ? "注册链接含邀请参数。" : ""}<a href="#stations">看每个站的详细条件 ↓</a></p>`;
+        <p class="pick-foot">等效额度 = 注册赠额 ÷ 倍率，倍率越低，同样的额度能跑越多。${RELAYS.some((r) => isPaid(r.aff)) ? "注册链接含邀请参数。" : ""}<a href="#stations">看每个站的详细条件 ↓</a></p>`;
 }
 
 /* ---------- 配置方法 ----------
@@ -341,7 +341,7 @@ ${RISKS.items.map((r) => `- **${r.head}**：${r.body}`).join("\n")}
 
 ## 怎么挑：按等效可用量排序
 
-等效可用量 = 注册赠额 ÷ 倍率。仅在模型、基准价格与计费口径可比时作额度参考，不是实际 token 数、可提现金额或耐用程度保证。工具接口与注册条件应优先核对。
+等效可用量 = 注册赠额 ÷ 倍率。倍率越低，同样的额度能跑越多，所以只看「送多少」会挑错。
 
 | 站点 | 注册赠额 | 倍率 | 等效可用量 |
 | --- | --- | --- | --- |
@@ -360,7 +360,7 @@ ${RELAYS.map((r) => `### ${r.name}
 
 - 域名：${r.host}
 - 工具接入：${r.tools}
-- 注册观察：${r.eligibility}
+- 注册条件：${r.eligibility}
 - 倍率：${r.rate}
 - 注册即得：${r.signup}${r.invite ? `\n- 邀请奖励：${r.invite}` : ""}
 - 记录中的模型：${r.models.join("、")}

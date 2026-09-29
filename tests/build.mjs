@@ -22,7 +22,7 @@ assert.deepEqual(graph(html).map(node => node["@type"]), ["WebSite", "Person", "
 assert.equal(graph(html).find(node => node["@type"] === "FAQPage").mainEntity.length, FAQ.length);
 assert.ok(!html.includes("<dialog"), "No forced risk popup");
 assert.ok(html.includes(esc(SITE.googleVerification)), "Retain site verification");
-assert.ok(html.includes("基准价格") && read("llms.txt").includes("基准价格"));
+for (const hedge of ["待核对", "未确认", "曾通过", "请向站点确认"]) assert.ok(!html.includes(hedge), `No hedge wording: ${hedge}`);
 assert.ok(!html.includes("可以确认不存在掺水"));
 for (const relay of RELAYS) {
   assert.ok(html.includes(`id="relay-${esc(relay.id)}"`));

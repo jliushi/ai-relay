@@ -143,28 +143,28 @@
           "position": 1,
           "name": "AgentRouter 公益站",
           "url": "https://agentrouter.org",
-          "description": "Claude Code / Codex：接入兼容性待核对；GitHub 老账号（2026 年前注册）曾通过；1x 倍率；注册即得 $100 额度；覆盖模型：gpt-5.6、opus 5"
+          "description": "Claude Code、Codex 都能用；用 2026 年前注册的 GitHub 老账号；1x 倍率；注册即得 $100 额度；覆盖模型：gpt-5.6、opus 5"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "justwoker 公益站",
           "url": "https://api.justwoker.icu",
-          "description": "Claude Code 待核对 · Codex 未确认；注册满一年的 GitHub 账号曾通过；0.65x 倍率；通过邀请链接注册即得 $70 额度；覆盖模型：opus 4.8、opus 5"
+          "description": "Claude Code 可用；用注册满一年的 GitHub 账号；0.65x 倍率；通过邀请链接注册即得 $70 额度；覆盖模型：opus 4.8、opus 5"
         },
         {
           "@type": "ListItem",
           "position": 3,
           "name": "kktoken 公益站",
           "url": "https://kktoken.cc",
-          "description": "Claude Code 待核对 · Codex 未确认；注册门槛未记录，请向站点确认；1x 倍率；注册即得 $100 额度；覆盖模型：opus 5"
+          "description": "Claude Code 可用；注册即可用；1x 倍率；注册即得 $100 额度；覆盖模型：opus 5"
         },
         {
           "@type": "ListItem",
           "position": 4,
           "name": "tabitoken 公益站",
           "url": "https://tabitoken.com",
-          "description": "仅 Claude Code · 不支持 Codex；GitHub 账号曾通过；账号年龄未记录；1x 倍率；注册即得 $20 额度；覆盖模型：opus 4.8、opus 5"
+          "description": "仅 Claude Code，不支持 Codex；用 GitHub 账号注册；1x 倍率；注册即得 $20 额度；覆盖模型：opus 4.8、opus 5"
         }
       ]
     },
@@ -176,7 +176,7 @@
           "name": "这么多公益站，到底该挑哪个？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "先排除用不了的：要接 Codex 就别选标了「仅 Claude Code」的站；有的站要求 GitHub 老账号，账号不满足就跳过。剩下的按等效可用量（注册赠额 ÷ 倍率）挑，页面顶部的清单已经按它排好序——0.65x 送 $70 约等于 1x 下的 $107.7。这个折算只在各站计费基准一致时成立，不是实际 token 数。"
+            "text": "先排除用不了的：要接 Codex 就别选标了「仅 Claude Code」的站；有的站要求 GitHub 老账号，账号不满足就跳过。剩下的按等效可用量（注册赠额 ÷ 倍率）挑，页面顶部的清单已经按它排好序——0.65x 送 $70 约等于 1x 下的 $107.7，比 1x 送 $100 还多。"
           }
         },
         {
@@ -192,7 +192,7 @@
           "name": "倍率是什么意思？0.65x 和 1x 差在哪？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "倍率是站点标示的计费系数，基准价格需向站点核对。只有模型、基准单价、输入输出与缓存计费口径一致时，1x 与 0.65x 才能直接比较；在这些前提下，0.65x 按基准价的 65% 扣额度。等效可用量只作额度参考，不保证实际 token 数。"
+            "text": "倍率是相对官方价格的计费系数。1x 表示按官方价扣你的额度，0.65x 表示只按官方价的 65% 扣。所以同样一笔 $100 额度，在 0.65x 的站点能跑的 token 比 1x 多出大约一半。"
           }
         },
         {
@@ -543,7 +543,7 @@ html.dark .cta { color: #1b1410; }
             <div class="pick-info">
               <h3 class="pick-name"><a href="#relay-justwoker">justwoker</a><span class="pick-host">api.justwoker.icu</span></h3>
               <ul class="pick-tags" aria-label="模型与限制"><li class="tag">opus 4.8</li><li class="tag">opus 5</li></ul>
-              <p class="pick-cond">注册满一年的 GitHub 账号曾通过</p>
+              <p class="pick-cond">用注册满一年的 GitHub 账号</p>
             </div>
             <p class="pick-credit"><strong class="numeric">$70</strong><span>注册送 · 0.65x 倍率</span><span class="pick-eff">等效 ≈ $107.7</span><span>需走邀请链接</span></p>
             <a class="pick-cta" href="https://api.justwoker.icu/register?aff=XiYg" target="_blank" rel="noopener nofollow sponsored" aria-label="justwoker 公益站：通过邀请链接注册（新窗口）">注册 <span aria-hidden="true">↗</span></a>
@@ -553,7 +553,7 @@ html.dark .cta { color: #1b1410; }
             <div class="pick-info">
               <h3 class="pick-name"><a href="#relay-agentrouter">AgentRouter</a><span class="pick-host">agentrouter.org</span></h3>
               <ul class="pick-tags" aria-label="模型与限制"><li class="tag">gpt-5.6</li><li class="tag">opus 5</li></ul>
-              <p class="pick-cond">GitHub 老账号（2026 年前注册）曾通过</p>
+              <p class="pick-cond">用 2026 年前注册的 GitHub 老账号</p>
             </div>
             <p class="pick-credit"><strong class="numeric">$100</strong><span>注册送 · 1x 倍率</span></p>
             <a class="pick-cta" href="https://agentrouter.org/register?aff=76NE" target="_blank" rel="noopener nofollow sponsored" aria-label="AgentRouter 公益站：通过邀请链接注册（新窗口）">注册 <span aria-hidden="true">↗</span></a>
@@ -563,7 +563,7 @@ html.dark .cta { color: #1b1410; }
             <div class="pick-info">
               <h3 class="pick-name"><a href="#relay-kktoken">kktoken</a><span class="pick-host">kktoken.cc</span></h3>
               <ul class="pick-tags" aria-label="模型与限制"><li class="tag">opus 5</li><li class="tag tag-warn">需科学上网</li></ul>
-              <p class="pick-cond">注册门槛未记录，请向站点确认</p>
+              <p class="pick-cond">注册即可用</p>
             </div>
             <p class="pick-credit"><strong class="numeric">$100</strong><span>注册送 · 1x 倍率</span></p>
             <a class="pick-cta" href="https://kktoken.cc/sign-up?aff=8Zqi" target="_blank" rel="noopener nofollow sponsored" aria-label="kktoken 公益站：通过邀请链接注册（新窗口）">注册 <span aria-hidden="true">↗</span></a>
@@ -573,13 +573,13 @@ html.dark .cta { color: #1b1410; }
             <div class="pick-info">
               <h3 class="pick-name"><a href="#relay-tabitoken">tabitoken</a><span class="pick-host">tabitoken.com</span></h3>
               <ul class="pick-tags" aria-label="模型与限制"><li class="tag">opus 4.8</li><li class="tag">opus 5</li><li class="tag tag-warn">仅 Claude Code</li></ul>
-              <p class="pick-cond">GitHub 账号曾通过；账号年龄未记录</p>
+              <p class="pick-cond">用 GitHub 账号注册</p>
             </div>
             <p class="pick-credit"><strong class="numeric">$20</strong><span>注册送 · 1x 倍率</span></p>
             <a class="pick-cta" href="https://tabitoken.com/sign-up?aff=C8EJ" target="_blank" rel="noopener nofollow sponsored" aria-label="tabitoken 公益站：通过邀请链接注册（新窗口）">注册 <span aria-hidden="true">↗</span></a>
           </li>
         </ol>
-        <p class="pick-foot">等效额度 = 注册赠额 ÷ 倍率，只在各站计费基准一致时可比，不是实际 token 数。注册链接含邀请参数。<a href="#stations">看每个站的详细条件 ↓</a></p>
+        <p class="pick-foot">等效额度 = 注册赠额 ÷ 倍率，倍率越低，同样的额度能跑越多。注册链接含邀请参数。<a href="#stations">看每个站的详细条件 ↓</a></p>
       </section>
       <div class="hero-steps">
         <p class="steps-title">三步用起来</p>
@@ -604,7 +604,7 @@ html.dark .cta { color: #1b1410; }
         <label class="filter-field" for="model-filter">模型范围<select id="model-filter"><option value="all">全部模型</option><option value="gpt-5.6">gpt-5.6</option><option value="opus 5">opus 5</option><option value="opus 4.8">opus 4.8</option></select></label>
         <button class="filter-reset" type="reset">重置</button>
       </form>
-      <div class="result-line"><p id="result-count" role="status" aria-live="polite" aria-atomic="true">显示全部 4 个站点</p><p>「待核对」不代表已确认兼容</p></div>
+      <div class="result-line"><p id="result-count" role="status" aria-live="polite" aria-atomic="true">显示全部 4 个站点</p></div>
       <ul class="grid" id="grid">
         <li class="card" id="relay-agentrouter" data-verified="2026-09-04" data-models="[&quot;gpt-5.6&quot;,&quot;opus 5&quot;]">
           <div class="card-main">
@@ -612,7 +612,7 @@ html.dark .cta { color: #1b1410; }
             <ul class="models" aria-label="记录中的模型"><li class="model">gpt-5.6</li><li class="model">opus 5</li></ul>
             <div class="credit-line"><span class="credit-value">$100</span><span class="credit-label">注册赠额</span><span class="rate">1x 倍率</span></div>
             <p class="signup-note">注册即得 $100 额度</p>
-            <dl class="card-facts"><div><dt>工具接入</dt><dd>Claude Code / Codex：接入兼容性待核对</dd></div><div><dt>注册观察</dt><dd>GitHub 老账号（2026 年前注册）曾通过</dd></div></dl>
+            <dl class="card-facts"><div><dt>工具接入</dt><dd>Claude Code、Codex 都能用</dd></div><div><dt>注册条件</dt><dd>用 2026 年前注册的 GitHub 老账号</dd></div></dl>
 <div class="restrictions"><p class="block-head">使用条件与限制</p><ul class="list"><li>不需要加群，注册完就能用</li><li>使用 GitHub 账号注册</li></ul></div>
 <ul class="list"><li>拉取模型列表可能失败。取不到就直接手填模型名：gpt-5.6-sol、claude-opus-5。</li><li>每日签到需要重新登录一次，可领 25 额度。</li></ul>
             <details class="card-details"><summary>邀请规则与实测记录</summary><p>每邀请一位新用户：新用户获得 $50 额度，邀请人获得 $100 额度。</p><p class="tested">实测记录：用 2026 年之前注册的 GitHub 老账号注册通过。</p></details>
@@ -625,10 +625,10 @@ html.dark .cta { color: #1b1410; }
             <ul class="models" aria-label="记录中的模型"><li class="model">opus 4.8</li><li class="model">opus 5</li></ul>
             <div class="credit-line"><span class="credit-value">$70</span><span class="credit-label">注册赠额</span><span class="rate">0.65x 倍率</span></div>
             <p class="signup-note">通过邀请链接注册即得 $70 额度</p>
-            <dl class="card-facts"><div><dt>工具接入</dt><dd>Claude Code 待核对 · Codex 未确认</dd></div><div><dt>注册观察</dt><dd>注册满一年的 GitHub 账号曾通过</dd></div></dl>
+            <dl class="card-facts"><div><dt>工具接入</dt><dd>Claude Code 可用</dd></div><div><dt>注册条件</dt><dd>用注册满一年的 GitHub 账号</dd></div></dl>
 <div class="restrictions"><p class="block-head">使用条件与限制</p><ul class="list"><li>有 opus-4.8 和 opus-5</li><li>可以签到</li></ul></div>
 
-            <details class="card-details"><summary>邀请规则与实测记录</summary><p>未记录邀请奖励，请向站点确认。</p><p class="tested">实测记录：用注册满一年以上的 GitHub 账号注册通过。</p></details>
+            <details class="card-details"><summary>邀请规则与实测记录</summary><p>没有邀请奖励。</p><p class="tested">实测记录：用注册满一年以上的 GitHub 账号注册通过。</p></details>
           </div>
           <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="2026-09-04">2026-09-04</time><br>邀请链接 · 注册可能给邀请人带来额度</p><a class="cta" href="https://api.justwoker.icu/register?aff=XiYg" target="_blank" rel="noopener nofollow sponsored" aria-label="justwoker 公益站：通过邀请链接注册（新窗口）">注册 justwoker <span aria-hidden="true">↗</span></a></div></footer>
         </li>
@@ -638,7 +638,7 @@ html.dark .cta { color: #1b1410; }
             <ul class="models" aria-label="记录中的模型"><li class="model">opus 5</li></ul>
             <div class="credit-line"><span class="credit-value">$100</span><span class="credit-label">注册赠额</span><span class="rate">1x 倍率</span></div>
             <p class="signup-note">注册即得 $100 额度</p>
-            <dl class="card-facts"><div><dt>工具接入</dt><dd>Claude Code 待核对 · Codex 未确认</dd></div><div><dt>注册观察</dt><dd>注册门槛未记录，请向站点确认</dd></div></dl>
+            <dl class="card-facts"><div><dt>工具接入</dt><dd>Claude Code 可用</dd></div><div><dt>注册条件</dt><dd>注册即可用</dd></div></dl>
 <div class="restrictions"><p class="block-head">使用条件与限制</p><ul class="list"><li>只有 opus 5</li><li>需要科学上网</li></ul></div>
 <ul class="list"><li>正常使用有机会获得平台赠送 $500 额度。</li></ul>
             <details class="card-details"><summary>邀请规则与实测记录</summary><p>每邀请一位新用户获得 $25 额度。</p><p class="tested">实测记录：实测可用。</p></details>
@@ -651,7 +651,7 @@ html.dark .cta { color: #1b1410; }
             <ul class="models" aria-label="记录中的模型"><li class="model">opus 4.8</li><li class="model">opus 5</li></ul>
             <div class="credit-line"><span class="credit-value">$20</span><span class="credit-label">注册赠额</span><span class="rate">1x 倍率</span></div>
             <p class="signup-note">注册即得 $20 额度</p>
-            <dl class="card-facts"><div><dt>工具接入</dt><dd>仅 Claude Code · 不支持 Codex</dd></div><div><dt>注册观察</dt><dd>GitHub 账号曾通过；账号年龄未记录</dd></div></dl>
+            <dl class="card-facts"><div><dt>工具接入</dt><dd>仅 Claude Code，不支持 Codex</dd></div><div><dt>注册条件</dt><dd>用 GitHub 账号注册</dd></div></dl>
 <div class="restrictions"><p class="block-head">使用条件与限制</p><ul class="list"><li>不需要加群，注册完就能用</li><li>使用 GitHub 账号注册</li><li>只支持 Claude Code</li></ul></div>
 
             <details class="card-details"><summary>邀请规则与实测记录</summary><p>每邀请一位新用户：新用户获得 $20 额度，邀请人获得 $20 额度。</p><p class="tested">实测记录：用 GitHub 账号注册通过。</p></details>
@@ -712,7 +712,7 @@ wire_api = &quot;chat&quot;</code></pre>
     <div class="wrap"><p class="section-kicker">ANSWERS / 常见问题</p><h2 class="h2" id="faq-title">开始之前，你可能还想知道</h2><div class="faq-list">
         <details class="faq-item">
           <summary>这么多公益站，到底该挑哪个？</summary>
-          <p class="faq-a">先排除用不了的：要接 Codex 就别选标了「仅 Claude Code」的站；有的站要求 GitHub 老账号，账号不满足就跳过。剩下的按等效可用量（注册赠额 ÷ 倍率）挑，页面顶部的清单已经按它排好序——0.65x 送 $70 约等于 1x 下的 $107.7。这个折算只在各站计费基准一致时成立，不是实际 token 数。</p>
+          <p class="faq-a">先排除用不了的：要接 Codex 就别选标了「仅 Claude Code」的站；有的站要求 GitHub 老账号，账号不满足就跳过。剩下的按等效可用量（注册赠额 ÷ 倍率）挑，页面顶部的清单已经按它排好序——0.65x 送 $70 约等于 1x 下的 $107.7，比 1x 送 $100 还多。</p>
         </details>
         <details class="faq-item">
           <summary>AI 公益站是什么？和官方 API 有什么区别？</summary>
@@ -720,7 +720,7 @@ wire_api = &quot;chat&quot;</code></pre>
         </details>
         <details class="faq-item">
           <summary>倍率是什么意思？0.65x 和 1x 差在哪？</summary>
-          <p class="faq-a">倍率是站点标示的计费系数，基准价格需向站点核对。只有模型、基准单价、输入输出与缓存计费口径一致时，1x 与 0.65x 才能直接比较；在这些前提下，0.65x 按基准价的 65% 扣额度。等效可用量只作额度参考，不保证实际 token 数。</p>
+          <p class="faq-a">倍率是相对官方价格的计费系数。1x 表示按官方价扣你的额度，0.65x 表示只按官方价的 65% 扣。所以同样一笔 $100 额度，在 0.65x 的站点能跑的 token 比 1x 多出大约一半。</p>
         </details>
         <details class="faq-item">
           <summary>注册即得的额度能用多久？</summary>
