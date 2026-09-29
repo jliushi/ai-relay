@@ -23,6 +23,8 @@ const fmtDate = (iso) =>
 const latestDate = RELAYS.reduce((latest, r) => r.verifiedAt > latest ? r.verifiedAt : latest, "1970-01-01");
 const isPaid = (aff) => /[?&]aff=/.test(aff);
 const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
+const shortName = (r) => r.name.replace(/\s*公益站$/, "");
+const BRAND_MARK = `<svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#20344a"/><path d="M8 11h10M8 16h7M8 21h5" stroke="#fffefa" stroke-width="2" stroke-linecap="round"/><path d="m20 12-4 10h5l4-10z" fill="#ed9c72"/></svg>`;
 
 /* 赠额与倍率只解析原始文案，不能解析时不猜数字。折算值不是实际 token 数。 */
 function relayCredit(r) {
@@ -36,6 +38,13 @@ function relayCredit(r) {
   return { r, mult, credit, eff: mult > 0 && credit !== null ? credit / mult : null };
 }
 const rankRelays = () => RELAYS.map(relayCredit).sort((a, b) => (b.eff ?? -1) - (a.eff ?? -1));
+/* H1 第二行跟着数据走：站点增减、赠额变化都不用改文案。 */
+function heroSub() {
+  const credits = RELAYS.map((r) => relayCredit(r).credit).filter((c) => c !== null);
+  const lo = Math.min(...credits), hi = Math.max(...credits);
+  const range = !credits.length ? "" : lo === hi ? `，注册送 ${money(hi)}` : `，注册送 ${money(lo)}–${money(hi)}`;
+  return `${RELAYS.length} 个实测公益站${range}`;
+}
 
 /* 重要须知常驻，不再使用悬停覆盖层。邀请奖励和实测原文保留在原生 details 中。 */
 function cardHTML(r, i) {
@@ -54,30 +63,41 @@ ${notes}
 ${tips}
             <details class="card-details"><summary>邀请规则与实测记录</summary><p>${r.invite ? esc(r.invite) : "未记录邀请奖励，请向站点确认。"}</p><p class="tested">实测记录：${esc(r.tested)}</p></details>
           </div>
-          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="${esc(r.verifiedAt)}">${esc(r.verifiedAt)}</time><br>${paid ? "邀请链接 · 注册可能给邀请人带来额度" : "不含邀请参数"}</p><a class="cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">${paid ? "邀请注册" : "前往注册"} <span aria-hidden="true">↗</span></a></div></footer>
+          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="${esc(r.verifiedAt)}">${esc(r.verifiedAt)}</time><br>${paid ? "邀请链接 · 注册可能给邀请人带来额度" : "不含邀请参数"}</p><a class="cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 ${esc(shortName(r))} <span aria-hidden="true">↗</span></a></div></footer>
         </li>`;
 }
 
-/* 首屏表格按折算额度排序，但明确给出比较前提；门槛和工具说明先于金额。 */
+/* 首屏清单：落地第一眼就能看到有哪些站、送多少、点哪里注册。按折算额度排序，
+   折算的前提写在清单底部；注册条件和「仅 Claude Code」这类硬限制跟着每一行走。 */
+const claudeOnly = (r) => /不支持\s*Codex|只支持\s*Claude Code/.test([r.tools, ...(r.notes || [])].join(" "));
+const needsProxy = (r) => (r.notes || []).some((note) => note.includes("科学上网"));
+
 function pickHTML() {
-  const rows = rankRelays().map(({ r, mult, credit, eff }) => `            <tr>
-              <th scope="row"><a href="#relay-${esc(r.id)}">${esc(r.name.replace(/\s*公益站$/, ""))} ↗</a><small>实测 ${esc(r.verifiedAt)}</small></th>
-              <td class="cmp-tools">${esc(r.tools)}</td>
-              <td class="cmp-access">${esc(r.eligibility)}${(r.notes || []).some(note => note.includes("科学上网")) ? "<small>需要科学上网</small>" : ""}</td>
-              <td class="numeric">${credit === null ? "—" : esc(money(credit))}${/邀请/.test(r.signup) ? "<small>需通过邀请链接</small>" : ""}</td>
-              <td class="numeric">${mult === null ? "—" : esc(mult + "x")}</td>
-              <td class="numeric cmp-eff">${eff === null ? "—" : esc((Number.isInteger(eff) ? "" : "≈ ") + money(eff))}</td>
-            </tr>`).join("\n");
-  return `      <p class="pick-lead">先看接入说明与注册观察，再看赠额。模型列表不等于客户端兼容性实测；「待核对」请先向站点确认。</p>
-      <div class="table-wrap" role="region" aria-label="站点对比表，可横向滚动" tabindex="0">
-        <table class="cmp"><caption>按等效可用量排序 · 窄屏可左右滑动查看完整条件</caption>
-          <thead><tr><th scope="col">站点 / 实测日期</th><th scope="col">工具接入说明</th><th scope="col">注册观察 / 网络要求</th><th scope="col">注册赠额</th><th scope="col">倍率</th><th scope="col">等效可用量*</th></tr></thead>
-          <tbody>
+  const rows = rankRelays().map(({ r, mult, credit, eff }, i) => {
+    const paid = isPaid(r.aff);
+    const tags = [
+      ...r.models.map((m) => `<li class="tag">${esc(m)}</li>`),
+      claudeOnly(r) ? `<li class="tag tag-warn">仅 Claude Code</li>` : "",
+      needsProxy(r) ? `<li class="tag tag-warn">需科学上网</li>` : "",
+    ].join("");
+    const rate = mult === null ? "倍率未记录" : `${mult}x 倍率`;
+    const effLine = eff === null || eff === credit ? "" : `<span class="pick-eff">等效 ≈ ${esc(money(eff))}</span>`;
+    return `          <li class="pick-row">
+            <span class="pick-rank" aria-hidden="true">${i + 1}</span>
+            <div class="pick-info">
+              <h3 class="pick-name"><a href="#relay-${esc(r.id)}">${esc(shortName(r))}</a><span class="pick-host">${esc(r.host)}</span></h3>
+              <ul class="pick-tags" aria-label="模型与限制">${tags}</ul>
+              <p class="pick-cond">${esc(r.eligibility)}</p>
+            </div>
+            <p class="pick-credit"><strong class="numeric">${credit === null ? "—" : esc(money(credit))}</strong><span>注册送 · ${esc(rate)}</span>${effLine}${/邀请/.test(r.signup) ? `<span>需走邀请链接</span>` : ""}</p>
+            <a class="pick-cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 <span aria-hidden="true">↗</span></a>
+          </li>`;
+  }).join("\n");
+  return `        <div class="pick-head"><h2 class="pick-title" id="pick-title">${RELAYS.length} 个实测站点</h2><span class="pick-sort">按等效额度排序</span></div>
+        <ol class="pick-rows">
 ${rows}
-          </tbody>
-        </table>
-      </div>
-      <p class="calc-note"><strong>* 仅作额度折算：</strong>等效可用量 = 注册赠额 ÷ 倍率。只有模型、基准价格、输入输出及缓存计费口径可比时才有意义；不是实际 token 数、可提现金额或耐用程度保证。</p>`;
+        </ol>
+        <p class="pick-foot">等效额度 = 注册赠额 ÷ 倍率，只在各站计费基准一致时可比，不是实际 token 数。${RELAYS.some((r) => isPaid(r.aff)) ? "注册链接含邀请参数。" : ""}<a href="#stations">看每个站的详细条件 ↓</a></p>`;
 }
 
 /* ---------- 配置方法 ----------
@@ -405,11 +425,11 @@ function ogHTML() {
     text-transform: uppercase; color: #a83d20;
   }
   h1 {
-    margin: 22px 0 0; font-size: 92px; line-height: 1.06; font-weight: 800;
+    margin: 22px 0 0; font-size: 66px; line-height: 1.1; font-weight: 800;
     letter-spacing: -.03em;
     color: #20344a;
   }
-  .lead { margin-top: 26px; font-size: 30px; line-height: 1.5; color: #5c6670; }
+  .lead { margin-top: 18px; font-size: 42px; line-height: 1.35; font-weight: 800; color: #a83d20; }
   .row { margin-top: 46px; display: flex; gap: 12px; flex-wrap: wrap; }
   .chip {
     padding: 9px 20px; border: 1px solid #d8dbd7; border-radius: 999px;
@@ -423,10 +443,10 @@ function ogHTML() {
 </head>
 <body>
   <div class="og">
-    <p class="eyebrow">第三方服务目录 · 非实时状态</p>
-    <h1>${esc(SITE.brand)}</h1>
-    <p class="lead">先核对工具与门槛，再比较赠额和倍率。</p>
-    <div class="row">${RELAYS.map((r) => `<span class="chip">${esc(r.name)}</span>`).join("")}</div>
+    <p class="eyebrow">${esc(SITE.brand)} · 实测清单</p>
+    <h1>${esc(SITE.heroTitle)}</h1>
+    <p class="lead">${esc(heroSub())}</p>
+    <div class="row">${rankRelays().map(({ r, credit }) => `<span class="chip">${esc(shortName(r))}${credit === null ? "" : ` · ${esc(money(credit))}`}</span>`).join("")}</div>
     <div class="foot">
       <span>${esc(SITE.url.replace(/^https?:\/\//, "").replace(/\/$/, ""))}</span>
       <span>实测于 ${esc(fmtDate(latest))}</span>
@@ -526,11 +546,7 @@ ${bootstrap}
 <header class="topbar">
   <div class="wrap topbar-inner">
     <a class="brand" href="./">
-      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect width="24" height="24" rx="6" fill="#20344a"/>
-        <path d="M7 15.5 12 7l5 8.5" stroke="#fff" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      ${BRAND_MARK}
       ${esc(SITE.brand)}
     </a>
     <div class="topbar-right">
@@ -541,7 +557,7 @@ ${bootstrap}
 </header>
 <main id="main">
   <section class="hero">
-    <div class="wrap">
+    <div class="wrap guide-body">
       <p class="eyebrow">${esc(page.eyebrow)}</p>
       <h1 class="hero-title">${esc(page.title)}</h1>
       <p class="hero-lead">${esc(page.intro)} <a href="./#stations">去看清单 →</a></p>
@@ -573,8 +589,10 @@ const FILLS = {
   BRAND: esc(SITE.brand),
   AUTHOR_URL: esc(SITE.author),
   REPO_URL: esc(SITE.repo),
-  EYEBROW: esc(SITE.eyebrow),
-  HERO_TITLE: esc(SITE.heroTitle),
+  EYEBROW: esc(`实测更新于 ${latestDate} · 非实时监控`),
+  // 最后一个词不拆行：宽屏断成「Claude Code / Codex」「免费额度」，而不是从中间劈开。
+  HERO_TITLE: esc(SITE.heroTitle).replace(/ (\S+)$/, ' <span class="nw">$1</span>'),
+  HERO_SUB: esc(heroSub()).replace(/(\$[\d.]+–\$[\d.]+)/, '<span class="nw">$1</span>'),
   HERO_LEAD: esc(SITE.heroLead),
   CONTACT: esc(SITE.contactText),
   COUNT: String(RELAYS.length),
