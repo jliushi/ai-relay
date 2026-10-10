@@ -47,6 +47,8 @@ export const SITE = {
     "gpt-6-astra 免费",
     "opus 5.5 免费额度",
     "deepseek v4.1 flash",
+    "glm 5.3",
+    "grok 4.7",
   ],
 
   /* 首屏只回答三件事：这是什么、能拿到多少、怎么开始。
@@ -127,6 +129,20 @@ export const RELAYS = [
     notes: ["只有 opus 5", "需要科学上网"],
     tips: ["正常使用有机会获得平台赠送 $500 额度。"],
     verifiedAt: "2026-09-04",
+  },
+  {
+    id: "artbloom",
+    name: "artbloom 公益站",
+    host: "api.artbloom.tech",
+    aff: "https://api.artbloom.tech/signup?ref=5LVZCDPNRI",
+    rate: "1x 倍率",
+    signup: "注册即得 $100 额度",
+    models: ["opus 5.5", "opus 5", "glm 5.3", "glm 5.3 flash", "grok 4.7"],
+    tools: "Claude Code 可用",
+    eligibility: "注册即可用",
+    tested: "实测 opus 5.5 可用。",
+    notes: ["注册即送 $100 额度", "有 Claude Opus 5.5/5、GLM 5.3、Grok 4.7"],
+    verifiedAt: "2026-10-10",
   },
 ];
 

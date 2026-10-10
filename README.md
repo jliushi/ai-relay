@@ -18,6 +18,7 @@
 | [AgentRouter 公益站](https://agentrouter.org/register?aff=76NE) | `agentrouter.org` | 1x 倍率 | 注册即得 $100 额度 | gpt-6-astra、opus 5.5、deepseek v4.1 flash | 2026-10-10 |
 | [justwoker 公益站](https://api.justwoker.icu/register?aff=XiYg) | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-10-10 |
 | [kktoken 公益站](https://kktoken.cc/sign-up?aff=8Zqi) | `kktoken.cc` | 1x 倍率 | 注册即得 $100 额度 | opus 5 | 2026-09-04 |
+| [artbloom 公益站](https://api.artbloom.tech/signup?ref=5LVZCDPNRI) | `api.artbloom.tech` | 1x 倍率 | 注册即得 $100 额度 | opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7 | 2026-10-10 |
 <!-- RELAYS:END -->
 
 上面的表格由 `node build.mjs` 从 `data.js` 生成，不要手改。
