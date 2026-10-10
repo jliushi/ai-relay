@@ -24,7 +24,7 @@ export const SITE = {
   // 实测这两个词的搜索结果是两拨人（大全偏导航站，清单偏具体对比），都要覆盖。
   title: "AI 公益站大全 — Claude Code / Codex 免费额度实测清单",
   description:
-    "实测可用的 AI 公益站（中转站）清单：注册即送免费额度，覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可接入 Claude Code 和 Codex。逐站记录赠额、倍率、注册条件、邀请规则和实测日期，附最小配置方法。",
+    "实测可用的 AI 公益站（中转站）清单：注册即送免费额度，覆盖 Claude Opus 5.5、Opus 4.8、GPT-6 Astra 与 DeepSeek V4.1 Flash，可接入 Claude Code 和 Codex。逐站记录赠额、倍率、注册条件、邀请规则和实测日期，附最小配置方法。",
   keywords: [
     "公益站",
     "公益站大全",
@@ -43,15 +43,17 @@ export const SITE = {
     "New API 中转站",
     "AgentRouter",
     "kktoken",
-    "tabitoken",
     "justwoker",
+    "gpt-6-astra 免费",
+    "opus 5.5 免费额度",
+    "deepseek v4.1 flash",
   ],
 
   /* 首屏只回答三件事：这是什么、能拿到多少、怎么开始。
      H1 第二行（「N 个实测公益站，注册送 $x–$y」）由 build.mjs 按 RELAYS 算，不写死。 */
   heroTitle: "Claude Code / Codex 免费额度",
   heroLead:
-    "公益站是第三方搭的 API 中转：注册就送一笔额度，把 key 填进 Claude Code 或 Codex 就能用 Opus 5 / GPT-5.6。清单已按等效额度排好序，点「注册」直达。",
+    "公益站是第三方搭的 API 中转：注册就送一笔额度，把 key 填进 Claude Code 或 Codex 就能用 Opus 5.5 / GPT-6 Astra。清单已按等效额度排好序，点「注册」直达。",
   contactText: "联系作者",
 
   /* 搜索引擎的所有权验证码。删掉就会掉验证状态，Search Console / 百度资源平台
@@ -85,16 +87,16 @@ export const RELAYS = [
     rate: "1x 倍率",
     signup: "注册即得 $100 额度",
     invite: "每邀请一位新用户：新用户获得 $50 额度，邀请人获得 $100 额度。",
-    models: ["gpt-5.6", "opus 5"],
+    models: ["gpt-6-astra", "opus 5.5", "deepseek v4.1 flash"],
     tools: "Claude Code、Codex 都能用",
     eligibility: "用 2026 年前注册的 GitHub 老账号",
     tested: "用 2026 年之前注册的 GitHub 老账号注册通过。",
     notes: ["不需要加群，注册完就能用", "使用 GitHub 账号注册"],
     tips: [
-      "拉取模型列表可能失败。取不到就直接手填模型名：gpt-5.6-sol、claude-opus-5。",
+      "拉取模型列表可能失败。取不到就从站点的模型列表里复制原始字符串手填，大小写和连字符别自己改。",
       "每日签到需要重新登录一次，可领 25 额度。",
     ],
-    verifiedAt: "2026-09-04",
+    verifiedAt: "2026-10-10",
   },
   {
     id: "justwoker",
@@ -108,7 +110,7 @@ export const RELAYS = [
     eligibility: "用注册满一年的 GitHub 账号",
     tested: "用注册满一年以上的 GitHub 账号注册通过。",
     notes: ["有 opus-4.8 和 opus-5", "可以签到"],
-    verifiedAt: "2026-09-04",
+    verifiedAt: "2026-10-10",
   },
   {
     id: "kktoken",
@@ -124,21 +126,6 @@ export const RELAYS = [
     tested: "实测可用。",
     notes: ["只有 opus 5", "需要科学上网"],
     tips: ["正常使用有机会获得平台赠送 $500 额度。"],
-    verifiedAt: "2026-09-04",
-  },
-  {
-    id: "tabitoken",
-    name: "tabitoken 公益站",
-    host: "tabitoken.com",
-    aff: "https://tabitoken.com/sign-up?aff=C8EJ",
-    rate: "1x 倍率",
-    signup: "注册即得 $20 额度",
-    invite: "每邀请一位新用户：新用户获得 $20 额度，邀请人获得 $20 额度。",
-    models: ["opus 4.8", "opus 5"],
-    tools: "仅 Claude Code，不支持 Codex",
-    eligibility: "用 GitHub 账号注册",
-    tested: "用 GitHub 账号注册通过。",
-    notes: ["不需要加群，注册完就能用", "使用 GitHub 账号注册", "只支持 Claude Code"],
     verifiedAt: "2026-09-04",
   },
 ];
@@ -186,7 +173,7 @@ export const SETUP = {
   /* 这几条都是实际踩过的，不是通用的「请检查你的配置」。 */
   pitfalls: [
     "base_url 结尾要不要 /v1，看端点类型：Anthropic 兼容的一般不带（Claude Code 自己会拼 /v1/messages），OpenAI 兼容的一般要带。填错的表现是 404，不是 401 —— 按状态码区分是配置错还是 key 错。",
-    "模型名照站点给的抄。拉取模型列表失败很常见，取不到就手填，例如 AgentRouter 上是 gpt-5.6-sol 和 claude-opus-5。",
+    "模型名照站点给的抄。拉取模型列表失败很常见，取不到就从站点的模型列表里复制原始字符串手填，大小写和连字符别自己改。",
     "标了「只支持 Claude Code」的站不要接 Codex。它只转了 Anthropic 那套接口，接上只会拿到一串报错。",
     "401 / 403 通常是 key 写错或额度用完，429 是站点在限流 —— 后者换一个站就好，别反复重试。",
     "key 不要写进仓库，也不要写进会被提交的配置文件。用环境变量，或者站点支持的话用系统钥匙串。",

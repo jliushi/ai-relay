@@ -1,7 +1,7 @@
 # AI 公益站清单
 
 实测可用的第三方 AI 公益站（中转站）清单，含倍率、注册即得额度、邀请规则与须知。
-覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可用于 Claude Code 和 Codex。每条都标注实测日期。
+覆盖 Claude Opus 5.5、Opus 4.8、GPT-6 Astra 与 DeepSeek V4.1 Flash，可用于 Claude Code 和 Codex。每条都标注实测日期。
 和一般的白嫖导航不同：这里按**等效可用量（注册赠额 ÷ 倍率）**排序，而不是只看送多少，并写明每个站能接哪个工具、要什么账号。
 
 **页面：https://jliushi.github.io/ai-relay/**
@@ -15,10 +15,9 @@
 <!-- RELAYS:START -->
 | 站点 | 域名 | 倍率 | 注册即得 | 1x 覆盖模型 | 实测日期 |
 | --- | --- | --- | --- | --- | --- |
-| [AgentRouter 公益站](https://agentrouter.org/register?aff=76NE) | `agentrouter.org` | 1x 倍率 | 注册即得 $100 额度 | gpt-5.6、opus 5 | 2026-09-04 |
-| [justwoker 公益站](https://api.justwoker.icu/register?aff=XiYg) | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-09-04 |
+| [AgentRouter 公益站](https://agentrouter.org/register?aff=76NE) | `agentrouter.org` | 1x 倍率 | 注册即得 $100 额度 | gpt-6-astra、opus 5.5、deepseek v4.1 flash | 2026-10-10 |
+| [justwoker 公益站](https://api.justwoker.icu/register?aff=XiYg) | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-10-10 |
 | [kktoken 公益站](https://kktoken.cc/sign-up?aff=8Zqi) | `kktoken.cc` | 1x 倍率 | 注册即得 $100 额度 | opus 5 | 2026-09-04 |
-| [tabitoken 公益站](https://tabitoken.com/sign-up?aff=C8EJ) | `tabitoken.com` | 1x 倍率 | 注册即得 $20 额度 | opus 4.8、opus 5 | 2026-09-04 |
 <!-- RELAYS:END -->
 
 上面的表格由 `node build.mjs` 从 `data.js` 生成，不要手改。
