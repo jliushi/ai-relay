@@ -5,7 +5,7 @@
 页面地址：https://jliushi.github.io/ai-relay/
 配置教程：https://jliushi.github.io/ai-relay/guide.html
 公益站是什么（科普）：https://jliushi.github.io/ai-relay/what-is-ai-relay.html
-最近更新：2026-10-10
+最近更新：2026-10-16
 
 ## 收录标准与免责
 
@@ -24,10 +24,10 @@
 
 | 站点 | 注册赠额 | 倍率 | 等效可用量 |
 | --- | --- | --- | --- |
-| justwoker 公益站 | $70 | 0.65x | ≈ $107.7 |
 | AgentRouter 公益站 | $100 | 1x | $100 |
-| kktoken 公益站 | $100 | 1x | $100 |
 | artbloom 公益站 | $100 | 1x | $100 |
+| justwoker 公益站 | $70 | 0.65x | ≈ $107.7 |
+| kktoken 公益站 | $100 | 1x | $100 |
 
 ## 站点清单（共 4 个）
 
@@ -44,6 +44,18 @@
 - 实测日期：2026-10-10
 - 须知：不需要加群，注册完就能用；使用 GitHub 账号注册
 - 使用提示：拉取模型列表可能失败。取不到就从站点的模型列表里复制原始字符串手填，大小写和连字符别自己改。；每日签到需要重新登录一次，可领 25 额度。
+
+### artbloom 公益站
+
+- 域名：api.artbloom.tech
+- 工具接入：Claude Code 可用
+- 注册条件：注册即可用
+- 倍率：1x 倍率
+- 注册即得：注册即得 $100 额度
+- 记录中的模型：opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7
+- 实测：实测 opus 5.5 可用。
+- 实测日期：2026-10-10
+- 须知：注册即送 $100 额度；有 Claude Opus 5.5/5、GLM 5.3、Grok 4.7
 
 ### justwoker 公益站
 
@@ -70,18 +82,6 @@
 - 实测日期：2026-09-04
 - 须知：只有 opus 5；需要科学上网
 - 使用提示：正常使用有机会获得平台赠送 $500 额度。
-
-### artbloom 公益站
-
-- 域名：api.artbloom.tech
-- 工具接入：Claude Code 可用
-- 注册条件：注册即可用
-- 倍率：1x 倍率
-- 注册即得：注册即得 $100 额度
-- 记录中的模型：opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7
-- 实测：实测 opus 5.5 可用。
-- 实测日期：2026-10-10
-- 须知：注册即送 $100 额度；有 Claude Opus 5.5/5、GLM 5.3、Grok 4.7
 
 ## 配置方法
 
@@ -130,7 +130,7 @@ wire_api = "chat"
 
 ### 这么多公益站，到底该挑哪个？
 
-先排除用不了的：要接 Codex 就别选标了「仅 Claude Code」的站；有的站要求 GitHub 老账号，账号不满足就跳过。剩下的按等效可用量（注册赠额 ÷ 倍率）挑，页面顶部的清单已经按它排好序——0.65x 送 $70 约等于 1x 下的 $107.7，比 1x 送 $100 还多。
+先排除用不了的：要接 Codex 就别选标了「仅 Claude Code」的站；有的站要求 GitHub 老账号，账号不满足就跳过。目前 AgentRouter 排第一，artbloom 第二；justwoker 和 kktoken 不可用，历史额度仅供参考。
 
 ### AI 公益站是什么？和官方 API 有什么区别？
 

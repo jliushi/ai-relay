@@ -8,9 +8,9 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 execFileSync(process.execPath, ["build.mjs"], { cwd: root, stdio: "inherit" });
 const read = name => readFileSync(new URL("../" + name, import.meta.url), "utf8");
 const esc = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
-const html = read("index.html");
+const html = read("index-zh.html");
 const graph = source => JSON.parse(source.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])["@graph"];
-for (const name of ["index.html", GUIDE.slug, EXPLAINER.slug]) {
+for (const name of ["index-zh.html", GUIDE.slug, EXPLAINER.slug]) {
   const source = read(name);
   assert.ok(!/\{\{[A-Z_]+\}\}/.test(source), `${name}: unresolved placeholder`);
   assert.equal((source.match(/<h1\b/g) || []).length, 1, `${name}: one h1`);
@@ -26,8 +26,8 @@ for (const hedge of ["待核对", "未确认", "曾通过", "请向站点确认"
 assert.ok(!html.includes("可以确认不存在掺水"));
 for (const relay of RELAYS) {
   assert.ok(html.includes(`id="relay-${esc(relay.id)}"`));
-  assert.ok(html.includes(`href="${esc(relay.aff)}"`), `${relay.id}: preserve full invitation URL`);
-  for (const text of [relay.name, relay.tested, relay.tools, relay.eligibility, relay.signup, ...(relay.notes || []), ...(relay.tips || [])]) {
+  assert.equal(html.includes(`href="${esc(relay.aff)}"`), !relay.unavailable, `${relay.id}: preserve full invitation URL`);
+  for (const text of [relay.name, relay.tested, relay.tools, relay.eligibility, ...(relay.unavailable ? [] : [relay.signup]), ...(relay.notes || []), ...(relay.tips || [])]) {
     assert.ok(html.includes(esc(text)), `${relay.id}: static content missing: ${text}`);
   }
   for (const model of relay.models) {

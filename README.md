@@ -2,7 +2,7 @@
 
 实测可用的第三方 AI 公益站（中转站）清单，含倍率、注册即得额度、邀请规则与须知。
 覆盖 Claude Opus 5.5、Opus 4.8、GPT-6 Astra 与 DeepSeek V4.1 Flash，可用于 Claude Code 和 Codex。每条都标注实测日期。
-和一般的白嫖导航不同：这里按**等效可用量（注册赠额 ÷ 倍率）**排序，而不是只看送多少，并写明每个站能接哪个工具、要什么账号。
+和一般的白嫖导航不同：这里按**可用状态和维护者指定顺序**排序，而不是只看送多少，并写明每个站能接哪个工具、要什么账号。
 
 **页面：https://jliushi.github.io/ai-relay/**
 **配置教程（Claude Code / Codex 从拿 key 到跑通 + 避坑）：https://jliushi.github.io/ai-relay/guide.html**
@@ -16,9 +16,9 @@
 | 站点 | 域名 | 倍率 | 注册即得 | 1x 覆盖模型 | 实测日期 |
 | --- | --- | --- | --- | --- | --- |
 | [AgentRouter 公益站](https://agentrouter.org/register?aff=76NE) | `agentrouter.org` | 1x 倍率 | 注册即得 $100 额度 | gpt-6-astra、opus 5.5、deepseek v4.1 flash | 2026-10-10 |
+| [artbloom 公益站](https://api.artbloom.tech/signup?ref=5LVZCDPNRI) | `api.artbloom.tech` | 1x 倍率 | 注册即得 $100 额度 | opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7 | 2026-10-10 |
 | [justwoker 公益站](https://api.justwoker.icu/register?aff=XiYg) | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-10-10 |
 | [kktoken 公益站](https://kktoken.cc/sign-up?aff=8Zqi) | `kktoken.cc` | 1x 倍率 | 注册即得 $100 额度 | opus 5 | 2026-09-04 |
-| [artbloom 公益站](https://api.artbloom.tech/signup?ref=5LVZCDPNRI) | `api.artbloom.tech` | 1x 倍率 | 注册即得 $100 额度 | opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7 | 2026-10-10 |
 <!-- RELAYS:END -->
 
 上面的表格由 `node build.mjs` 从 `data.js` 生成，不要手改。
@@ -99,3 +99,9 @@ favicon.svg
 ## 许可
 
 页面代码 MIT。清单内容是第三方服务的公开信息与个人实测记录，随时可能过期。
+
+## 首页语言与状态
+
+首页默认英文，`index-zh.html` 为中文版本，顶部链接可双向切换，无 JavaScript 也可使用。`en.json` 维护首页英文翻译；独立教程仍为中文。
+
+清单顺序由 `RELAYS` 决定：AgentRouter、artbloom、justwoker、kktoken。`unavailable: true` 会将摘要和详情变灰、标记历史信息并移除注册链接。AgentRouter 单独高亮。历史实测日期不因状态调整而更改。

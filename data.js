@@ -55,7 +55,7 @@ export const SITE = {
      H1 第二行（「N 个实测公益站，注册送 $x–$y」）由 build.mjs 按 RELAYS 算，不写死。 */
   heroTitle: "Claude Code / Codex 免费额度",
   heroLead:
-    "公益站是第三方搭的 API 中转：注册就送一笔额度，把 key 填进 Claude Code 或 Codex 就能用 Opus 5.5 / GPT-6 Astra。清单已按等效额度排好序，点「注册」直达。",
+    "公益站是第三方搭的 API 中转：注册就送一笔额度，把 key 填进 Claude Code 或 Codex 就能用 Opus 5.5 / GPT-6 Astra。清单按可用状态排序，AgentRouter 优先，artbloom 次之；不可用站点保留历史记录，点「注册」直达。",
   contactText: "联系作者",
 
   /* 搜索引擎的所有权验证码。删掉就会掉验证状态，Search Console / 百度资源平台
@@ -101,7 +101,22 @@ export const RELAYS = [
     verifiedAt: "2026-10-10",
   },
   {
+    id: "artbloom",
+    name: "artbloom 公益站",
+    host: "api.artbloom.tech",
+    aff: "https://api.artbloom.tech/signup?ref=5LVZCDPNRI",
+    rate: "1x 倍率",
+    signup: "注册即得 $100 额度",
+    models: ["opus 5.5", "opus 5", "glm 5.3", "glm 5.3 flash", "grok 4.7"],
+    tools: "Claude Code 可用",
+    eligibility: "注册即可用",
+    tested: "实测 opus 5.5 可用。",
+    notes: ["注册即送 $100 额度", "有 Claude Opus 5.5/5、GLM 5.3、Grok 4.7"],
+    verifiedAt: "2026-10-10",
+  },
+  {
     id: "justwoker",
+    unavailable: true,
     name: "justwoker 公益站",
     host: "api.justwoker.icu",
     aff: "https://api.justwoker.icu/register?aff=XiYg",
@@ -116,6 +131,7 @@ export const RELAYS = [
   },
   {
     id: "kktoken",
+    unavailable: true,
     name: "kktoken 公益站",
     host: "kktoken.cc",
     aff: "https://kktoken.cc/sign-up?aff=8Zqi",
@@ -130,20 +146,7 @@ export const RELAYS = [
     tips: ["正常使用有机会获得平台赠送 $500 额度。"],
     verifiedAt: "2026-09-04",
   },
-  {
-    id: "artbloom",
-    name: "artbloom 公益站",
-    host: "api.artbloom.tech",
-    aff: "https://api.artbloom.tech/signup?ref=5LVZCDPNRI",
-    rate: "1x 倍率",
-    signup: "注册即得 $100 额度",
-    models: ["opus 5.5", "opus 5", "glm 5.3", "glm 5.3 flash", "grok 4.7"],
-    tools: "Claude Code 可用",
-    eligibility: "注册即可用",
-    tested: "实测 opus 5.5 可用。",
-    notes: ["注册即送 $100 额度", "有 Claude Opus 5.5/5、GLM 5.3、Grok 4.7"],
-    verifiedAt: "2026-10-10",
-  },
+
 ];
 
 /* ---------------------------------------------------------------------------
@@ -230,7 +233,7 @@ export const RISKS = {
 export const FAQ = [
   {
     q: "这么多公益站，到底该挑哪个？",
-    a: "先排除用不了的：要接 Codex 就别选标了「仅 Claude Code」的站；有的站要求 GitHub 老账号，账号不满足就跳过。剩下的按等效可用量（注册赠额 ÷ 倍率）挑，页面顶部的清单已经按它排好序——0.65x 送 $70 约等于 1x 下的 $107.7，比 1x 送 $100 还多。",
+    a: "先排除用不了的：要接 Codex 就别选标了「仅 Claude Code」的站；有的站要求 GitHub 老账号，账号不满足就跳过。目前 AgentRouter 排第一，artbloom 第二；justwoker 和 kktoken 不可用，历史额度仅供参考。",
   },
   {
     q: "AI 公益站是什么？和官方 API 有什么区别？",
@@ -322,11 +325,11 @@ export const GUIDE = {
   ],
   intro:
     "这一页把「拿到公益站的 key 之后怎么接进 Claude Code 和 Codex」从头走一遍，包含最小可用配置和几个真会遇到的报错。还没有 key 的，先去" +
-    "首页的清单挑一个站注册——那边按等效可用量排好序、每条标了实测日期。",
+    "首页的清单挑一个站注册——那边按可用状态排好序、每条标了实测日期。",
   eyebrow: "配置教程",
   breadcrumb: "配置教程",
   outro:
-    '配好了就回<a href="./#stations">首页清单</a>挑个站开跑；拿不准挑哪个，首页顶部的<a href="./#pick">清单</a>已按等效可用量排好序。公益站随时可能变，别把某一家当唯一入口。',
+    '配好了就回<a href="./#stations">首页清单</a>挑个站开跑；拿不准挑哪个，首页顶部的<a href="./#pick">清单</a>已按可用状态排好序。公益站随时可能变，别把某一家当唯一入口。',
   sections: [
     {
       h: "一、公益站是什么？先把风险讲清楚",

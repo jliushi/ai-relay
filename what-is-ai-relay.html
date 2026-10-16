@@ -102,7 +102,7 @@ button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 3px solid var(--brand-1); outline-offset: 4px; }
-::selection { background: var(--brand-soft); color: var(--ink); }
+::selection { background: var(--panel); color: var(--ink); }
 .wrap { width: min(100% - 64px, 1180px); margin-inline: auto; }
 .skip { position: fixed; z-index: 100; top: 8px; left: 12px; padding: 12px 18px; background: var(--panel); transform: translateY(-160%); }
 .skip:focus { transform: none; }
@@ -129,7 +129,7 @@ button { cursor: pointer; }
 .steps-title { margin-top: 30px; font-size: 13px; font-weight: 700; }
 .steps { margin-top: 10px; display: grid; gap: 4px; }
 .steps li { display: flex; gap: 14px; padding: 9px 0; }
-.step-n { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--brand-soft); color: var(--brand-1); font: 700 13px var(--mono); }
+.step-n { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--panel); color: var(--brand-1); font: 700 13px var(--mono); }
 .steps strong { display: block; font-size: 15px; line-height: 1.6; }
 .steps small { display: block; font-size: 13px; line-height: 1.7; color: var(--muted); }
 .steps code { font: 12px var(--mono); padding: 1px 5px; border-radius: 4px; background: var(--bg-alt); color: var(--ink); overflow-wrap: anywhere; }
@@ -194,7 +194,7 @@ html.dark .pick-cta { color: #1b1410; }
 .credit-line { display: flex; align-items: baseline; gap: 13px; margin-top: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
 .credit-value { font: 700 30px/1 var(--mono); letter-spacing: -.05em; }
 .credit-label { font-size: 12px; color: var(--muted); }
-.rate { font: 12px var(--mono); margin-left: auto; padding: 6px 8px; border-radius: 4px; background: var(--brand-soft); color: var(--brand-1); white-space: nowrap; }
+.rate { font: 12px var(--mono); margin-left: auto; padding: 6px 8px; border-radius: 4px; background: var(--panel); color: var(--brand-1); white-space: nowrap; }
 .signup-note { margin-top: 9px; font-size: 12px; color: var(--muted); }
 .card-facts { display: grid; gap: 11px; margin-top: 19px; }
 .card-facts div { display: grid; grid-template-columns: 66px 1fr; gap: 13px; font-size: 13px; }
@@ -305,6 +305,13 @@ html.dark .cta { color: #1b1410; }
   .guide-sec .h2 { font-size: 21px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+
+.pick-row.featured, .card.featured { background: var(--brand-soft); border: 2px solid var(--brand-1); }
+.unavailable { filter: grayscale(1); color: var(--muted); background: var(--bg); }
+.unavailable .pick-name, .unavailable .credit-value, .unavailable .numeric { color: var(--muted); }
+.unavailable .cta, .unavailable .pick-cta { background: #777; color: #fff; cursor: not-allowed; }
+#language-toggle { white-space: nowrap; padding: 6px 10px; }
+@media(max-width: 600px) { .topbar-inner { gap: 8px; flex-wrap: wrap; padding-block: 12px; } .topbar-right { gap: 10px; } }
 </style>
 </head>
 <body>

@@ -21,7 +21,7 @@ const esc = (s) =>
 const fmtDate = (iso) =>
   iso.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$1 年 $2 月 $3 日");
 const latestDate = RELAYS.reduce((latest, r) => r.verifiedAt > latest ? r.verifiedAt : latest, "1970-01-01");
-const isPaid = (aff) => /[?&]aff=/.test(aff);
+const isPaid = (aff) => /[?&](?:aff|ref)=/.test(aff);
 const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
 const shortName = (r) => r.name.replace(/\s*公益站$/, "");
 const BRAND_MARK = `<svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#20344a"/><path d="M8 11h10M8 16h7M8 21h5" stroke="#fffefa" stroke-width="2" stroke-linecap="round"/><path d="m20 12-4 10h5l4-10z" fill="#ed9c72"/></svg>`;
@@ -37,10 +37,10 @@ function relayCredit(r) {
   const credit = num(r.signup, /\$\s*([\d,.]+)/);
   return { r, mult, credit, eff: mult > 0 && credit !== null ? credit / mult : null };
 }
-const rankRelays = () => RELAYS.map(relayCredit).sort((a, b) => (b.eff ?? -1) - (a.eff ?? -1));
+const rankRelays = () => RELAYS.map(relayCredit);
 /* H1 第二行跟着数据走：站点增减、赠额变化都不用改文案。 */
 function heroSub() {
-  const credits = RELAYS.map((r) => relayCredit(r).credit).filter((c) => c !== null);
+  const credits = RELAYS.filter(r => !r.unavailable).map((r) => relayCredit(r).credit).filter((c) => c !== null);
   const lo = Math.min(...credits), hi = Math.max(...credits);
   const range = !credits.length ? "" : lo === hi ? `，注册送 ${money(hi)}` : `，注册送 ${money(lo)}–${money(hi)}`;
   return `${RELAYS.length} 个实测公益站${range}`;
@@ -52,18 +52,18 @@ function cardHTML(r, i) {
   const { credit } = relayCredit(r);
   const notes = r.notes?.length ? `<div class="restrictions"><p class="block-head">使用条件与限制</p><ul class="list">${r.notes.map(note => `<li>${esc(note)}</li>`).join("")}</ul></div>` : "";
   const tips = r.tips?.length ? `<ul class="list">${r.tips.map(tip => `<li>${esc(tip)}</li>`).join("")}</ul>` : "";
-  return `        <li class="card" id="relay-${esc(r.id)}" data-verified="${esc(r.verifiedAt)}" data-models="${esc(JSON.stringify(r.models))}">
+  return `        <li class="card${r.unavailable ? " unavailable" : r.id === "agentrouter" ? " featured" : ""}" id="relay-${esc(r.id)}" data-verified="${esc(r.verifiedAt)}" data-models="${esc(JSON.stringify(r.models))}">
           <div class="card-main">
             <header class="card-head"><div><h3 class="name">${esc(r.name)}</h3><p class="host">${esc(r.host)}</p></div><span class="card-index" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span></header>
             <ul class="models" aria-label="记录中的模型">${r.models.map(model => `<li class="model">${esc(model)}</li>`).join("")}</ul>
             <div class="credit-line"><span class="credit-value">${credit === null ? "未记录" : esc(money(credit))}</span><span class="credit-label">注册赠额</span><span class="rate">${esc(r.rate)}</span></div>
-            <p class="signup-note">${esc(r.signup)}</p>
+            <p class="signup-note">${r.unavailable ? "不可用 · 以下为历史记录" : esc(r.signup)}</p>
             <dl class="card-facts"><div><dt>工具接入</dt><dd>${esc(r.tools)}</dd></div><div><dt>注册条件</dt><dd>${esc(r.eligibility)}</dd></div></dl>
 ${notes}
 ${tips}
             <details class="card-details"><summary>邀请规则与实测记录</summary><p>${r.invite ? esc(r.invite) : "没有邀请奖励。"}</p><p class="tested">实测记录：${esc(r.tested)}</p></details>
           </div>
-          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="${esc(r.verifiedAt)}">${esc(r.verifiedAt)}</time><br>${paid ? "邀请链接 · 注册可能给邀请人带来额度" : "不含邀请参数"}</p><a class="cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 ${esc(shortName(r))} <span aria-hidden="true">↗</span></a></div></footer>
+          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="${esc(r.verifiedAt)}">${esc(r.verifiedAt)}</time><br>${paid ? "邀请链接 · 注册可能给邀请人带来额度" : "不含邀请参数"}</p>${r.unavailable ? `<span class="cta" aria-disabled="true">不可用</span>` : `<a class="cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 ${esc(shortName(r))} <span aria-hidden="true">↗</span></a>`}</div></footer>
         </li>`;
 }
 
@@ -82,18 +82,18 @@ function pickHTML() {
     ].join("");
     const rate = mult === null ? "倍率未记录" : `${mult}x 倍率`;
     const effLine = eff === null || eff === credit ? "" : `<span class="pick-eff">等效 ≈ ${esc(money(eff))}</span>`;
-    return `          <li class="pick-row">
+    return `          <li class="pick-row${r.unavailable ? " unavailable" : r.id === "agentrouter" ? " featured" : ""}">
             <span class="pick-rank" aria-hidden="true">${i + 1}</span>
             <div class="pick-info">
               <h3 class="pick-name"><a href="#relay-${esc(r.id)}">${esc(shortName(r))}</a><span class="pick-host">${esc(r.host)}</span></h3>
               <ul class="pick-tags" aria-label="模型与限制">${tags}</ul>
-              <p class="pick-cond">${esc(r.eligibility)}</p>
+              <p class="pick-cond">${r.unavailable ? "不可用 · 以下为历史记录" : esc(r.eligibility)}</p>
             </div>
             <p class="pick-credit"><strong class="numeric">${credit === null ? "—" : esc(money(credit))}</strong><span>注册送 · ${esc(rate)}</span>${effLine}${/邀请/.test(r.signup) ? `<span>需走邀请链接</span>` : ""}</p>
-            <a class="pick-cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 <span aria-hidden="true">↗</span></a>
+            ${r.unavailable ? `<span class="pick-cta" aria-disabled="true">不可用</span>` : `<a class="pick-cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 <span aria-hidden="true">↗</span></a>`}
           </li>`;
   }).join("\n");
-  return `        <div class="pick-head"><h2 class="pick-title" id="pick-title">${RELAYS.length} 个实测站点</h2><span class="pick-sort">按等效额度排序</span></div>
+  return `        <div class="pick-head"><h2 class="pick-title" id="pick-title">${RELAYS.length} 个实测站点</h2><span class="pick-sort">按可用状态排序</span></div>
         <ol class="pick-rows">
 ${rows}
         </ol>
@@ -624,6 +624,27 @@ if (left) {
   process.exit(1);
 }
 
+// Both languages are static, so content and switching work without JavaScript.
+const translations = JSON.parse(readFileSync("en.json", "utf8"));
+const chinese = out.replace('href="index.html" lang="en"', 'href="./" lang="en"')
+  .replace('href="./"', 'href="index-zh.html"');
+writeFileSync("index-zh.html", chinese);
+for (const [zh, en] of Object.entries(translations).sort((a, b) => b[0].length - a[0].length)) {
+  out = out.split(esc(zh)).join(esc(en));
+}
+out = out.replace('<html lang="zh-CN">', '<html lang="en">')
+  .replace('href="index.html" lang="en">English', 'href="index-zh.html" lang="zh-CN">中文')
+  .replaceAll('"inLanguage": "zh-CN"', '"inLanguage": "en"')
+  .replace('content="zh_CN"', 'content="en_US"')
+  .replace('`显示 ${count} / ${cards.length} 个站点`', '`Showing ${count} / ${cards.length} stations`')
+  .replace('距上次实测已超过三个月，信息可能已变化，请以站点为准。', 'Last tested over three months ago. Information may have changed; check the station.')
+  .replace('切换浅色模式', 'Switch to light mode')
+  .replace('切换深色模式', 'Switch to dark mode');
+// Translate structured data values separately, preserving valid JSON.
+out = out.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/, (_, open, json, close) => {
+  const localize = value => typeof value === "string" ? (translations[value] ?? value) : Array.isArray(value) ? value.map(localize) : value && typeof value === "object" ? Object.fromEntries(Object.entries(value).map(([key, val]) => [key, localize(val)])) : value;
+  return open + JSON.stringify(localize(JSON.parse(json)), null, 2) + close;
+});
 writeFileSync("index.html", out);
 writeFileSync("sitemap.xml", sitemap());
 writeFileSync("robots.txt", robots());
