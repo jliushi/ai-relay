@@ -146,7 +146,7 @@ export const RELAYS = [
     id: "removed",
     name: "removed",
     host: "your-endpoint.example.com",
-    aff: "https://your-endpoint.example.com/r/T8KiaeGU",
+    aff: "https://your-endpoint.example.com/",
     rate: "0.08x 倍率（国模分组）",
     signup: "按量计费，注册不发赠额",
     invite:
