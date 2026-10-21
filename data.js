@@ -144,7 +144,7 @@ export const RELAYS = [
   },
   {
     id: "removed",
-    name: "DSH API",
+    name: "removed",
     host: "your-endpoint.example.com",
     aff: "https://your-endpoint.example.com/r/T8KiaeGU",
     rate: "0.08x 倍率（国模分组）",
