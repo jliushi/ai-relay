@@ -9,7 +9,7 @@
 
 export const SITE = {
   // 结尾的斜杠要留着，canonical 和 sitemap 都按这个拼
-  url: "https://jliushi.github.io/ai-relay/",
+  url: "https://1261398983.github.io/ai-relay/",
   repo: "https://github.com/jliushi/ai-relay",
   author: "https://github.com/jliushi",
   authorName: "jliushi",
