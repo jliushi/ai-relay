@@ -26,6 +26,20 @@ const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
 const shortName = (r) => r.name.replace(/\s*公益站$/, "");
 const BRAND_MARK = `<svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#20344a"/><path d="M8 11h10M8 16h7M8 21h5" stroke="#fffefa" stroke-width="2" stroke-linecap="round"/><path d="m20 12-4 10h5l4-10z" fill="#ed9c72"/></svg>`;
 
+/* 构建期才知道的文案（数量、站名、金额）写不进 en.json，生成时顺手登记英文，
+   最后和 en.json 合并成一张翻译表。 */
+const EXTRA = {};
+const tr = (zh, en) => { EXTRA[zh] = en; return zh; };
+const EN_URL = SITE.url + "index-en.html";
+const modified = latestDate > SITE.updated ? latestDate : SITE.updated;
+const umamiTag = () => SITE.umamiId ? `<script defer src="https://cloud.umami.is/script.js" data-website-id="${esc(SITE.umamiId)}"></script>` : "";
+/* 每个「注册」入口都带统计属性，Umami 按 site / place 拆开计数；没配 umamiId 时属性无副作用。 */
+function registerAttrs(r, place) {
+  const paid = isPaid(r.aff);
+  const label = tr(`${r.name}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）`, `${shortName(r)}: ${paid ? "register via referral link" : "register"} (new window)`);
+  return `href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(label)}" data-umami-event="register" data-umami-event-site="${esc(r.id)}" data-umami-event-place="${place}"`;
+}
+
 /* 赠额与倍率只解析原始文案，不能解析时不猜数字。 */
 function relayCredit(r) {
   const num = (s, re) => {
@@ -38,12 +52,14 @@ function relayCredit(r) {
   return { r, mult, credit, eff: mult > 0 && credit !== null ? credit / mult : null };
 }
 const rankRelays = () => RELAYS.map(relayCredit);
-/* H1 第二行跟着数据走：站点增减、赠额变化都不用改文案。 */
+/* H1 第二行跟着数据走：站点增减、赠额变化都不用改文案。只数可用的站。 */
 function heroSub() {
-  const credits = RELAYS.filter(r => !r.unavailable).map((r) => relayCredit(r).credit).filter((c) => c !== null);
+  const live = RELAYS.filter((r) => !r.unavailable);
+  const credits = live.map((r) => relayCredit(r).credit).filter((c) => c !== null);
+  if (!credits.length) return tr(`${live.length} 个可用公益站`, `${live.length} available relays`);
   const lo = Math.min(...credits), hi = Math.max(...credits);
-  const range = !credits.length ? "" : lo === hi ? `，注册送 ${money(hi)}` : `，注册送 ${money(lo)}–${money(hi)}`;
-  return `${RELAYS.length} 个实测公益站${range}`;
+  const amount = lo === hi ? money(hi) : `${money(lo)}–${money(hi)}`;
+  return tr(`${live.length} 个可用公益站，注册送 ${amount}`, `${live.length} available relays · ${amount} signup credit`);
 }
 
 /* 重要须知常驻，不再使用悬停覆盖层。邀请奖励和实测原文保留在原生 details 中。 */
@@ -55,6 +71,7 @@ function cardHTML(r, i) {
   return `        <li class="card${r.unavailable ? " unavailable" : r.id === "agentrouter" ? " featured" : ""}" id="relay-${esc(r.id)}" data-verified="${esc(r.verifiedAt)}" data-models="${esc(JSON.stringify(r.models))}">
           <div class="card-main">
             <header class="card-head"><div><h3 class="name">${esc(r.name)}</h3><p class="host">${esc(r.host)}</p></div><span class="card-index" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span></header>
+            ${r.fit && !r.unavailable ? `<p class="card-fit">${esc(r.fit)}</p>` : ""}
             <ul class="models" aria-label="记录中的模型">${r.models.map(model => `<li class="model">${esc(model)}</li>`).join("")}</ul>
             <div class="credit-line"><span class="credit-value">${credit === null ? "未记录" : esc(money(credit))}</span><span class="credit-label">注册赠额</span><span class="rate">${esc(r.rate)}</span></div>
             <p class="signup-note">${r.unavailable ? "不可用 · 以下为历史记录" : esc(r.signup)}</p>
@@ -63,7 +80,7 @@ ${notes}
 ${tips}
             <details class="card-details"><summary>邀请规则与实测记录</summary><p>${r.invite ? esc(r.invite) : "没有邀请奖励。"}</p><p class="tested">实测记录：${esc(r.tested)}</p></details>
           </div>
-          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="${esc(r.verifiedAt)}">${esc(r.verifiedAt)}</time><br>${paid ? "邀请链接 · 注册可能给邀请人带来额度" : "不含邀请参数"}</p>${r.unavailable ? `<span class="cta" aria-disabled="true">不可用</span>` : `<a class="cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 ${esc(shortName(r))} <span aria-hidden="true">↗</span></a>`}</div></footer>
+          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="${esc(r.verifiedAt)}">${esc(r.verifiedAt)}</time><br>${paid ? "邀请链接 · 注册可能给邀请人带来额度" : "不含邀请参数"}</p>${r.unavailable ? `<span class="cta" aria-disabled="true">不可用</span>` : `<a class="cta" ${registerAttrs(r, "card")}>${esc(credit === null ? tr(`注册 ${shortName(r)}`, `Register ${shortName(r)}`) : tr(`领 ${money(credit)} · 注册 ${shortName(r)}`, `Get ${money(credit)} · Register ${shortName(r)}`))} <span aria-hidden="true">↗</span></a>`}</div></footer>
         </li>`;
 }
 
@@ -72,32 +89,67 @@ ${tips}
 const claudeOnly = (r) => /不支持\s*Codex|只支持\s*Claude Code/.test([r.tools, ...(r.notes || [])].join(" "));
 const needsProxy = (r) => (r.notes || []).some((note) => note.includes("科学上网"));
 
-function pickHTML() {
-  const rows = rankRelays().map(({ r, mult, credit, eff }, i) => {
-    const paid = isPaid(r.aff);
-    const tags = [
-      ...r.models.map((m) => `<li class="tag">${esc(m)}</li>`),
-      claudeOnly(r) ? `<li class="tag tag-warn">仅 Claude Code</li>` : "",
-      needsProxy(r) ? `<li class="tag tag-warn">需科学上网</li>` : "",
-    ].join("");
-    const rate = mult === null ? "倍率未记录" : `${mult}x 倍率`;
-    const effLine = eff === null || eff === credit ? "" : `<span class="pick-eff">等效 ≈ ${esc(money(eff))}</span>`;
-    return `          <li class="pick-row${r.unavailable ? " unavailable" : r.id === "agentrouter" ? " featured" : ""}">
+function pickRowHTML({ r, mult, credit }, i) {
+  const tags = [
+    ...r.models.map((m) => `<li class="tag">${esc(m)}</li>`),
+    r.newAccountOk ? `<li class="tag tag-ok">${esc(tr("新账号可用", "New accounts OK"))}</li>` : "",
+    claudeOnly(r) ? `<li class="tag tag-warn">仅 Claude Code</li>` : "",
+    needsProxy(r) ? `<li class="tag tag-warn">需科学上网</li>` : "",
+  ].join("");
+  const rate = mult === null ? "倍率未记录" : `${mult}x 倍率`;
+  const cta = credit === null ? "注册" : tr(`注册领 ${money(credit)}`, `Register for ${money(credit)}`);
+  return `          <li class="pick-row${r.unavailable ? " unavailable" : r.id === "agentrouter" ? " featured" : ""}">
             <span class="pick-rank" aria-hidden="true">${i + 1}</span>
             <div class="pick-info">
               <h3 class="pick-name"><a href="#relay-${esc(r.id)}">${esc(shortName(r))}</a><span class="pick-host">${esc(r.host)}</span></h3>
               <ul class="pick-tags" aria-label="模型与限制">${tags}</ul>
-              <p class="pick-cond">${r.unavailable ? "不可用 · 以下为历史记录" : esc(r.eligibility)}</p>
+              <p class="pick-cond">${r.unavailable ? "不可用 · 以下为历史记录" : esc(r.fit || r.eligibility)}</p>
             </div>
-            <p class="pick-credit"><strong class="numeric">${credit === null ? "—" : esc(money(credit))}</strong><span>注册送 · ${esc(rate)}</span>${effLine}${/邀请/.test(r.signup) ? `<span>需走邀请链接</span>` : ""}</p>
-            ${r.unavailable ? `<span class="pick-cta" aria-disabled="true">不可用</span>` : `<a class="pick-cta" href="${esc(r.aff)}" target="_blank" rel="${paid ? "noopener nofollow sponsored" : "noopener nofollow"}" aria-label="${esc(r.name)}：${paid ? "通过邀请链接注册" : "前往注册"}（新窗口）">注册 <span aria-hidden="true">↗</span></a>`}
+            <p class="pick-credit"><strong class="numeric">${credit === null ? "—" : esc(money(credit))}</strong><span>注册送 · ${esc(rate)}</span>${/邀请/.test(r.signup) ? `<span>需走邀请链接</span>` : ""}</p>
+            ${r.unavailable ? `<span class="pick-cta" aria-disabled="true">不可用</span>` : `<a class="pick-cta" ${registerAttrs(r, "pick")}>${esc(cta)} <span aria-hidden="true">↗</span></a>`}
           </li>`;
-  }).join("\n");
-  return `        <div class="pick-head"><h2 class="pick-title" id="pick-title">${RELAYS.length} 个实测站点</h2><span class="pick-sort">按可用状态排序</span></div>
+}
+
+/* 可用的站排在前面，已不可用的收进折叠的「历史记录」，首屏只剩真正能点的选项。 */
+function pickHTML() {
+  const ranked = rankRelays();
+  const live = ranked.filter((x) => !x.r.unavailable);
+  const gone = ranked.filter((x) => x.r.unavailable);
+  const rows = (list, offset) => list.map((x, i) => pickRowHTML(x, offset + i)).join("\n");
+  const history = gone.length
+    ? `
+        <details class="pick-history">
+          <summary>${esc(tr(`历史记录（${gone.length} 个已不可用）`, `History (${gone.length} unavailable)`))}</summary>
+          <ol class="pick-rows">
+${rows(gone, live.length)}
+          </ol>
+        </details>`
+    : "";
+  const paid = RELAYS.some((r) => isPaid(r.aff)) ? esc(tr("注册链接含邀请参数。", "Registration links include referral parameters.")) : "";
+  return `        <div class="pick-head"><h2 class="pick-title" id="pick-title">${esc(tr(`${live.length} 个可用站点`, `${live.length} available stations`))}</h2></div>
         <ol class="pick-rows">
-${rows}
-        </ol>
-        <p class="pick-foot">等效额度 = 注册赠额 ÷ 倍率，倍率越低，同样的额度能跑越多。${RELAYS.some((r) => isPaid(r.aff)) ? "注册链接含邀请参数。" : ""}<a href="#stations">看每个站的详细条件 ↓</a></p>`;
+${rows(live, 0)}
+        </ol>${history}
+        <p class="pick-foot">${paid}<a href="#stations">看每个站的详细条件 ↓</a></p>`;
+}
+
+/* 首屏主按钮：直达排第一的可用站。第一名对账号有门槛时，再给一个「新账号可用」的备选。 */
+function heroCtaHTML() {
+  const live = RELAYS.filter((r) => !r.unavailable);
+  const main = live[0];
+  if (!main) return "";
+  const { credit } = relayCredit(main);
+  const label = credit === null
+    ? tr(`注册 ${shortName(main)}`, `Register ${shortName(main)}`)
+    : tr(`领 ${money(credit)} 额度 · 注册 ${shortName(main)}`, `Get ${money(credit)} credit · Register ${shortName(main)}`);
+  const alt = main.newAccountOk ? null : live.find((r) => r !== main && r.newAccountOk);
+  const altLine = alt
+    ? `
+          <p class="hero-alt">${esc(tr("新注册的账号？", "New account?"))} <a ${registerAttrs(alt, "hero-alt")}>${esc(tr(`${shortName(alt)} 注册即可用`, `${shortName(alt)}: no account requirements`))} <span aria-hidden="true">↗</span></a></p>`
+    : "";
+  return `<div class="hero-cta">
+          <a class="btn-hero" ${registerAttrs(main, "hero")}>${esc(label)} <span aria-hidden="true">↗</span></a>${altLine}
+        </div>`;
 }
 
 /* ---------- 配置方法 ----------
@@ -172,7 +224,7 @@ ${items}
      FAQPage   —— 供搜索结果的问答富摘要。
    AI 抓取器也吃这份 JSON —— 它比正文更容易被准确解析，是 GEO 里性价比最高的一件事。 */
 function jsonLd() {
-  const dMod = RELAYS.reduce((a, r) => (r.verifiedAt > a ? r.verifiedAt : a), "1970-01-01");
+  const dMod = modified;
   const dPub = RELAYS.reduce((a, r) => (r.verifiedAt < a ? r.verifiedAt : a), "9999-12-31");
   const img = SITE.url + "og.png";
   const models = [...new Set(RELAYS.flatMap((r) => r.models))];
@@ -274,7 +326,10 @@ function headHTML() {
 <!-- 放行富摘要：允许大图预览、不限制文本摘要长度。搜索结果的问答富摘要和 AI 引用
      都受这条约束，收紧了等于自己把可见度砍掉。 -->
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<link rel="canonical" href="${esc(SITE.url)}">${verify.length ? "\n" + verify.join("\n") : ""}
+<link rel="canonical" href="${esc(SITE.url)}">
+<link rel="alternate" hreflang="zh-CN" href="${esc(SITE.url)}">
+<link rel="alternate" hreflang="en" href="${esc(EN_URL)}">
+<link rel="alternate" hreflang="x-default" href="${esc(SITE.url)}">${verify.length ? "\n" + verify.join("\n") : ""}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(SITE.brand)}">
 <meta property="og:locale" content="zh_CN">
@@ -290,22 +345,27 @@ function headHTML() {
 <meta name="twitter:description" content="${esc(SITE.description)}">
 <meta name="twitter:image" content="${esc(img)}">
 <meta name="twitter:image:alt" content="${esc(SITE.brand)}">
-${jsonLd()}`;
+${jsonLd()}${umamiTag() ? "\n" + umamiTag() : ""}`;
 }
 
 /* ---------- 给抓取器的三个文件 ---------- */
 
+const alternates = `    <xhtml:link rel="alternate" hreflang="zh-CN" href="${SITE.url}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="${EN_URL}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE.url}"/>`;
+
 const sitemap = () => `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${SITE.url}</loc>
-    <lastmod>${new Date().toISOString().slice(0, 10)}</lastmod>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${[SITE.url, EN_URL].map((loc) => `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${modified}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+    <priority>${loc === SITE.url ? "1.0" : "0.9"}</priority>
+${alternates}
+  </url>`).join("\n")}
 ${PAGES.map((p) => `  <url>
     <loc>${SITE.url}${p.slug}</loc>
-    <lastmod>${new Date().toISOString().slice(0, 10)}</lastmod>
+    <lastmod>${modified}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>`).join("\n")}
@@ -329,7 +389,8 @@ const llmsTxt = () => `# ${SITE.brand}
 页面地址：${SITE.url}
 配置教程：${SITE.url}${GUIDE.slug}
 公益站是什么（科普）：${SITE.url}${EXPLAINER.slug}
-最近更新：${new Date().toISOString().slice(0, 10)}
+英文版：${EN_URL}
+最近更新：${modified}
 
 ## 收录标准与免责
 
@@ -338,21 +399,6 @@ ${RISKS.lead}
 ${RISKS.items.map((r) => `- **${r.head}**：${r.body}`).join("\n")}
 
 页面内每条注册链接都含邀请参数（返利），卡片页脚已标注。
-
-## 怎么挑：按等效可用量排序
-
-等效可用量 = 注册赠额 ÷ 倍率。倍率越低，同样的额度能跑越多，所以只看「送多少」会挑错。
-
-| 站点 | 注册赠额 | 倍率 | 等效可用量 |
-| --- | --- | --- | --- |
-${rankRelays()
-  .map(({ r, mult, credit, eff }) => {
-    const money = (n) => "$" + (Number.isInteger(n) ? n : n.toFixed(1));
-    return `| ${r.name} | ${credit == null ? "—" : money(credit)} | ${
-      mult == null ? "—" : mult + "x"
-    } | ${eff == null ? "—" : (Number.isInteger(eff) ? "" : "≈ ") + money(eff)} |`;
-  })
-  .join("\n")}
 
 ## 站点清单（共 ${RELAYS.length} 个）
 
@@ -464,7 +510,7 @@ function ogHTML() {
 function pageHTML(page, sharedStyle, bootstrap) {
   const url = SITE.url + page.slug;
   const img = SITE.url + "og.png";
-  const dMod = RELAYS.reduce((a, r) => (r.verifiedAt > a ? r.verifiedAt : a), "1970-01-01");
+  const dMod = modified;
   const dPub = RELAYS.reduce((a, r) => (r.verifiedAt < a ? r.verifiedAt : a), "9999-12-31");
 
   const sections = page.sections
@@ -540,6 +586,7 @@ ${ld}
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 ${bootstrap}
 <style>${sharedStyle}</style>
+${umamiTag()}
 </head>
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
@@ -589,11 +636,12 @@ const FILLS = {
   BRAND: esc(SITE.brand),
   AUTHOR_URL: esc(SITE.author),
   REPO_URL: esc(SITE.repo),
-  EYEBROW: esc(`实测更新于 ${latestDate} · 非实时监控`),
+  EYEBROW: esc(tr(`实测更新于 ${latestDate}`, `Last tested ${latestDate}`)),
   // 最后一个词不拆行：宽屏断成「Claude Code / Codex」「免费额度」，而不是从中间劈开。
   HERO_TITLE: esc(SITE.heroTitle).replace(/ (\S+)$/, ' <span class="nw">$1</span>'),
   HERO_SUB: esc(heroSub()).replace(/(\$[\d.]+–\$[\d.]+)/, '<span class="nw">$1</span>'),
   HERO_LEAD: esc(SITE.heroLead),
+  HERO_CTA: heroCtaHTML(),
   CONTACT: esc(SITE.contactText),
   COUNT: String(RELAYS.length),
   LATEST_DATE: esc(latestDate),
@@ -625,15 +673,30 @@ if (left) {
 }
 
 // Both languages are static, so content and switching work without JavaScript.
-const translations = JSON.parse(readFileSync("en.json", "utf8"));
-const chinese = out.replace('href="index.html" lang="en"', 'href="./" lang="en"')
-  .replace('href="./"', 'href="index-zh.html"');
-writeFileSync("index-zh.html", chinese);
+// 中文是根地址（搜索流量几乎都是中文关键词），英文放 index-en.html。
+const translations = { ...JSON.parse(readFileSync("en.json", "utf8")), ...EXTRA };
+const chinese = out;
+writeFileSync("index.html", chinese);
+// 旧地址 index-zh.html 可能已被收录，留一个指向根地址的跳转页，不让它 404。
+writeFileSync("index-zh.html", `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>${esc(SITE.title)}</title>
+<link rel="canonical" href="${esc(SITE.url)}">
+<meta http-equiv="refresh" content="0; url=./">
+</head>
+<body><p><a href="./">${esc(SITE.title)}</a></p></body>
+</html>
+`);
 for (const [zh, en] of Object.entries(translations).sort((a, b) => b[0].length - a[0].length)) {
   out = out.split(esc(zh)).join(esc(en));
 }
 out = out.replace('<html lang="zh-CN">', '<html lang="en">')
-  .replace('href="index.html" lang="en">English', 'href="index-zh.html" lang="zh-CN">中文')
+  .replace('href="index-en.html" lang="en">English', 'href="./" lang="zh-CN">中文')
+  .replace('<a class="brand" href="./">', '<a class="brand" href="index-en.html">')
+  .replace(`<link rel="canonical" href="${esc(SITE.url)}">`, `<link rel="canonical" href="${esc(EN_URL)}">`)
+  .replace(`<meta property="og:url" content="${esc(SITE.url)}">`, `<meta property="og:url" content="${esc(EN_URL)}">`)
   .replaceAll('"inLanguage": "zh-CN"', '"inLanguage": "en"')
   .replace('content="zh_CN"', 'content="en_US"')
   .replace('`显示 ${count} / ${cards.length} 个站点`', '`Showing ${count} / ${cards.length} stations`')
@@ -645,7 +708,7 @@ out = out.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)
   const localize = value => typeof value === "string" ? (translations[value] ?? value) : Array.isArray(value) ? value.map(localize) : value && typeof value === "object" ? Object.fromEntries(Object.entries(value).map(([key, val]) => [key, localize(val)])) : value;
   return open + JSON.stringify(localize(JSON.parse(json)), null, 2) + close;
 });
-writeFileSync("index.html", out);
+writeFileSync("index-en.html", out);
 writeFileSync("sitemap.xml", sitemap());
 writeFileSync("robots.txt", robots());
 writeFileSync("llms.txt", llmsTxt());
@@ -696,7 +759,7 @@ const text = out
 
 console.log(`index.html    ${RELAYS.length} 张卡片 · ${FAQ.length} 条问答`);
 console.log(`子页面        ${PAGES.map((p) => p.slug).join(" · ")}`);
-console.log(`sitemap.xml   ${PAGES.length + 1} 条 URL`);
+console.log(`sitemap.xml   ${PAGES.length + 2} 条 URL`);
 console.log(`robots.txt    放行全部抓取器`);
 console.log(`llms.txt      ${llmsTxt().length} 字`);
 console.log(`og.html       预览图源（截图命令见 README）`);

@@ -32,7 +32,7 @@
       "description": "手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。",
       "inLanguage": "zh-CN",
       "datePublished": "2026-09-04",
-      "dateModified": "2026-10-10",
+      "dateModified": "2026-10-29",
       "author": {
         "@type": "Person",
         "name": "jliushi",
@@ -181,6 +181,17 @@ html.dark .pick-cta { color: #1b1410; }
 .pick-cta:hover { filter: brightness(1.08); box-shadow: 0 3px 0 var(--line); }
 .pick-foot { padding: 13px 22px 15px; font-size: 12px; line-height: 1.8; color: var(--muted); }
 .pick-foot a { margin-left: 6px; white-space: nowrap; }
+.hero-cta { margin-top: 24px; display: grid; justify-items: start; gap: 10px; }
+.btn-hero { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 12px 24px; border-radius: 8px; background: var(--brand-1); color: #fff; font-size: 17px; font-weight: 750; text-decoration: none; box-shadow: 0 4px 0 rgba(32, 52, 74, .16); }
+html.dark .btn-hero { color: #1b1410; }
+.btn-hero:hover { filter: brightness(1.08); }
+.hero-alt { font-size: 13px; color: var(--muted); }
+.card-fit { margin-top: 12px; font-size: 13px; line-height: 1.7; color: var(--ink); }
+.tag-ok { border-color: transparent; background: #e3f3e8; color: #1f6b3b; font-family: var(--sans); font-weight: 600; }
+html.dark .tag-ok { background: #1f3a2a; color: #9be0b3; }
+.pick-history { border-top: 1px solid var(--line); }
+.pick-history summary { cursor: pointer; padding: 12px 22px; font-size: 13px; color: var(--muted); }
+.pick-history .pick-row:last-child { border-bottom: 0; }
 .risk-strip { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 28px; padding: 13px 18px; border: 1px solid var(--line); border-left: 3px solid var(--brand-1); background: var(--panel); font-size: 13px; }
 .risk-strip p { flex: 1 1 440px; color: var(--muted); }
 .risk-strip strong { color: var(--ink); }
@@ -304,6 +315,7 @@ html.dark .cta { color: #1b1410; }
   .pick-credit { grid-area: credit; align-self: start; }
   .pick-credit strong { font-size: 23px; }
   .pick-cta { grid-area: cta; width: 100%; }
+  .btn-hero { width: 100%; }
   .pick-foot { padding: 12px 16px 14px; }
   .risk-strip { margin-top: 22px; font-size: 12px; padding: 12px 14px; gap: 7px; }
   .risk-strip p { flex-basis: 100%; }
@@ -332,6 +344,7 @@ html.dark .cta { color: #1b1410; }
 #language-toggle { white-space: nowrap; padding: 6px 10px; }
 @media(max-width: 600px) { .topbar-inner { gap: 8px; flex-wrap: wrap; padding-block: 12px; } .topbar-right { gap: 10px; } }
 </style>
+
 </head>
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
@@ -364,7 +377,7 @@ html.dark .cta { color: #1b1410; }
       </section>
       <section class="guide-sec">
         <h2 class="h2">二、先拿到一个站点的 key</h2>
-        <p class="guide-p">去首页清单挑一个站，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。清单按等效可用量（赠额÷倍率）排好了序，每条标了实测日期。</p>
+        <p class="guide-p">去首页清单挑一个站，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。清单里每条都标了实测日期。</p>
         <p class="guide-p">登录后余额显示 0 是常事——多数站在登录那一刻才结算额度，退出重登一次一般就到账。同时记下这个站的「接口地址（Base URL）」，配置时要用。</p>
       </section>
       <section class="guide-sec">

@@ -97,6 +97,17 @@ html.dark .pick-cta { color: #1b1410; }
 .pick-cta:hover { filter: brightness(1.08); box-shadow: 0 3px 0 var(--line); }
 .pick-foot { padding: 13px 22px 15px; font-size: 12px; line-height: 1.8; color: var(--muted); }
 .pick-foot a { margin-left: 6px; white-space: nowrap; }
+.hero-cta { margin-top: 24px; display: grid; justify-items: start; gap: 10px; }
+.btn-hero { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 12px 24px; border-radius: 8px; background: var(--brand-1); color: #fff; font-size: 17px; font-weight: 750; text-decoration: none; box-shadow: 0 4px 0 rgba(32, 52, 74, .16); }
+html.dark .btn-hero { color: #1b1410; }
+.btn-hero:hover { filter: brightness(1.08); }
+.hero-alt { font-size: 13px; color: var(--muted); }
+.card-fit { margin-top: 12px; font-size: 13px; line-height: 1.7; color: var(--ink); }
+.tag-ok { border-color: transparent; background: #e3f3e8; color: #1f6b3b; font-family: var(--sans); font-weight: 600; }
+html.dark .tag-ok { background: #1f3a2a; color: #9be0b3; }
+.pick-history { border-top: 1px solid var(--line); }
+.pick-history summary { cursor: pointer; padding: 12px 22px; font-size: 13px; color: var(--muted); }
+.pick-history .pick-row:last-child { border-bottom: 0; }
 .risk-strip { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 28px; padding: 13px 18px; border: 1px solid var(--line); border-left: 3px solid var(--brand-1); background: var(--panel); font-size: 13px; }
 .risk-strip p { flex: 1 1 440px; color: var(--muted); }
 .risk-strip strong { color: var(--ink); }
@@ -220,6 +231,7 @@ html.dark .cta { color: #1b1410; }
   .pick-credit { grid-area: credit; align-self: start; }
   .pick-credit strong { font-size: 23px; }
   .pick-cta { grid-area: cta; width: 100%; }
+  .btn-hero { width: 100%; }
   .pick-foot { padding: 12px 16px 14px; }
   .risk-strip { margin-top: 22px; font-size: 12px; padding: 12px 14px; gap: 7px; }
   .risk-strip p { flex-basis: 100%; }
@@ -262,7 +274,7 @@ html.dark .cta { color: #1b1410; }
       <a class="nav-link desktop-nav" href="#setup">配置方法</a>
       <a class="nav-link desktop-nav" href="#faq">常见问题</a>
       <a class="nav-link" href="guide.html">配置教程</a>
-      <a class="nav-link" id="language-toggle" href="index.html" lang="en">English</a>
+      <a class="nav-link" id="language-toggle" href="index-en.html" lang="en">English</a>
       <button class="theme-btn" type="button" id="theme-toggle" aria-label="切换深色模式" aria-pressed="false" hidden><span aria-hidden="true">◐</span></button>
     </nav>
   </div>
@@ -274,6 +286,7 @@ html.dark .cta { color: #1b1410; }
         <p class="eyebrow">{{EYEBROW}}</p>
         <h1 class="hero-title" id="hero-title">{{HERO_TITLE}}<span class="hero-sub">{{HERO_SUB}}</span></h1>
         <p class="hero-lead">{{HERO_LEAD}}</p>
+        {{HERO_CTA}}
       </div>
       <section class="pick" id="pick" aria-labelledby="pick-title">
 {{PICK}}
@@ -287,9 +300,6 @@ html.dark .cta { color: #1b1410; }
         </ol>
         <div class="hero-actions"><a class="btn btn-primary" href="#setup">复制配置 <span aria-hidden="true">↓</span></a><a class="btn" href="what-is-ai-relay.html">公益站是什么？</a></div>
       </div>
-    </div>
-    <div class="wrap">
-      <div class="risk-strip"><p><strong>仅作备用，不作担保。</strong>公益站能看到你发过去的全部内容，别发涉密代码、生产凭据或客户数据；额度规则随时会变，站点也可能关停。</p><a href="#risk">风险说明 ↓</a></div>
     </div>
   </section>
   <section class="band" id="stations" aria-labelledby="stations-title">

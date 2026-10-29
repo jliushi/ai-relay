@@ -11,6 +11,9 @@ export const SITE = {
   // 结尾的斜杠要留着，canonical 和 sitemap 都按这个拼
   url: "https://jliushi.github.io/ai-relay/",
   repo: "https://github.com/jliushi/ai-relay",
+  /* 内容有实质改动时手动改成当天日期。sitemap 的 lastmod、llms.txt 的「最近更新」、
+     结构化数据的 dateModified 都取它和各站实测日期里较晚的那个，不再随构建日期乱跳。 */
+  updated: "2026-10-29",
   author: "https://github.com/jliushi",
   authorName: "jliushi",
 
@@ -55,12 +58,16 @@ export const SITE = {
      H1 第二行（「N 个实测公益站，注册送 $x–$y」）由 build.mjs 按 RELAYS 算，不写死。 */
   heroTitle: "Claude Code / Codex 免费额度",
   heroLead:
-    "公益站是第三方搭的 API 中转：注册就送一笔额度，把 key 填进 Claude Code 或 Codex 就能用 Opus 5.5 / GPT-6 Astra。清单按可用状态排序，AgentRouter 优先，artbloom 次之；不可用站点保留历史记录，点「注册」直达。",
+    "公益站是第三方搭的 API 中转：注册就送一笔额度，把 key 填进 Claude Code 或 Codex 就能用 Opus 5.5 / GPT-6 Astra。",
   contactText: "联系作者",
 
   /* 搜索引擎的所有权验证码。删掉就会掉验证状态，Search Console / 百度资源平台
      会停止收数据，所以验证通过之后也得一直留着。没有的留空字符串，build 会
      跳过那一行，不会往页面里塞空标签。 */
+  /* Umami Cloud 的 website id（cloud.umami.is 里新建站点后复制）。留空则不加载统计脚本，
+     页面里的「注册」按钮仍带着 data-umami-event 属性，填上之后才会开始计数。 */
+  umamiId: "",
+
   googleVerification: "X5psQCpL0MgNS2SGTUDBeddNupFq2alnYJaO9CkGnkI",
   baiduVerification: "",
 };
@@ -78,6 +85,7 @@ export const SITE = {
       /sign-up 都有），照抄，不要套别家的路径。
    5. tools 写实测能接的工具，eligibility 写实测注册用的账号条件。
    6. 链接里没有 aff= 的项，页脚不会显示返利披露，按钮也会变成「前往注册」。
+   7. fit 是卡片和清单里「适合谁」的一句话；newAccountOk 为 true 的站会打「新账号可用」标签。
 --------------------------------------------------------------------------- */
 
 export const RELAYS = [
@@ -92,6 +100,7 @@ export const RELAYS = [
     models: ["gpt-6-astra", "opus 5.5", "deepseek v4.1 flash"],
     tools: "Claude Code、Codex 都能用",
     eligibility: "用 2026 年前注册的 GitHub 老账号",
+    fit: "适合有 2026 年前注册的 GitHub 账号、Claude Code 和 Codex 都要用的人",
     tested: "用 2026 年之前注册的 GitHub 老账号注册通过。",
     notes: ["不需要加群，注册完就能用", "使用 GitHub 账号注册"],
     tips: [
@@ -110,6 +119,8 @@ export const RELAYS = [
     models: ["opus 5.5", "opus 5", "glm 5.3", "glm 5.3 flash", "grok 4.7"],
     tools: "Claude Code 可用",
     eligibility: "注册即可用",
+    newAccountOk: true,
+    fit: "适合没有 GitHub 老账号、主要用 Claude Code 的人",
     tested: "实测 opus 5.5 可用。",
     notes: ["注册即送 $100 额度", "有 Claude Opus 5.5/5、GLM 5.3、Grok 4.7"],
     verifiedAt: "2026-10-10",
@@ -240,10 +251,6 @@ export const FAQ = [
     a: "公益站是第三方搭的 API 中转服务，把 Claude、GPT 这类模型的接口转出来给人用，通常注册就送一笔额度。区别在于它不是官方渠道：额度由站方发放，倍率、赠额和邀请规则由站方定，站点也可能随时改规则、限流或关停。好处是有免费额度、不需要国外支付方式。",
   },
   {
-    q: "倍率是什么意思？0.65x 和 1x 差在哪？",
-    a: "倍率是相对官方价格的计费系数。1x 表示按官方价扣你的额度，0.65x 表示只按官方价的 65% 扣。所以同样一笔 $100 额度，在 0.65x 的站点能跑的 token 比 1x 多出大约一半。",
-  },
-  {
     q: "注册即得的额度能用多久？",
     a: "取决于你的用量，没法给准数。额度是按 token 计费扣的，用 Claude Code 跑长上下文的活消耗很快，几十美元的赠额可能几天就见底。清单里几家有每日签到能补一点，具体数额写在各张卡片的「使用提示」里。",
   },
@@ -341,7 +348,7 @@ export const GUIDE = {
     {
       h: "二、先拿到一个站点的 key",
       body: [
-        "去首页清单挑一个站，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。清单按等效可用量（赠额÷倍率）排好了序，每条标了实测日期。",
+        "去首页清单挑一个站，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。清单里每条都标了实测日期。",
         "登录后余额显示 0 是常事——多数站在登录那一刻才结算额度，退出重登一次一般就到账。同时记下这个站的「接口地址（Base URL）」，配置时要用。",
       ],
     },
@@ -401,24 +408,22 @@ export const GUIDE = {
 export const EXPLAINER = {
   slug: "what-is-ai-relay.html",
   articleType: "Article",
-  title: "AI 公益站是什么？和官方 API、中转站的区别，倍率与风险讲清楚",
+  title: "AI 公益站是什么？和官方 API、中转站的区别与风险讲清楚",
   description:
-    "一次讲清 AI 公益站（中转站）是什么、和官方 API 及镜像站有什么区别、倍率和等效可用量怎么算、免费额度能用多久、安全吗能不能跑公司代码，以及怎么判断一个公益站靠不靠谱。",
+    "一次讲清 AI 公益站（中转站）是什么、和官方 API 及镜像站有什么区别、免费额度能用多久、安全吗能不能跑公司代码，以及怎么判断一个公益站靠不靠谱。",
   keywords: [
     "AI 公益站是什么",
     "中转站是什么",
     "公益站和官方 API 区别",
-    "倍率是什么",
-    "等效可用量",
     "公益站安全吗",
     "Claude 中转站",
   ],
   intro:
-    "这一页不讲怎么配（那是教程页的事），只把「AI 公益站到底是什么、值不值得用、怎么看倍率、安不安全」这些概念一次讲清楚。想直接上手的，去首页清单挑站、去教程页照着配。",
+    "这一页不讲怎么配（那是教程页的事），只把「AI 公益站到底是什么、值不值得用、安不安全」这些概念一次讲清楚。想直接上手的，去首页清单挑站、去教程页照着配。",
   eyebrow: "科普",
   breadcrumb: "公益站是什么",
   outro:
-    '概念清楚了，就去<a href="./#stations">首页清单</a>按等效可用量挑一个，照<a href="guide.html">配置教程</a>接进 Claude Code 或 Codex。记住：公益站是省钱的备用渠道，不是主力。',
+    '概念清楚了，就去<a href="./#stations">首页清单</a>挑一个，照<a href="guide.html">配置教程</a>接进 Claude Code 或 Codex。记住：公益站是省钱的备用渠道，不是主力。',
   sections: [
     {
       h: "AI 公益站 / 中转站是什么？",
@@ -431,13 +436,6 @@ export const EXPLAINER = {
       h: "和官方 API、镜像站有什么区别？",
       body: [
         "官方 API 是模型厂商自己的接口，稳定、按官方价付费、要国外支付方式。镜像站通常只是把官方接口换个域名做反代，解决的是「连不上」，计费和额度还是官方那套。公益站则是自己发额度、自己定倍率的一层中转——省钱和免注册门槛靠的就是它，稳定性和长期性也牺牲在这里。",
-      ],
-    },
-    {
-      h: "倍率是什么？等效可用量怎么算？",
-      body: [
-        "倍率是相对官方价格的计费系数。1x 表示按官方价扣你的额度，0.65x 表示只按官方价的 65% 扣。所以同一笔额度，倍率越低能跑的 token 越多。",
-        "因此挑站不能只看「送多少」，要算等效可用量 = 注册赠额 ÷ 倍率。举例：送 $70、0.65x 的站，等效约 $107.7，比送 $100、1x 的还耐用。首页顶部的清单就是按这个数排序的。",
       ],
     },
     {

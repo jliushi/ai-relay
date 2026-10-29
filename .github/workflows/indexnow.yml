@@ -13,6 +13,7 @@ on:
     branches: [main]
     paths:
       - index.html
+      - index-en.html
       - guide.html
       - what-is-ai-relay.html
       - sitemap.xml
@@ -40,6 +41,7 @@ jobs:
               "keyLocation": "https://jliushi.github.io/ai-relay/5274d490c7073e9630ce4cc455bb9c41.txt",
               "urlList": [
                 "https://jliushi.github.io/ai-relay/",
+                "https://jliushi.github.io/ai-relay/index-en.html",
                 "https://jliushi.github.io/ai-relay/guide.html",
                 "https://jliushi.github.io/ai-relay/what-is-ai-relay.html"
               ]

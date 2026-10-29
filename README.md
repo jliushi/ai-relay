@@ -102,6 +102,10 @@ favicon.svg
 
 ## 首页语言与状态
 
-首页默认英文，`index-zh.html` 为中文版本，顶部链接可双向切换，无 JavaScript 也可使用。`en.json` 维护首页英文翻译；独立教程仍为中文。
+首页默认中文（根地址 `index.html`），英文版是 `index-en.html`，顶部链接可双向切换，无 JavaScript 也可使用。两页互相带 `hreflang`，英文页的 canonical 指向自己。旧地址 `index-zh.html` 只留一个跳转到根地址的页面。`en.json` 维护首页英文翻译；构建期才知道的文案（数量、金额、站名）在 `build.mjs` 里用 `tr(中文, 英文)` 登记。独立教程仍为中文。
 
-清单顺序由 `RELAYS` 决定：AgentRouter、artbloom、justwoker、kktoken。`unavailable: true` 会将摘要和详情变灰、标记历史信息并移除注册链接。AgentRouter 单独高亮。历史实测日期不因状态调整而更改。
+清单顺序由 `RELAYS` 决定。`unavailable: true` 的站不进首屏清单，收进折叠的「历史记录」，并移除注册链接。首屏主按钮指向第一个可用站；它对账号有门槛（没有 `newAccountOk: true`）时，下面会再给一个 `newAccountOk` 的备选。`fit` 是卡片和清单里「适合谁」的一句话。AgentRouter 单独高亮。历史实测日期不因状态调整而更改。
+
+统计用 Umami Cloud：在 `data.js` 的 `SITE.umamiId` 填 website id 后才加载脚本。每个「注册」入口都带 `data-umami-event="register"`，并按 `site`（站点 id）和 `place`（hero / pick / hero-alt / card）拆分，可以看哪个位置的按钮被点得多。
+
+`SITE.updated` 是内容有实质改动时手动改的日期，`sitemap.xml` 的 `lastmod`、`llms.txt` 的更新日期和结构化数据的 `dateModified` 都取它和各站实测日期中较晚的一个，不随构建当天变化。
