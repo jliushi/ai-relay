@@ -85,7 +85,7 @@ export const RELAYS = [
     id: "agentrouter",
     name: "AgentRouter 公益站",
     host: "agentrouter.org",
-    aff: "https://agentrouter.org/register?aff=76NE",
+    aff: "https://agentrouter.org/register?aff=U0IJ",
     rate: "1x 倍率",
     signup: "注册即得 $100 额度",
     invite: "每邀请一位新用户：新用户获得 $50 额度，邀请人获得 $100 额度。",
