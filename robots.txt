@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jliushi.github.io/ai-relay/sitemap.xml
+Sitemap: https://1261398983.github.io/ai-relay/sitemap.xml
