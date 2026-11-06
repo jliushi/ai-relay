@@ -10,9 +10,9 @@
 export const SITE = {
   // 结尾的斜杠要留着，canonical 和 sitemap 都按这个拼
   url: "https://1261398983.github.io/ai-relay/",
-  repo: "https://github.com/jliushi/ai-relay",
-  author: "https://github.com/jliushi",
-  authorName: "jliushi",
+  repo: "https://github.com/1261398983/ai-relay",
+  author: "https://github.com/1261398983",
+  authorName: "1261398983",
 
   /* IndexNow 的密钥：仓库根目录那个 <key>.txt 文件的内容就是这串，两处必须一致。
      .github/workflows/indexnow.yml 每次 push 会拿它去通知 Bing / Yandex 重新抓取。

@@ -2,10 +2,10 @@
 
 > 实测可用的 AI 公益站（中转站）清单：注册即送免费额度，覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可接入 Claude Code 和 Codex。逐站记录赠额、倍率、注册条件、邀请规则和实测日期，附最小配置方法。
 
-页面地址：https://jliushi.github.io/ai-relay/
-配置教程：https://jliushi.github.io/ai-relay/guide.html
-公益站是什么（科普）：https://jliushi.github.io/ai-relay/what-is-ai-relay.html
-最近更新：2026-09-29
+页面地址：https://1261398983.github.io/ai-relay/
+配置教程：https://1261398983.github.io/ai-relay/guide.html
+公益站是什么（科普）：https://1261398983.github.io/ai-relay/what-is-ai-relay.html
+最近更新：2026-11-06
 
 ## 收录标准与免责
 

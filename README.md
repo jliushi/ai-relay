@@ -4,8 +4,8 @@
 覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可用于 Claude Code 和 Codex。每条都标注实测日期。
 和一般的白嫖导航不同：这里先比较工具接入说明与注册观察，再按**等效可用量（注册赠额 ÷ 倍率）**提供参考排序。只有模型、基准价格与计费口径可比时，折算才有意义；它不是实际 token 数或耐用程度保证。
 
-**页面：https://jliushi.github.io/ai-relay/**
-**配置教程（Claude Code / Codex 从拿 key 到跑通 + 避坑）：https://jliushi.github.io/ai-relay/guide.html**
+**页面：https://1261398983.github.io/ai-relay/**
+**配置教程（Claude Code / Codex 从拿 key 到跑通 + 避坑）：https://1261398983.github.io/ai-relay/guide.html**
 
 零构建依赖、纯静态、无服务器。仿 [ijry/ai-switch](https://github.com/ijry/ai-switch)
 的 relay 页用原生 HTML/CSS/JS 重写（原项目 MIT 许可）。
@@ -19,7 +19,7 @@
 | [justwoker 公益站](https://api.justwoker.icu/register?aff=XiYg) | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-09-04 |
 | [kktoken 公益站](https://kktoken.cc/sign-up?aff=8Zqi) | `kktoken.cc` | 1x 倍率 | 注册即得 $100 额度 | opus 5 | 2026-09-04 |
 | [tabitoken 公益站](https://tabitoken.com/sign-up?aff=C8EJ) | `tabitoken.com` | 1x 倍率 | 注册即得 $20 额度 | opus 4.8、opus 5 | 2026-09-04 |
-| [removed]() | `your-endpoint.example.com` | 0.08x 倍率（国模分组） | 按量计费，注册不发赠额 | deepseek-v4、glm-5.3、kimi-k3、minimax-m3、hy4 | 2026-09-30 |
+| [removed](https://your-endpoint.example.com/) | `your-endpoint.example.com` | 0.08x 倍率（国模分组） | 按量计费，注册不发赠额 | deepseek-v4、glm-5.3、kimi-k3、minimax-m3、hy4 | 2026-09-30 |
 <!-- RELAYS:END -->
 
 上面的表格由 `node build.mjs` 从 `data.js` 生成，不要手改。倍率是站点标示的计费系数，基准价格、输入输出与缓存计费口径需要逐站核对；不能仅凭倍率保证实际可用 token 数。

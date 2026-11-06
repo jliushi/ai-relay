@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）</title>
-<meta name="description" content="Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑） — AI 公益站清单 ← 返回清单 GitHub 配置教程">
-<meta name="keywords" content="Sample Gateway,逆向工程 API,国模 API,DeepSeek API 中转,Claude API 中转,AI API 网关,API 中转站,按量计费">
-<meta name="author" content="jliushi">
+<meta name="description" content="手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。">
+<meta name="keywords" content="Claude Code 中转站配置，Claude Code 公益站教程，Codex 中转站配置，Claude Code 环境变量，ANTHROPIC_BASE_URL，Claude Code 401，Codex config.toml">
+<meta name="author" content="1261398983">
 <meta name="theme-color" content="#f7f5ef">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://1261398983.github.io/ai-relay/guide.html">
@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="https://1261398983.github.io/ai-relay/guide.html">
 <meta property="og:title" content="Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）">
-<meta property="og:description" content="Sample Gateway 逆向工程 API 网关：国模（DeepSeek 等）+ Claude / GPT / Gemini / Grok 统一端点，QQ 邮箱注册，按量计费，输入输出分开计价。附 AI API 中转站导航与实测清单。">
+<meta property="og:description" content="手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。">
 <meta property="og:image" content="https://1261398983.github.io/ai-relay/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）">
@@ -27,7 +27,7 @@
   "@graph": [
     {
       "@type": "TechArticle",
-      "@id": "https://jliushi.github.io/ai-relay/guide.html",
+      "@id": "https://1261398983.github.io/ai-relay/guide.html",
       "headline": "Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）",
       "description": "手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。",
       "inLanguage": "zh-CN",
@@ -35,18 +35,18 @@
       "dateModified": "2026-09-30",
       "author": {
         "@type": "Person",
-        "name": "jliushi",
-        "url": "https://github.com/jliushi"
+        "name": "1261398983",
+        "url": "https://github.com/1261398983"
       },
       "publisher": {
         "@type": "Person",
-        "name": "jliushi",
-        "url": "https://github.com/jliushi"
+        "name": "1261398983",
+        "url": "https://github.com/1261398983"
       },
       "image": "https://1261398983.github.io/ai-relay/og.png",
-      "mainEntityOfPage": "https://jliushi.github.io/ai-relay/guide.html",
+      "mainEntityOfPage": "https://1261398983.github.io/ai-relay/guide.html",
       "isPartOf": {
-        "@id": "https://jliushi.github.io/ai-relay/#website"
+        "@id": "https://1261398983.github.io/ai-relay/#website"
       }
     },
     {
@@ -75,13 +75,13 @@
           "@type": "ListItem",
           "position": 1,
           "name": "AI 公益站清单",
-          "item": "https://jliushi.github.io/ai-relay/"
+          "item": "https://1261398983.github.io/ai-relay/"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "配置教程",
-          "item": "https://jliushi.github.io/ai-relay/guide.html"
+          "item": "https://1261398983.github.io/ai-relay/guide.html"
         }
       ]
     }
@@ -336,7 +336,7 @@ html.dark .cta { color: #1b1410; }
     </a>
     <div class="topbar-right">
       <a class="nav-link" href="./">← 返回清单</a>
-      <a class="nav-link desktop-nav" href="https://github.com/jliushi" target="_blank" rel="noopener">GitHub</a>
+      <a class="nav-link desktop-nav" href="https://github.com/1261398983" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
 </header>
@@ -403,15 +403,8 @@ wire_api = &quot;chat&quot;</code></pre>
 </main>
 <footer class="site-foot">
   <div class="wrap">
-    <p>本页仅汇总公开信息与个人实测结果，不代表任何形式的担保或推荐承诺。源码在 <a href="https://github.com/jliushi/ai-relay" target="_blank" rel="noopener">GitHub</a>。</p>
+    <p>本页仅汇总公开信息与个人实测结果，不代表任何形式的担保或推荐承诺。源码在 <a href="https://github.com/1261398983/ai-relay" target="_blank" rel="noopener">GitHub</a>。</p>
   </div>
 </footer>
-<div style="max-width:900px;margin:40px auto 0;padding:18px 22px;border:1px solid #24304a;border-radius:12px;background:#0e1524;font:14px/1.75 -apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;color:#c7d3e8">
-  <strong style="color:#e8eef9">本文示例所用的 API 端点</strong>：<code style="background:#16203a;padding:1px 6px;border-radius:4px">https://your-endpoint.example.com/v1</code><br>
-  QQ 邮箱即可注册，无需邀请码，按量计费；同时兼容 [OI] 与 Anthropic 两套协议。
-  <a href="" style="color:#5b9dff;text-decoration:none;font-weight:600" rel="nofollow noopener">→ 注册入口</a>
-  · <a href="https://1261398983.github.io/ai-api-guide/" style="color:#8fb8e8;text-decoration:none">配置指南</a>
-</div>
-
 </body>
 </html>
