@@ -28,7 +28,6 @@
 | AgentRouter 公益站 | $100 | 1x | $100 |
 | kktoken 公益站 | $100 | 1x | $100 |
 | tabitoken 公益站 | $20 | 1x | $20 |
-| removed | — | 0.08x | — |
 
 ## 站点清单（共 5 个）
 
@@ -85,9 +84,7 @@
 - 实测日期：2026-09-04
 - 须知：不需要加群，注册完就能用；使用 GitHub 账号注册；只支持 Claude Code
 
-### removed
 
-- 域名：your-endpoint.example.com
 - 工具接入：Claude Code + Codex 均可：同一个 base URL 同时开 OpenAI（/v1/chat/completions、/v1/responses）与 Anthropic（/v1/messages）。
 - 注册观察：邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。
 - 倍率：0.08x 倍率（国模分组）

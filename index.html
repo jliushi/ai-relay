@@ -22,7 +22,6 @@
 <meta property="og:image" content="https://1261398983.github.io/ai-relay/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="AI 公益站清单 — AgentRouter / justwoker / kktoken / tabitoken / removed">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AI 公益站大全 — Claude Code / Codex 免费额度实测清单">
 <meta name="twitter:description" content="实测可用的 AI 公益站（中转站）清单：注册即送免费额度，覆盖 Claude Opus 5、Opus 4.8 与 GPT-5.6，可接入 Claude Code 和 Codex。逐站记录赠额、倍率、注册条件、邀请规则和实测日期，附最小配置方法。">
@@ -189,8 +188,6 @@
         {
           "@type": "ListItem",
           "position": 5,
-          "name": "removed",
-          "url": "https://your-endpoint.example.com",
           "description": "Claude Code + Codex 均可：同一个 base URL 同时开 OpenAI（/v1/chat/completions、/v1/responses）与 Anthropic（/v1/messages）。；邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。；0.08x 倍率（国模分组）；按量计费，注册不发赠额；覆盖模型：deepseek-v4、glm-5.3、kimi-k3、minimax-m3、hy4"
         }
       ]
@@ -608,12 +605,10 @@ html.dark .cta { color: #1b1410; }
           <li class="pick-row">
             <span class="pick-rank" aria-hidden="true">5</span>
             <div class="pick-info">
-              <h3 class="pick-name"><a href="#relay-removed">removed</a><span class="pick-host">your-endpoint.example.com</span></h3>
               <ul class="pick-tags" aria-label="模型与限制"><li class="tag">deepseek-v4</li><li class="tag">glm-5.3</li><li class="tag">kimi-k3</li><li class="tag">minimax-m3</li><li class="tag">hy4</li></ul>
               <p class="pick-cond">邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。</p>
             </div>
             <p class="pick-credit"><strong class="numeric">—</strong><span>注册送 · 0.08x 倍率</span></p>
-            <a class="pick-cta" href="https://your-endpoint.example.com/" target="_blank" rel="noopener nofollow" aria-label="removed：前往注册（新窗口）">注册 <span aria-hidden="true">↗</span></a>
           </li>
         </ol>
         <p class="pick-foot">等效额度 = 注册赠额 ÷ 倍率，只在各站计费基准一致时可比，不是实际 token 数。注册链接含邀请参数。<a href="#stations">看每个站的详细条件 ↓</a></p>
@@ -695,9 +690,7 @@ html.dark .cta { color: #1b1410; }
           </div>
           <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="2026-09-04">2026-09-04</time><br>邀请链接 · 注册可能给邀请人带来额度</p><a class="cta" href="https://tabitoken.com/sign-up?aff=C8EJ" target="_blank" rel="noopener nofollow sponsored" aria-label="tabitoken 公益站：通过邀请链接注册（新窗口）">注册 tabitoken <span aria-hidden="true">↗</span></a></div></footer>
         </li>
-        <li class="card" id="relay-removed" data-verified="2026-09-30" data-models="[&quot;deepseek-v4&quot;,&quot;glm-5.3&quot;,&quot;kimi-k3&quot;,&quot;minimax-m3&quot;,&quot;hy4&quot;]">
           <div class="card-main">
-            <header class="card-head"><div><h3 class="name">removed</h3><p class="host">your-endpoint.example.com</p></div><span class="card-index" aria-hidden="true">05</span></header>
             <ul class="models" aria-label="记录中的模型"><li class="model">deepseek-v4</li><li class="model">glm-5.3</li><li class="model">kimi-k3</li><li class="model">minimax-m3</li><li class="model">hy4</li></ul>
             <div class="credit-line"><span class="credit-value">未记录</span><span class="credit-label">注册赠额</span><span class="rate">0.08x 倍率（国模分组）</span></div>
             <p class="signup-note">按量计费，注册不发赠额</p>
@@ -706,7 +699,6 @@ html.dark .cta { color: #1b1410; }
 <ul class="list"><li>分组倍率在后台「可用渠道」页看，国模 0.08x、open ai pro 0.22x。</li><li>Claude Code 填 base URL 到尾不带 /v1，Codex CLI 则要带 /v1。</li></ul>
             <details class="card-details"><summary>邀请规则与实测记录</summary><p>邀请返佣 10%，不冻结、无上限、无每日发放上限。</p><p class="tested">实测记录：四个端点实测均 200：/v1/models 1.61s、/v1/chat/completions 2.19s、/v1/responses 2.37s、/v1/messages 3.94s。账号累计 30,734 次请求 / 40.7 亿 token / 实付 ¥28.67（平台标准价 ¥359.51）。</p></details>
           </div>
-          <footer class="foot"><div class="card-footer-row"><p class="meta">实测于 <time datetime="2026-09-30">2026-09-30</time><br>不含邀请参数</p><a class="cta" href="https://your-endpoint.example.com/" target="_blank" rel="noopener nofollow" aria-label="removed：前往注册（新窗口）">注册 removed <span aria-hidden="true">↗</span></a></div></footer>
         </li>
       </ul>
       <div class="empty-state" id="empty-state" hidden><h3>没有匹配的站点</h3><p>试试站点名称、模型名，或清除筛选查看全部记录。</p><button type="button" class="filter-reset" id="clear-filters">清除筛选</button></div>
@@ -929,9 +921,7 @@ themeButton.addEventListener("click", () => {
 });
 </script>
 <div style="max-width:900px;margin:40px auto 0;padding:18px 22px;border:1px solid #24304a;border-radius:12px;background:#0e1524;font:14px/1.75 -apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;color:#c7d3e8">
-  <strong style="color:#e8eef9">本文示例所用的 API 端点</strong>：<code style="background:#16203a;padding:1px 6px;border-radius:4px">https://your-endpoint.example.com/v1</code><br>
   QQ 邮箱即可注册，无需邀请码，按量计费；同时兼容 [OI] 与 Anthropic 两套协议。
-  <a href="" style="color:#5b9dff;text-decoration:none;font-weight:600" rel="nofollow noopener">→ 注册入口</a>
   · <a href="https://1261398983.github.io/ai-api-guide/" style="color:#8fb8e8;text-decoration:none">配置指南</a>
 </div>
 
