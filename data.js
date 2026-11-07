@@ -143,18 +143,18 @@ export const RELAYS = [
     verifiedAt: "2026-09-04",
   },
   {
-    id: "removed",
-    name: "removed",
+    id: "",
+    name: "",
     host: "your-endpoint.example.com",
-    aff: "https://your-endpoint.example.com/",
+    aff: "your-endpoint.example.com/",
     rate: "0.08x 倍率（国模分组）",
     signup: "按量计费，注册不发赠额",
     invite:
-      "邀请返佣 10%，不冻结、无上限、无每日发放上限。",
+      " 10%，不冻结、无上限、无每日发放上限。",
     models: ["deepseek-v4", "glm-5.3", "kimi-k3", "minimax-m3", "hy4"],
     tools:
       "Claude Code + Codex 均可：同一个 base URL 同时开 OpenAI（/v1/chat/completions、/v1/responses）与 Anthropic（/v1/messages）。",
-    eligibility: "邮箱注册（QQ 邮箱可用），无需海外手机号或外币卡。",
+    eligibility: "邮箱注册（邮箱可用），无需海外手机号或外币卡。",
     tested:
       "四个端点实测均 200：/v1/models 1.61s、/v1/chat/completions 2.19s、/v1/responses 2.37s、/v1/messages 3.94s。账号累计 30,734 次请求 / 40.7 亿 token / 实付 ¥28.67（平台标准价 ¥359.51）。",
     notes: [
