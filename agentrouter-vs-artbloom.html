@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AgentRouter 与 artbloom 对比：免费额度、注册条件与 Codex 支持</title>
+<meta name="description" content="根据实测记录比较 AgentRouter 和 artbloom 的注册条件、免费 API 额度、Claude Code / Codex 支持与模型清单，说明 GitHub 老账号、新账号和不同工具的选择方法，附配置教程入口。">
+<meta name="keywords" content="AgentRouter，artbloom，AgentRouter 注册，artbloom 公益站，Codex 公益站，Claude Code 免费 API">
+<meta name="author" content="jliushi">
+<meta name="theme-color" content="#f7f5ef">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI 公益站清单">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:url" content="https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html">
+<meta property="og:title" content="AgentRouter 与 artbloom 对比：免费额度、注册条件与 Codex 支持">
+<meta property="og:description" content="根据实测记录比较 AgentRouter 和 artbloom 的注册条件、免费 API 额度、Claude Code / Codex 支持与模型清单，说明 GitHub 老账号、新账号和不同工具的选择方法，附配置教程入口。">
+<meta property="og:image" content="https://jliushi.github.io/ai-relay/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 公益站清单">
+<meta property="article:published_time" content="2026-11-10">
+<meta property="article:modified_time" content="2026-11-10">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AgentRouter 与 artbloom 对比：免费额度、注册条件与 Codex 支持">
+<meta name="twitter:description" content="根据实测记录比较 AgentRouter 和 artbloom 的注册条件、免费 API 额度、Claude Code / Codex 支持与模型清单，说明 GitHub 老账号、新账号和不同工具的选择方法，附配置教程入口。">
+<meta name="twitter:image" content="https://jliushi.github.io/ai-relay/og.png">
+<meta name="twitter:image:alt" content="AI 公益站清单">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://jliushi.github.io/ai-relay/#website",
+      "url": "https://jliushi.github.io/ai-relay/",
+      "name": "AI 公益站清单",
+      "inLanguage": [
+        "zh-CN",
+        "en"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html",
+      "url": "https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html",
+      "name": "AgentRouter 与 artbloom 对比：免费额度、注册条件与 Codex 支持",
+      "inLanguage": "zh-CN",
+      "isPartOf": {
+        "@id": "https://jliushi.github.io/ai-relay/#website"
+      },
+      "mainEntity": {
+        "@id": "https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html#article"
+      },
+      "breadcrumb": {
+        "@id": "https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html#breadcrumb"
+      }
+    },
+    {
+      "@type": "Article",
+      "@id": "https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html#article",
+      "headline": "AgentRouter 与 artbloom 对比：免费额度、注册条件与 Codex 支持",
+      "description": "根据实测记录比较 AgentRouter 和 artbloom 的注册条件、免费 API 额度、Claude Code / Codex 支持与模型清单，说明 GitHub 老账号、新账号和不同工具的选择方法，附配置教程入口。",
+      "inLanguage": "zh-CN",
+      "datePublished": "2026-11-10",
+      "dateModified": "2026-11-10",
+      "author": {
+        "@type": "Person",
+        "name": "jliushi",
+        "url": "https://github.com/jliushi"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "jliushi",
+        "url": "https://github.com/jliushi"
+      },
+      "image": "https://jliushi.github.io/ai-relay/og.png",
+      "mainEntityOfPage": {
+        "@id": "https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html"
+      },
+      "isPartOf": {
+        "@id": "https://jliushi.github.io/ai-relay/#website"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "AI 公益站清单",
+          "item": "https://jliushi.github.io/ai-relay/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "AgentRouter 与 artbloom 对比",
+          "item": "https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html"
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script>
+// Light first; only an explicit saved preference enables dark mode.
+try { if (localStorage.getItem("theme") === "dark") document.documentElement.classList.add("dark"); } catch (_) {}
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f7f5ef; --panel: #fffefa; --bg-alt: #efeee7;
+  --ink: #20344a; --muted: #5c6670; --line: #d8dbd7;
+  --brand-1: #a83d20; --brand-2: #a83d20; --brand-soft: #f9e9df;
+  --navy: #20344a; --warn-1: #8e401b; --warn-soft: #fff0df;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+html.dark {
+  color-scheme: dark;
+  --bg: #121d29; --panel: #1b2a39; --bg-alt: #233343;
+  --ink: #f3f1e9; --muted: #b3bfca; --line: #41505e;
+  --brand-1: #ffb08b; --brand-2: #ffb08b; --brand-soft: #3c2e29;
+  --warn-1: #ffc29d; --warn-soft: #352c26;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 90px; }
+body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; line-height: 1.6; }
+h1, h2, h3, p, ul, ol { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: var(--brand-1); text-underline-offset: 4px; }
+button, input, select { font: inherit; }
+button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--brand-1); outline-offset: 4px; }
+::selection { background: var(--panel); color: var(--ink); }
+.wrap { width: min(100% - 64px, 1180px); margin-inline: auto; }
+.skip { position: fixed; z-index: 100; top: 8px; left: 12px; padding: 12px 18px; background: var(--panel); transform: translateY(-160%); }
+.skip:focus { transform: none; }
+.topbar { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topbar-inner { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; font-size: 17px; font-weight: 750; white-space: nowrap; }
+.brand-mark { width: 32px; height: 32px; flex: none; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; color: var(--muted); text-decoration: none; font-size: 14px; border-radius: 6px; }
+.nav-link:hover { color: var(--ink); background: var(--bg-alt); }
+.theme-btn { min-width: 44px; min-height: 44px; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); color: var(--ink); font-size: 19px; }
+.hero { padding: 40px 0 8px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: "intro pick" "steps pick"; grid-template-rows: auto 1fr; gap: 0 56px; }
+.hero-intro { grid-area: intro; }
+.pick { grid-area: pick; align-self: start; min-width: 0; scroll-margin-top: 90px; }
+.hero-steps { grid-area: steps; }
+.eyebrow { font: 12px var(--mono); letter-spacing: .04em; color: var(--muted); margin-bottom: 14px; }
+.hero-intro .eyebrow::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: #3f9b62; vertical-align: 1px; }
+.hero-title { font-size: clamp(30px, 3.4vw, 44px); line-height: 1.2; letter-spacing: -.035em; font-weight: 800; }
+.hero-title .nw { white-space: nowrap; }
+.hero-sub { display: block; margin-top: 8px; font-size: .62em; line-height: 1.35; letter-spacing: -.02em; color: var(--brand-1); }
+.hero-lead { margin-top: 18px; font-size: 16px; line-height: 1.85; max-width: 65ch; color: var(--muted); }
+.hero-intro .hero-lead { max-width: 46ch; }
+.steps-title { margin-top: 30px; font-size: 13px; font-weight: 700; }
+.steps { margin-top: 10px; display: grid; gap: 4px; }
+.steps li { display: flex; gap: 14px; padding: 9px 0; }
+.step-n { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--panel); color: var(--brand-1); font: 700 13px var(--mono); }
+.steps strong { display: block; font-size: 15px; line-height: 1.6; }
+.steps small { display: block; font-size: 13px; line-height: 1.7; color: var(--muted); }
+.steps code { font: 12px var(--mono); padding: 1px 5px; border-radius: 4px; background: var(--bg-alt); color: var(--ink); overflow-wrap: anywhere; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 14px; min-height: 46px; padding: 9px 19px; font-size: 14px; font-weight: 650; border: 1px solid var(--line); border-radius: 6px; text-decoration: none; background: var(--panel); color: var(--ink); }
+.btn-primary { background: var(--navy); color: #fff; border-color: var(--navy); }
+html.dark .btn-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn:hover { box-shadow: 0 3px 0 var(--line); }
+.pick { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 34px rgba(32, 52, 74, .07); }
+.pick-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 22px 14px; border-bottom: 1px solid var(--line); }
+.pick-title { font-size: 17px; font-weight: 750; }
+.pick-sort { font-size: 12px; color: var(--muted); }
+.pick-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto auto; align-items: center; gap: 4px 16px; padding: 16px 22px; border-bottom: 1px solid var(--line); }
+.pick-row:hover { background: var(--bg); }
+.pick-rank { align-self: start; padding-top: 3px; font: 700 13px var(--mono); color: var(--muted); }
+.pick-row:first-child .pick-rank { color: var(--brand-1); }
+.pick-name { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 10px; font-size: 17px; line-height: 1.4; }
+.pick-name a { color: var(--ink); text-decoration: none; }
+.pick-name a:hover { text-decoration: underline; }
+.pick-host { font: 400 12px var(--mono); color: var(--muted); }
+.pick-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.tag { padding: 1px 7px; border: 1px solid var(--line); border-radius: 4px; font: 11px/1.7 var(--mono); color: var(--muted); }
+.tag-warn { border-color: transparent; background: var(--warn-soft); color: var(--warn-1); font-family: var(--sans); font-weight: 600; }
+.pick-cond { margin-top: 6px; font-size: 13px; color: var(--muted); }
+.pick-credit { display: grid; justify-items: end; text-align: right; font-size: 12px; line-height: 1.55; color: var(--muted); white-space: nowrap; }
+.pick-credit strong { font-size: 26px; line-height: 1.15; letter-spacing: -.04em; color: var(--ink); }
+.pick-eff { color: var(--ink); font-weight: 600; }
+.pick-cta { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 8px 16px; border-radius: 6px; background: var(--brand-1); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+html.dark .pick-cta { color: #1b1410; }
+.pick-cta:hover { filter: brightness(1.08); box-shadow: 0 3px 0 var(--line); }
+.pick-foot { padding: 13px 22px 15px; font-size: 12px; line-height: 1.8; color: var(--muted); }
+.pick-foot a { margin-left: 6px; white-space: nowrap; }
+.hero-cta { margin-top: 24px; display: grid; justify-items: start; gap: 10px; }
+.btn-hero { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 12px 24px; border-radius: 8px; background: var(--brand-1); color: #fff; font-size: 17px; font-weight: 750; text-decoration: none; box-shadow: 0 4px 0 rgba(32, 52, 74, .16); }
+html.dark .btn-hero { color: #1b1410; }
+.btn-hero:hover { filter: brightness(1.08); }
+.hero-alt { font-size: 13px; color: var(--muted); }
+.card-fit { margin-top: 12px; font-size: 13px; line-height: 1.7; color: var(--ink); }
+.tag-ok { border-color: transparent; background: #e3f3e8; color: #1f6b3b; font-family: var(--sans); font-weight: 600; }
+html.dark .tag-ok { background: #1f3a2a; color: #9be0b3; }
+.pick-history { border-top: 1px solid var(--line); }
+.pick-history summary { cursor: pointer; padding: 12px 22px; font-size: 13px; color: var(--muted); }
+.pick-history .pick-row:last-child { border-bottom: 0; }
+.risk-strip { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 28px; padding: 13px 18px; border: 1px solid var(--line); border-left: 3px solid var(--brand-1); background: var(--panel); font-size: 13px; }
+.risk-strip p { flex: 1 1 440px; color: var(--muted); }
+.risk-strip strong { color: var(--ink); }
+.risk-strip a { flex: none; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px 18px; margin-bottom: 15px; }
+.section-kicker { color: var(--brand-1); font: 11px var(--mono); letter-spacing: .12em; margin-bottom: 8px; }
+.h2 { font-size: 26px; line-height: 1.4; font-weight: 750; letter-spacing: -.02em; }
+.section-note, .hint { color: var(--muted); font-size: 13px; }
+.pick-band, .band, .setup-band, .faq-band, .of-band, .risk-band { padding: 38px 0 48px; scroll-margin-top: 16px; }
+.band, .setup-band, .faq-band, .of-band, .risk-band { border-top: 1px solid var(--line); }
+.pick-lead { color: var(--muted); font-size: 14px; line-height: 1.85; max-width: 90ch; }
+.numeric { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.filter-bar { display: flex; align-items: end; gap: 12px; margin-top: 20px; padding: 16px; background: var(--bg-alt); border: 1px solid var(--line); border-radius: 8px; }
+.filter-field { display: grid; gap: 6px; flex: 1; font-size: 12px; font-weight: 650; min-width: 0; }
+.filter-field:first-child { flex: 2; }
+.filter-field input, .filter-field select { width: 100%; min-height: 45px; border: 1px solid #a4adb3; border-radius: 5px; padding: 10px 12px; background: var(--panel); color: var(--ink); font-size: 14px; }
+.filter-field input::placeholder { color: var(--muted); }
+.filter-reset { min-height: 45px; padding: 9px 15px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); color: var(--ink); font-size: 13px; }
+.result-line { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; padding: 13px 0; font-size: 12px; color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.card { min-width: 0; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; scroll-margin-top: 95px; }
+.card:target { border-color: var(--brand-1); box-shadow: 0 0 0 2px var(--brand-soft); }
+.card-main { padding: 25px 26px 18px; flex: 1; }
+.card-head { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
+.card-index { font: 12px var(--mono); color: var(--brand-1); padding-top: 7px; }
+.name { font-size: 22px; letter-spacing: -.025em; line-height: 1.4; }
+.host { margin-top: 4px; font: 12px/1.7 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+.models { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 17px; }
+.model { border: 1px solid var(--line); border-radius: 4px; padding: 3px 8px; font: 11px/1.5 var(--mono); color: var(--muted); }
+.credit-line { display: flex; align-items: baseline; gap: 13px; margin-top: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.credit-value { font: 700 30px/1 var(--mono); letter-spacing: -.05em; }
+.credit-label { font-size: 12px; color: var(--muted); }
+.rate { font: 12px var(--mono); margin-left: auto; padding: 6px 8px; border-radius: 4px; background: var(--panel); color: var(--brand-1); white-space: nowrap; }
+.signup-note { margin-top: 9px; font-size: 12px; color: var(--muted); }
+.card-facts { display: grid; gap: 11px; margin-top: 19px; }
+.card-facts div { display: grid; grid-template-columns: 66px 1fr; gap: 13px; font-size: 13px; }
+.card-facts dt { color: var(--muted); }
+.card-facts dd { margin: 0; }
+.restrictions { margin-top: 18px; padding: 12px 14px; background: var(--bg-alt); border-radius: 5px; }
+.block-head { color: var(--ink); font-size: 12px; font-weight: 700; }
+.list { margin-top: 6px; padding-left: 17px; list-style: disc; font-size: 13px; line-height: 1.85; color: var(--muted); }
+.card-details { margin-top: 15px; font-size: 13px; border-top: 1px solid var(--line); }
+.card-details summary { cursor: pointer; min-height: 44px; padding: 11px 0; font-weight: 600; }
+.card-details p { color: var(--muted); line-height: 1.8; }
+.card-details .tested { margin-top: 9px; font-size: 12px; }
+.foot { padding: 15px 26px 20px; border-top: 1px solid var(--line); }
+.card-footer-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.meta { color: var(--muted); font-size: 11px; }
+.meta time { font-family: var(--mono); font-size: 12px; }
+.cta { display: inline-flex; align-items: center; min-height: 44px; gap: 8px; font-size: 14px; font-weight: 700; text-decoration: none; color: #fff; background: var(--brand-1); border-radius: 6px; padding: 8px 16px; }
+html.dark .cta { color: #1b1410; }
+.cta:hover { filter: brightness(1.08); }
+.stale { margin-top: 12px; color: var(--warn-1); background: var(--warn-soft); border-radius: 4px; padding: 8px 10px; font-size: 12px; }
+.empty-state { text-align: center; border: 1px dashed var(--line); padding: 40px 20px; border-radius: 8px; }
+.empty-state p { margin-top: 7px; color: var(--muted); font-size: 14px; }
+.empty-state button { margin-top: 18px; }
+.setup-band, .of-band { background: var(--panel); }
+.setup-list { margin-top: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.setup-step { min-width: 0; padding: 22px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; }
+.setup-head { display: flex; align-items: center; gap: 12px; }
+.setup-n { color: var(--brand-1); font: 12px var(--mono); }
+.setup-title { font-size: 18px; }
+.setup-body, .setup-note { margin-top: 12px; font-size: 13px; line-height: 1.85; color: var(--muted); }
+.setup-note { font-size: 12px; }
+.setup-code { margin: 16px 0 0; padding: 16px; border-radius: 5px; overflow-x: auto; border: 1px solid var(--line); background: var(--panel); }
+.setup-code code { font: 12px/1.9 var(--mono); color: var(--ink); white-space: pre; }
+.setup-pit-head { font-size: 16px; margin-top: 27px; }
+.pick-list { list-style: disc; padding-left: 20px; margin-top: 14px; max-width: 92ch; color: var(--muted); font-size: 14px; line-height: 1.9; }
+.pick-list li + li { margin-top: 8px; }
+.read-more { margin-top: 24px; font-size: 14px; }
+.faq-list { margin-top: 24px; }
+.faq-item { border-bottom: 1px solid var(--line); }
+.faq-item:first-child { border-top: 1px solid var(--line); }
+.faq-item summary { list-style: none; padding: 20px 4px; display: flex; align-items: baseline; justify-content: space-between; gap: 18px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: "+"; font: 20px var(--mono); color: var(--brand-1); }
+.faq-item[open] summary::after { content: "−"; }
+.faq-a { padding: 0 36px 20px 4px; max-width: 98ch; font-size: 14px; color: var(--muted); line-height: 1.9; }
+.of-list { margin-top: 23px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.of-item { border-top: 2px solid var(--line); padding: 17px 0; }
+.of-name { color: var(--ink); font-weight: 650; font-size: 15px; text-decoration: none; }
+.of-name:hover { text-decoration: underline; }
+.of-note { display: block; margin-top: 8px; font-size: 13px; line-height: 1.8; color: var(--muted); }
+.of-source { margin-top: 10px; font-size: 12px; color: var(--muted); }
+.rd-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 25px 45px; margin-top: 25px; }
+.rd-item-head { display: block; font-size: 14px; font-weight: 700; }
+.rd-item-body { display: block; margin-top: 7px; font-size: 13px; line-height: 1.9; color: var(--muted); }
+.site-foot { border-top: 1px solid var(--line); padding: 27px 0 35px; font-size: 12px; color: var(--muted); }
+.footer-top { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+.foot-nav { display: flex; flex-wrap: wrap; gap: 19px; font-size: 13px; }
+.foot-nav a { color: var(--ink); }
+.guide-body { max-width: 820px; }
+.guide-body .eyebrow { color: var(--brand-1); font-weight: 700; }
+.guide-body .hero-lead { max-width: none; }
+.guide-body .hero-title { text-wrap: balance; }
+.guide-sec { margin-top: 38px; }
+.guide-sec:first-child { margin-top: 10px; }
+.guide-p { margin-top: 15px; font-size: 15px; line-height: 1.95; color: var(--muted); }
+.breadcrumbs { margin-bottom: 22px; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.article-meta { margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.9; }
+.article-meta time { white-space: nowrap; }
+.article-toc { margin-top: 24px; padding: 18px 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.article-toc ol { list-style: decimal; padding-left: 22px; margin-top: 10px; font-size: 14px; }
+.article-toc li + li { margin-top: 8px; }
+.related-pages { margin-top: 32px; padding-top: 26px; border-top: 1px solid var(--line); }
+.comparison-scroll { max-width: 100%; overflow-x: auto; margin-top: 20px; border: 1px solid var(--line); border-radius: 8px; }
+.comparison-table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; line-height: 1.8; }
+.comparison-table caption { padding: 12px 16px; text-align: left; font-size: 13px; color: var(--muted); }
+.comparison-table th, .comparison-table td { padding: 12px 16px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.comparison-table thead { background: var(--bg-alt); }
+.comparison-table th[scope="row"] { width: 24%; }
+.comparison-table td { width: 38%; color: var(--muted); }
+.comparison-hint { display: none; margin-top: 15px; font-size: 12px; color: var(--muted); }
+@media (max-width: 960px) {
+  .hero-grid { grid-template-columns: 1fr; grid-template-areas: "intro" "pick" "steps"; grid-template-rows: none; gap: 0; }
+  .hero-intro .hero-lead { max-width: 65ch; }
+  .pick { margin-top: 26px; }
+  .topbar-right { gap: 0; }
+  .nav-link { padding-inline: 8px; }
+  .of-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  html { scroll-padding-top: 75px; }
+  .wrap { width: calc(100% - 36px); }
+  .topbar-inner { min-height: 64px; gap: 10px; }
+  .brand { font-size: 15px; gap: 8px; }
+  .brand-mark { width: 28px; height: 28px; }
+  .desktop-nav { display: none; }
+  .hero { padding: 26px 0 4px; }
+  .hero-title { font-size: 30px; }
+  .hero-lead { margin-top: 14px; font-size: 15px; line-height: 1.8; }
+  .pick { margin-top: 22px; }
+  .pick-head { padding: 14px 16px 12px; }
+  .pick-row { grid-template-columns: 18px minmax(0, 1fr) auto; grid-template-areas: "rank info credit" "rank cta cta"; gap: 12px; padding: 16px; }
+  .pick-rank { grid-area: rank; }
+  .pick-info { grid-area: info; }
+  .pick-credit { grid-area: credit; align-self: start; }
+  .pick-credit strong { font-size: 23px; }
+  .pick-cta { grid-area: cta; width: 100%; }
+  .btn-hero { width: 100%; }
+  .pick-foot { padding: 12px 16px 14px; }
+  .risk-strip { margin-top: 22px; font-size: 12px; padding: 12px 14px; gap: 7px; }
+  .risk-strip p { flex-basis: 100%; }
+  .h2 { font-size: 23px; }
+  .pick-band, .band, .setup-band, .faq-band, .of-band, .risk-band { padding: 30px 0 36px; }
+  .pick-band { padding-top: 8px; }
+  .filter-bar { flex-wrap: wrap; padding: 12px; gap: 10px; }
+  .filter-field:first-child { flex-basis: 100%; }
+  .filter-field { flex-basis: calc(100% - 85px); }
+  .grid, .setup-list, .rd-list { grid-template-columns: 1fr; }
+  .card-main { padding: 21px 20px 16px; }
+  .foot { padding: 15px 20px 18px; }
+  .name { font-size: 21px; }
+  .of-list { column-gap: 18px; }
+  .of-name { font-size: 14px; }
+  .setup-step { padding: 18px; }
+  .guide-body { width: calc(100% - 36px); }
+  .guide-sec .h2 { font-size: 21px; }
+  .comparison-hint { display: block; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+
+.pick-row.featured, .card.featured { background: var(--brand-soft); border: 2px solid var(--brand-1); }
+.unavailable { filter: grayscale(1); color: var(--muted); background: var(--bg); }
+.unavailable .pick-name, .unavailable .credit-value, .unavailable .numeric { color: var(--muted); }
+.unavailable .cta, .unavailable .pick-cta { background: #777; color: #fff; cursor: not-allowed; }
+#language-toggle { white-space: nowrap; padding: 6px 10px; }
+@media(max-width: 600px) { .topbar-inner { gap: 8px; flex-wrap: wrap; padding-block: 12px; } .topbar-right { gap: 10px; } }
+</style>
+
+</head>
+<body>
+<a class="skip" href="#main">跳到主要内容</a>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="./">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#20344a"/><path d="M8 11h10M8 16h7M8 21h5" stroke="#fffefa" stroke-width="2" stroke-linecap="round"/><path d="m20 12-4 10h5l4-10z" fill="#ed9c72"/></svg>
+      AI 公益站清单
+    </a>
+    <div class="topbar-right">
+      <a class="nav-link" href="./">← 返回清单</a>
+      <a class="nav-link desktop-nav" href="https://github.com/jliushi" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <section class="hero">
+    <div class="wrap guide-body">
+      <nav class="breadcrumbs" aria-label="面包屑"><a href="./">AI 公益站清单</a><span aria-hidden="true"> / </span><span aria-current="page">AgentRouter 与 artbloom 对比</span></nav>
+      <p class="eyebrow">站点对比</p>
+      <h1 class="hero-title">AgentRouter 与 artbloom 对比：免费额度、注册条件与 Codex 支持</h1>
+      <p class="article-meta">作者 <a href="https://github.com/jliushi">jliushi</a> · 发布于 <time datetime="2026-11-10">2026-11-10</time> · 内容更新于 <time datetime="2026-11-10">2026-11-10</time></p>
+      <p class="hero-lead">选公益站先看账号能否注册、接口能否接入手上的工具，再看赠送额度。下面把 AgentRouter 与 artbloom 的实测记录放在一起，便于对照。 <a href="./#stations">去看清单 →</a></p>
+      <nav class="article-toc" aria-label="本文目录"><p class="block-head">本文目录</p><ol><li><a href="#comparison">AgentRouter 与 artbloom 实测记录对照</a></li><li><a href="#account">有 GitHub 老账号和新账号，分别怎么选？</a></li><li><a href="#tools">只用 Claude Code，或还要接 Codex？</a></li><li><a href="#credit">免费额度是 API 余额，能用多久？</a></li><li><a href="#records">这些记录怎样维护？</a></li></ol></nav>
+    </div>
+  </section>
+  <section class="pick-band">
+    <div class="wrap guide-body">
+      <section class="guide-sec" id="comparison">
+        <h2 class="h2">AgentRouter 与 artbloom 实测记录对照</h2>
+        <p class="guide-p">表内信息来自本站已有的注册与调用记录。最后实测日期针对站点，文章更新日期针对内容整理；历史赠额与模型名称请结合站点当前公告核对。</p>
+<p class="comparison-hint">左右滑动表格，查看两个站点的完整记录 →</p>
+        <div class="comparison-scroll" role="region" aria-label="站点对照表，可横向滚动" tabindex="0">
+        <table class="comparison-table"><caption>注册条件、工具支持与实测记录</caption>
+          <thead><tr><th scope="col">对比项</th><th scope="col"><a href="./#relay-agentrouter">AgentRouter</a></th><th scope="col"><a href="./#relay-artbloom">artbloom</a></th></tr></thead>
+          <tbody><tr><th scope="row">清单状态</th><td>列入可用清单</td><td>列入可用清单</td></tr>
+<tr><th scope="row">注册条件</th><td>用 2026 年前注册的 GitHub 老账号</td><td>注册即可用</td></tr>
+<tr><th scope="row">工具接入记录</th><td>Claude Code、Codex 都能用</td><td>Claude Code 可用</td></tr>
+<tr><th scope="row">注册赠额记录</th><td>注册即得 $100 额度</td><td>注册即得 $100 额度</td></tr>
+<tr><th scope="row">模型记录</th><td>gpt-6-astra、opus 5.5、deepseek v4.1 flash</td><td>opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7</td></tr>
+<tr><th scope="row">最后实测</th><td>2026-10-10</td><td>2026-10-10</td></tr>
+<tr><th scope="row">实测说明</th><td>用 2026 年之前注册的 GitHub 老账号注册通过。</td><td>实测 opus 5.5 可用。</td></tr></tbody>
+        </table></div>
+      </section>
+      <section class="guide-sec" id="account">
+        <h2 class="h2">有 GitHub 老账号和新账号，分别怎么选？</h2>
+        <p class="guide-p">先对照表中的注册条件和自己的 GitHub 账号注册时间。符合老账号条件时，可以继续比较工具支持；不符合时，优先查看标注“注册即可用”的入口。账号门槛与模型支持是两项独立条件，能注册不代表每个客户端都能接入。</p>
+      </section>
+      <section class="guide-sec" id="tools">
+        <h2 class="h2">只用 Claude Code，或还要接 Codex？</h2>
+        <p class="guide-p">Claude Code 与 Codex 使用不同的 API 协议。选择前应同时核对站点的接口文档、模型 ID 和客户端要求；仅提供 Anthropic 兼容接口的站点不能直接当作 Codex provider。表中只列已有记录中的工具支持，模型名字包含 GPT 或 Claude 不能代替接口兼容性检查。</p>
+<ul class="pick-list"><li><a href="guide.html">查看 Claude Code / Codex 的配置步骤与报错排查</a></li></ul>
+      </section>
+      <section class="guide-sec" id="credit">
+        <h2 class="h2">免费额度是 API 余额，能用多久？</h2>
+        <p class="guide-p">赠额是站点账户里的 API 调用余额，不等于 Claude 或 ChatGPT 的官方订阅，也不是可提现金额。能用多久取决于模型、上下文长度、请求量和站点计费规则。先用短请求确认返回正常，再观察余额变化，能更直接地判断自己的使用成本。</p>
+        <p class="guide-p">注册后看不到赠额时，核对邀请链接、登录状态和站点领取规则。无需为了领额度重复注册；先查看控制台与公告，再联系站点支持。</p>
+      </section>
+      <section class="guide-sec" id="records">
+        <h2 class="h2">这些记录怎样维护？</h2>
+        <p class="guide-p">每个站保留实测日期、注册方式、支持工具和已知限制。停用站点移到首页的历史记录，并停止展示注册链接。新的文章发布日期不会被当作新的调用实测。</p>
+        <p class="guide-p">本页由 jliushi 整理。部分注册入口带邀请参数，注册可能给邀请人带来额度；这些链接在首页有标注。发现规则变化，可以通过仓库提交具体网址、变化内容和发生时间，反馈中请勿包含 API Key。</p>
+<ul class="pick-list"><li><a href="https://github.com/jliushi/ai-relay/issues">反馈站点信息变化</a></li><li><a href="what-is-ai-relay.html">了解公益站与官方 API 的区别及使用风险</a></li></ul>
+      </section>
+      <p class="guide-p" style="margin-top:28px">选好站点后，按<a href="guide.html">Claude Code / Codex 配置教程</a>设置 API Key 与接口地址。想查看其他站点和停用记录，返回<a href="./#stations">完整公益站清单</a>。</p>
+      <nav class="related-pages" aria-label="相关阅读"><h2 class="h2">相关阅读</h2><ul class="pick-list"><li><a href="guide.html">Claude Code / Codex 中转站配置教程：API Key、Base URL 与报错排查</a></li><li><a href="what-is-ai-relay.html">AI 公益站是什么？和官方 API、中转站的区别与风险讲清楚</a></li></ul></nav>
+    </div>
+  </section>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>本页仅汇总公开信息与个人实测结果，不代表任何形式的担保或推荐承诺。源码在 <a href="https://github.com/jliushi/ai-relay" target="_blank" rel="noopener">GitHub</a>。</p>
+  </div>
+</footer>
+</body>
+</html>

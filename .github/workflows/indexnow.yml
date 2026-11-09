@@ -1,49 +1,34 @@
 name: IndexNow ping
 
-# 每次把内容改动推上 main，就通知 IndexNow（Bing、Yandex 等共享这套协议的搜索
-# 引擎会立刻来重新抓取），不用等它们自己按周期爬。GitHub Pages 发布是另一条
-# 独立的流程，这里只负责「告诉搜索引擎页面变了」。
-#
-# 依赖仓库根目录的 5274d490c7073e9630ce4cc455bb9c41.txt —— 它的内容必须等于文件名
-# 里那串 key（IndexNow 靠它验证提交者确实控制这个站）。换 key 三处一起改：
-# 这里的 key、那个 txt 的文件名和内容、data.js 里的 indexNowKey。
+# Read URLs from the sitemap and wait until this revision is live before sending.
 
 on:
   push:
     branches: [main]
     paths:
-      - index.html
-      - index-en.html
-      - guide.html
-      - what-is-ai-relay.html
+      - '*.html'
       - sitemap.xml
       - llms.txt
       - data.js
+      - scripts/indexnow.mjs
+      - .github/workflows/indexnow.yml
   workflow_dispatch: {}
 
-permissions: {}
+permissions:
+  contents: read
 
 concurrency:
   group: indexnow
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Notify IndexNow
-        run: |
-          curl -sS -X POST 'https://api.indexnow.org/IndexNow' \
-            -H 'Content-Type: application/json; charset=utf-8' \
-            --data '{
-              "host": "jliushi.github.io",
-              "key": "5274d490c7073e9630ce4cc455bb9c41",
-              "keyLocation": "https://jliushi.github.io/ai-relay/5274d490c7073e9630ce4cc455bb9c41.txt",
-              "urlList": [
-                "https://jliushi.github.io/ai-relay/",
-                "https://jliushi.github.io/ai-relay/index-en.html",
-                "https://jliushi.github.io/ai-relay/guide.html",
-                "https://jliushi.github.io/ai-relay/what-is-ai-relay.html"
-              ]
-            }' \
-            -w '\nHTTP %{http_code}\n'
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Wait for Pages and notify IndexNow
+        run: node scripts/indexnow.mjs

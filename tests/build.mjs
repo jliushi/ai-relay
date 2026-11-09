@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { RELAYS, SETUP, GUIDE, EXPLAINER, FAQ, SITE } from "../data.js";
+import { RELAYS, SETUP, GUIDE, EXPLAINER, COMPARISON, FAQ, SITE } from "../data.js";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 execFileSync(process.execPath, ["build.mjs"], { cwd: root, stdio: "inherit" });
@@ -11,7 +11,7 @@ const esc = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", 
 const html = read("index.html");
 const htmlEn = read("index-en.html");
 const graph = source => JSON.parse(source.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])["@graph"];
-for (const name of ["index.html", GUIDE.slug, EXPLAINER.slug]) {
+for (const name of ["index.html", GUIDE.slug, EXPLAINER.slug, COMPARISON.slug]) {
   const source = read(name);
   assert.ok(!/\{\{[A-Z_]+\}\}/.test(source), `${name}: unresolved placeholder`);
   assert.equal((source.match(/<h1\b/g) || []).length, 1, `${name}: one h1`);
@@ -65,7 +65,7 @@ for (const relay of RELAYS) {
 }
 for (const step of SETUP.steps) assert.ok(html.includes(esc(step.code)), "Preserve API setup code verbatim");
 for (const section of GUIDE.sections.filter(section => section.code)) assert.ok(read(GUIDE.slug).includes(esc(section.code)));
-assert.equal((sitemap.match(/<loc>/g) || []).length, 4);
+assert.equal((sitemap.match(/<loc>/g) || []).length, 5);
 assert.ok(sitemap.includes("hreflang"), "sitemap carries hreflang alternates");
 assert.ok(read("robots.txt").includes("Allow: /"));
 console.log("PASS: static content, invitation URLs, model options, API code, all schemas, verification and sitemap.");

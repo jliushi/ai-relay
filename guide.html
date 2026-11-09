@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）</title>
+<title>Claude Code / Codex 中转站配置教程：API Key、Base URL 与报错排查</title>
 <meta name="description" content="手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。">
 <meta name="keywords" content="Claude Code 中转站配置，Claude Code 公益站教程，Codex 中转站配置，Claude Code 环境变量，ANTHROPIC_BASE_URL，Claude Code 401，Codex config.toml">
 <meta name="author" content="jliushi">
@@ -14,25 +14,57 @@
 <meta property="og:site_name" content="AI 公益站清单">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="https://jliushi.github.io/ai-relay/guide.html">
-<meta property="og:title" content="Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）">
+<meta property="og:title" content="Claude Code / Codex 中转站配置教程：API Key、Base URL 与报错排查">
 <meta property="og:description" content="手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。">
 <meta property="og:image" content="https://jliushi.github.io/ai-relay/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 公益站清单">
+<meta property="article:published_time" content="2026-09-28">
+<meta property="article:modified_time" content="2026-11-10">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）">
+<meta name="twitter:title" content="Claude Code / Codex 中转站配置教程：API Key、Base URL 与报错排查">
 <meta name="twitter:description" content="手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。">
 <meta name="twitter:image" content="https://jliushi.github.io/ai-relay/og.png">
+<meta name="twitter:image:alt" content="AI 公益站清单">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "TechArticle",
+      "@type": "WebSite",
+      "@id": "https://jliushi.github.io/ai-relay/#website",
+      "url": "https://jliushi.github.io/ai-relay/",
+      "name": "AI 公益站清单",
+      "inLanguage": [
+        "zh-CN",
+        "en"
+      ]
+    },
+    {
+      "@type": "WebPage",
       "@id": "https://jliushi.github.io/ai-relay/guide.html",
-      "headline": "Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）",
+      "url": "https://jliushi.github.io/ai-relay/guide.html",
+      "name": "Claude Code / Codex 中转站配置教程：API Key、Base URL 与报错排查",
+      "inLanguage": "zh-CN",
+      "isPartOf": {
+        "@id": "https://jliushi.github.io/ai-relay/#website"
+      },
+      "mainEntity": {
+        "@id": "https://jliushi.github.io/ai-relay/guide.html#article"
+      },
+      "breadcrumb": {
+        "@id": "https://jliushi.github.io/ai-relay/guide.html#breadcrumb"
+      }
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://jliushi.github.io/ai-relay/guide.html#article",
+      "headline": "Claude Code / Codex 中转站配置教程：API Key、Base URL 与报错排查",
       "description": "手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。",
       "inLanguage": "zh-CN",
-      "datePublished": "2026-09-04",
-      "dateModified": "2026-10-29",
+      "datePublished": "2026-09-28",
+      "dateModified": "2026-11-10",
       "author": {
         "@type": "Person",
         "name": "jliushi",
@@ -44,7 +76,9 @@
         "url": "https://github.com/jliushi"
       },
       "image": "https://jliushi.github.io/ai-relay/og.png",
-      "mainEntityOfPage": "https://jliushi.github.io/ai-relay/guide.html",
+      "mainEntityOfPage": {
+        "@id": "https://jliushi.github.io/ai-relay/guide.html"
+      },
       "isPartOf": {
         "@id": "https://jliushi.github.io/ai-relay/#website"
       }
@@ -70,6 +104,7 @@
     },
     {
       "@type": "BreadcrumbList",
+      "@id": "https://jliushi.github.io/ai-relay/guide.html#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -286,9 +321,25 @@ html.dark .cta { color: #1b1410; }
 .guide-body { max-width: 820px; }
 .guide-body .eyebrow { color: var(--brand-1); font-weight: 700; }
 .guide-body .hero-lead { max-width: none; }
+.guide-body .hero-title { text-wrap: balance; }
 .guide-sec { margin-top: 38px; }
 .guide-sec:first-child { margin-top: 10px; }
 .guide-p { margin-top: 15px; font-size: 15px; line-height: 1.95; color: var(--muted); }
+.breadcrumbs { margin-bottom: 22px; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.article-meta { margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.9; }
+.article-meta time { white-space: nowrap; }
+.article-toc { margin-top: 24px; padding: 18px 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.article-toc ol { list-style: decimal; padding-left: 22px; margin-top: 10px; font-size: 14px; }
+.article-toc li + li { margin-top: 8px; }
+.related-pages { margin-top: 32px; padding-top: 26px; border-top: 1px solid var(--line); }
+.comparison-scroll { max-width: 100%; overflow-x: auto; margin-top: 20px; border: 1px solid var(--line); border-radius: 8px; }
+.comparison-table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; line-height: 1.8; }
+.comparison-table caption { padding: 12px 16px; text-align: left; font-size: 13px; color: var(--muted); }
+.comparison-table th, .comparison-table td { padding: 12px 16px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.comparison-table thead { background: var(--bg-alt); }
+.comparison-table th[scope="row"] { width: 24%; }
+.comparison-table td { width: 38%; color: var(--muted); }
+.comparison-hint { display: none; margin-top: 15px; font-size: 12px; color: var(--muted); }
 @media (max-width: 960px) {
   .hero-grid { grid-template-columns: 1fr; grid-template-areas: "intro" "pick" "steps"; grid-template-rows: none; gap: 0; }
   .hero-intro .hero-lead { max-width: 65ch; }
@@ -334,6 +385,7 @@ html.dark .cta { color: #1b1410; }
   .setup-step { padding: 18px; }
   .guide-body { width: calc(100% - 36px); }
   .guide-sec .h2 { font-size: 21px; }
+  .comparison-hint { display: block; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
 
@@ -363,24 +415,27 @@ html.dark .cta { color: #1b1410; }
 <main id="main">
   <section class="hero">
     <div class="wrap guide-body">
+      <nav class="breadcrumbs" aria-label="面包屑"><a href="./">AI 公益站清单</a><span aria-hidden="true"> / </span><span aria-current="page">配置教程</span></nav>
       <p class="eyebrow">配置教程</p>
-      <h1 class="hero-title">Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）</h1>
+      <h1 class="hero-title">Claude Code / Codex 中转站配置教程：API Key、Base URL 与报错排查</h1>
+      <p class="article-meta">作者 <a href="https://github.com/jliushi">jliushi</a> · 发布于 <time datetime="2026-09-28">2026-09-28</time> · 内容更新于 <time datetime="2026-11-10">2026-11-10</time></p>
       <p class="hero-lead">这一页把「拿到公益站的 key 之后怎么接进 Claude Code 和 Codex」从头走一遍，包含最小可用配置和几个真会遇到的报错。还没有 key 的，先去首页的清单挑一个站注册——那边按可用状态排好序、每条标了实测日期。 <a href="./#stations">去看清单 →</a></p>
+      <nav class="article-toc" aria-label="本文目录"><p class="block-head">本文目录</p><ol><li><a href="#section-1">一、公益站是什么？先把风险讲清楚</a></li><li><a href="#section-2">二、先拿到一个站点的 key</a></li><li><a href="#section-3">三、配置 Claude Code</a></li><li><a href="#section-4">四、配置 Codex</a></li><li><a href="#section-5">五、验证配好了没</a></li><li><a href="#section-6">六、常见报错怎么排查</a></li></ol></nav>
     </div>
   </section>
   <section class="pick-band">
     <div class="wrap guide-body">
-      <section class="guide-sec">
+      <section class="guide-sec" id="section-1">
         <h2 class="h2">一、公益站是什么？先把风险讲清楚</h2>
         <p class="guide-p">公益站（也叫中转站）是第三方搭的 API 中转服务，把 Claude、GPT 这类模型的接口转出来给人用，注册通常送一笔额度，好处是有免费额度、不需要国外支付方式。区别在于它不是官方渠道：额度、倍率、邀请规则都由站方定，站点也可能随时改规则、限流甚至关停。</p>
         <p class="guide-p">配之前先记住一条：公益站能看到你发过去的全部请求内容。个人项目、开源代码、写 demo 无所谓；涉密代码、生产环境凭据、客户数据不要经任何第三方中转，这跟用哪一家无关。也别把某一家当唯一入口，手上多备一两个。</p>
       </section>
-      <section class="guide-sec">
+      <section class="guide-sec" id="section-2">
         <h2 class="h2">二、先拿到一个站点的 key</h2>
         <p class="guide-p">去首页清单挑一个站，用它支持的方式（多为 GitHub 或邮箱）注册登录，在后台「令牌 / API Keys」里新建一个 key。清单里每条都标了实测日期。</p>
         <p class="guide-p">登录后余额显示 0 是常事——多数站在登录那一刻才结算额度，退出重登一次一般就到账。同时记下这个站的「接口地址（Base URL）」，配置时要用。</p>
       </section>
-      <section class="guide-sec">
+      <section class="guide-sec" id="section-3">
         <h2 class="h2">三、配置 Claude Code</h2>
         <p class="guide-p">Claude Code 认两个环境变量：BASE_URL 指到站点地址，AUTH_TOKEN 填站点给的 key（以 Bearer 形式发出，多数公益站认这个而不是 x-api-key）。拉不到模型列表时再手动指定模型名。</p>
         <pre class="setup-code"><code>export ANTHROPIC_BASE_URL=&quot;https://&lt;站点给的地址&gt;&quot;
@@ -390,7 +445,7 @@ export ANTHROPIC_MODEL=&quot;claude-opus-5&quot;   # 拉不到模型列表时手
 claude</code></pre>
         <p class="guide-p">想固定下来，写进 shell 配置，或放进 ~/.claude/settings.json 的 env 块。别把 key 提交进仓库。</p>
       </section>
-      <section class="guide-sec">
+      <section class="guide-sec" id="section-4">
         <h2 class="h2">四、配置 Codex</h2>
         <p class="guide-p">Codex 走自定义 provider：在 ~/.codex/config.toml 里声明一个 provider，key 用 env_key 指向环境变量名，不直接写进文件。</p>
         <pre class="setup-code"><code>model = &quot;gpt-5.6&quot;
@@ -403,11 +458,11 @@ env_key = &quot;RELAY_API_KEY&quot;
 wire_api = &quot;chat&quot;</code></pre>
         <p class="guide-p">然后 export RELAY_API_KEY=&quot;&lt;站点给的 key&gt;&quot;。wire_api 先试 chat——公益站转出来的多数只是 chat completions。标了「只支持 Claude Code」的站不要接 Codex。</p>
       </section>
-      <section class="guide-sec">
+      <section class="guide-sec" id="section-5">
         <h2 class="h2">五、验证配好了没</h2>
         <p class="guide-p">配完开一个新终端（让环境变量生效），进任意项目目录跑起来，问一句「你好」。能正常回复就成了。报错就对着下一节按状态码排查——先看是 4xx 还是超时，能最快分清是配置、key、额度还是网络的问题。</p>
       </section>
-      <section class="guide-sec">
+      <section class="guide-sec" id="section-6">
         <h2 class="h2">六、常见报错怎么排查</h2>
         <ul class="pick-list">
           <li>401 Unauthorized：鉴权没过。查 key 有没有复制全、额度是不是用完、模型名在不在这个站的可用清单里。地址错通常是 404，不是 401。</li>
@@ -418,6 +473,7 @@ wire_api = &quot;chat&quot;</code></pre>
         </ul>
       </section>
       <p class="guide-p" style="margin-top:28px">配好了就回<a href="./#stations">首页清单</a>挑个站开跑；拿不准挑哪个，首页顶部的<a href="./#pick">清单</a>已按可用状态排好序。公益站随时可能变，别把某一家当唯一入口。</p>
+      <nav class="related-pages" aria-label="相关阅读"><h2 class="h2">相关阅读</h2><ul class="pick-list"><li><a href="what-is-ai-relay.html">AI 公益站是什么？和官方 API、中转站的区别与风险讲清楚</a></li><li><a href="agentrouter-vs-artbloom.html">AgentRouter 与 artbloom 对比：免费额度、注册条件与 Codex 支持</a></li></ul></nav>
     </div>
   </section>
 </main>

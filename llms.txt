@@ -1,12 +1,13 @@
 # AI 公益站清单
 
-> 实测可用的 AI 公益站（中转站）清单：注册即送免费额度，覆盖 Claude Opus 5.5、Opus 4.8、GPT-6 Astra 与 DeepSeek V4.1 Flash，可接入 Claude Code 和 Codex。逐站记录赠额、倍率、注册条件、邀请规则和实测日期，附最小配置方法。
+> 对比 AgentRouter、artbloom 等 AI 公益站的免费 API 额度、注册条件与 Claude Code / Codex 接入支持。附实测日期、已停用站点记录、配置教程和常见报错排查，方便按账号与工具选择。
 
 页面地址：https://jliushi.github.io/ai-relay/
 配置教程：https://jliushi.github.io/ai-relay/guide.html
 公益站是什么（科普）：https://jliushi.github.io/ai-relay/what-is-ai-relay.html
+AgentRouter 与 artbloom 对比：https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html
 英文版：https://jliushi.github.io/ai-relay/index-en.html
-最近更新：2026-10-29
+最近更新：2026-11-10
 
 ## 收录标准与免责
 
@@ -23,11 +24,12 @@
 
 ### AgentRouter 公益站
 
+- 状态：列入可用清单；以实测日期与当前公告为准
 - 域名：agentrouter.org
 - 工具接入：Claude Code、Codex 都能用
 - 注册条件：用 2026 年前注册的 GitHub 老账号
 - 倍率：1x 倍率
-- 注册即得：注册即得 $100 额度
+- 注册赠额：注册即得 $100 额度
 - 邀请奖励：每邀请一位新用户：新用户获得 $50 额度，邀请人获得 $100 额度。
 - 记录中的模型：gpt-6-astra、opus 5.5、deepseek v4.1 flash
 - 实测：用 2026 年之前注册的 GitHub 老账号注册通过。
@@ -37,11 +39,12 @@
 
 ### artbloom 公益站
 
+- 状态：列入可用清单；以实测日期与当前公告为准
 - 域名：api.artbloom.tech
 - 工具接入：Claude Code 可用
 - 注册条件：注册即可用
 - 倍率：1x 倍率
-- 注册即得：注册即得 $100 额度
+- 注册赠额：注册即得 $100 额度
 - 记录中的模型：opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7
 - 实测：实测 opus 5.5 可用。
 - 实测日期：2026-10-10
@@ -49,11 +52,12 @@
 
 ### justwoker 公益站
 
+- 状态：不可用；以下为历史记录，不作为当前注册建议
 - 域名：api.justwoker.icu
 - 工具接入：Claude Code 可用
 - 注册条件：用注册满一年的 GitHub 账号
 - 倍率：0.65x 倍率
-- 注册即得：通过邀请链接注册即得 $70 额度
+- 历史赠额：通过邀请链接注册即得 $70 额度
 - 记录中的模型：opus 4.8、opus 5
 - 实测：用注册满一年以上的 GitHub 账号注册通过。
 - 实测日期：2026-10-10
@@ -61,11 +65,12 @@
 
 ### kktoken 公益站
 
+- 状态：不可用；以下为历史记录，不作为当前注册建议
 - 域名：kktoken.cc
 - 工具接入：Claude Code 可用
 - 注册条件：注册即可用
 - 倍率：1x 倍率
-- 注册即得：注册即得 $100 额度
+- 历史赠额：注册即得 $100 额度
 - 邀请奖励：每邀请一位新用户获得 $25 额度。
 - 记录中的模型：opus 5
 - 实测：实测可用。

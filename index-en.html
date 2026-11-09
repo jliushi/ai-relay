@@ -3,13 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI Relay Directory — Free Credits for Claude Code / Codex</title>
-<meta name="description" content="A tested directory of third-party AI relays for Claude Code and Codex, with signup credits, pricing multipliers, eligibility, referral rules and test dates.">
+<title>AI Relay Directory: Free API Credits for Claude Code &amp; Codex</title>
+<meta name="description" content="Compare AgentRouter and artbloom signup credits, account requirements and Claude Code / Codex support. Includes test dates, setup guides and unavailable relay records.">
 <meta name="keywords" content="AI relay, free API credits, Claude Code, Codex, AgentRouter, artbloom, justwoker, kktoken">
 <meta name="author" content="jliushi">
 <meta name="theme-color" content="#f7f5ef">
-<!-- 放行富摘要：允许大图预览、不限制文本摘要长度。搜索结果的问答富摘要和 AI 引用
-     都受这条约束，收紧了等于自己把可见度砍掉。 -->
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://jliushi.github.io/ai-relay/index-en.html">
 <link rel="alternate" hreflang="zh-CN" href="https://jliushi.github.io/ai-relay/">
@@ -20,15 +18,15 @@
 <meta property="og:site_name" content="AI Relay Directory">
 <meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://jliushi.github.io/ai-relay/index-en.html">
-<meta property="og:title" content="AI Relay Directory — Free Credits for Claude Code / Codex">
-<meta property="og:description" content="A tested directory of third-party AI relays for Claude Code and Codex, with signup credits, pricing multipliers, eligibility, referral rules and test dates.">
+<meta property="og:title" content="AI Relay Directory: Free API Credits for Claude Code &amp; Codex">
+<meta property="og:description" content="Compare AgentRouter and artbloom signup credits, account requirements and Claude Code / Codex support. Includes test dates, setup guides and unavailable relay records.">
 <meta property="og:image" content="https://jliushi.github.io/ai-relay/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="AI Relay Directory — AgentRouter / artbloom / justwoker / kktoken">
+<meta property="og:image:alt" content="AI Relay Directory — AgentRouter / artbloom">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI Relay Directory — Free Credits for Claude Code / Codex">
-<meta name="twitter:description" content="A tested directory of third-party AI relays for Claude Code and Codex, with signup credits, pricing multipliers, eligibility, referral rules and test dates.">
+<meta name="twitter:title" content="AI Relay Directory: Free API Credits for Claude Code &amp; Codex">
+<meta name="twitter:description" content="Compare AgentRouter and artbloom signup credits, account requirements and Claude Code / Codex support. Includes test dates, setup guides and unavailable relay records.">
 <meta name="twitter:image" content="https://jliushi.github.io/ai-relay/og.png">
 <meta name="twitter:image:alt" content="AI Relay Directory">
 <script type="application/ld+json">{
@@ -39,7 +37,7 @@
       "@id": "https://jliushi.github.io/ai-relay/#website",
       "url": "https://jliushi.github.io/ai-relay/",
       "name": "AI Relay Directory",
-      "description": "A tested directory of third-party AI relays for Claude Code and Codex, with signup credits, pricing multipliers, eligibility, referral rules and test dates.",
+      "description": "Compare AgentRouter and artbloom signup credits, account requirements and Claude Code / Codex support. Includes test dates, setup guides and unavailable relay records.",
       "inLanguage": "en",
       "publisher": {
         "@id": "https://jliushi.github.io/ai-relay/#author"
@@ -56,16 +54,19 @@
     },
     {
       "@type": "WebPage",
-      "@id": "https://jliushi.github.io/ai-relay/",
-      "url": "https://jliushi.github.io/ai-relay/",
-      "name": "AI Relay Directory — Free Credits for Claude Code / Codex",
-      "description": "A tested directory of third-party AI relays for Claude Code and Codex, with signup credits, pricing multipliers, eligibility, referral rules and test dates.",
+      "@id": "https://jliushi.github.io/ai-relay/index-en.html",
+      "url": "https://jliushi.github.io/ai-relay/index-en.html",
+      "name": "AI Relay Directory: Free API Credits for Claude Code & Codex",
+      "description": "Compare AgentRouter and artbloom signup credits, account requirements and Claude Code / Codex support. Includes test dates, setup guides and unavailable relay records.",
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://jliushi.github.io/ai-relay/#website"
       },
+      "mainEntity": {
+        "@id": "https://jliushi.github.io/ai-relay/index-en.html#relay-list"
+      },
       "datePublished": "2026-09-04",
-      "dateModified": "2026-10-29",
+      "dateModified": "2026-11-10",
       "author": {
         "@id": "https://jliushi.github.io/ai-relay/#author"
       },
@@ -82,11 +83,11 @@
       "about": [
         {
           "@type": "Thing",
-          "name": "AI 公益站"
+          "name": "AI relay"
         },
         {
           "@type": "Thing",
-          "name": "AI 中转站"
+          "name": "AI API relay"
         }
       ],
       "mentions": [
@@ -127,66 +128,49 @@
         {
           "@type": "Thing",
           "name": "grok 4.7"
-        },
-        {
-          "@type": "Thing",
-          "name": "opus 4.8"
         }
       ],
       "isAccessibleForFree": true
     },
     {
       "@type": "HowTo",
-      "name": "在 Claude Code / Codex 中配置 AI 公益站",
-      "description": "Point requests to the relay&#39;s endpoint. Claude Code uses environment variables; Codex uses config.toml. Minimal examples follow.",
+      "name": "Configure an AI relay in Claude Code or Codex",
+      "description": "Point requests to the relay's endpoint. Claude Code uses environment variables; Codex uses config.toml. Minimal examples follow.",
       "inLanguage": "en",
       "step": [
         {
           "@type": "HowToStep",
           "position": 1,
           "name": "Claude Code",
-          "text": "Set BASE_URL to the station&#39;s Anthropic-compatible endpoint and AUTH_TOKEN to its key. This sends Bearer authentication, which most listed relays expect instead of x-api-key. For persistent setup, use your shell configuration or the env block in ~/.claude/settings.json. Never commit keys."
+          "text": "Set BASE_URL to the station's Anthropic-compatible endpoint and AUTH_TOKEN to its key. This sends Bearer authentication, which most listed relays expect instead of x-api-key. For persistent setup, use your shell configuration or the env block in ~/.claude/settings.json. Never commit keys."
         },
         {
           "@type": "HowToStep",
           "position": 2,
           "name": "Codex",
-          "text": "Add a custom provider in ~/.codex/config.toml. Use env_key to reference an environment variable instead of storing the key in the file. 然后 export RELAY_API_KEY=\"<站点给的 key>\"。wire_api 先试 chat —— 公益站转出来的多数只是 chat completions，responses 那套接口不一定有。"
+          "text": "Add a custom provider in ~/.codex/config.toml. Use env_key to reference an environment variable instead of storing the key in the file. Then export RELAY_API_KEY=\"<station-key>\". The recorded example uses chat; relay support for Responses and client configuration may vary."
         }
       ]
     },
     {
       "@type": "ItemList",
-      "name": "实测可用的 AI 公益站",
-      "numberOfItems": 4,
+      "@id": "https://jliushi.github.io/ai-relay/index-en.html#relay-list",
+      "name": "Available AI relays from test records",
+      "numberOfItems": 2,
       "itemListElement": [
         {
           "@type": "ListItem",
           "position": 1,
           "name": "AgentRouter",
-          "url": "https://agentrouter.org",
-          "description": "Claude Code and Codex；GitHub account created before 2026；1x pricing；$100 signup credit；覆盖模型：gpt-6-astra、opus 5.5、deepseek v4.1 flash"
+          "url": "https://jliushi.github.io/ai-relay/index-en.html#relay-agentrouter",
+          "description": "Claude Code and Codex；GitHub account created before 2026；1x pricing；$100 signup credit；Models: gpt-6-astra、opus 5.5、deepseek v4.1 flash"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "artbloom",
-          "url": "https://api.artbloom.tech",
-          "description": "Claude Code supported；No special signup requirements；1x pricing；$100 signup credit；覆盖模型：opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "justwoker",
-          "url": "https://api.justwoker.icu",
-          "description": "Claude Code supported；GitHub account at least one year old；0.65x pricing；通过邀请链接Register即得 $70 额度；覆盖模型：opus 4.8、opus 5"
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "name": "kktoken",
-          "url": "https://kktoken.cc",
-          "description": "Claude Code supported；No special signup requirements；1x pricing；$100 signup credit；覆盖模型：opus 5"
+          "url": "https://jliushi.github.io/ai-relay/index-en.html#relay-artbloom",
+          "description": "Claude Code supported；No special signup requirements；1x pricing；$100 signup credit；Models: opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7"
         }
       ]
     },
@@ -278,7 +262,7 @@
           "name": "Can I connect from mainland China without a proxy?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "It depends on the station. Some provide directly reachable mirrors, while others require a proxy. Mirror addresses can change; use the station&#39;s current documentation rather than guessing."
+            "text": "It depends on the station. Some provide directly reachable mirrors, while others require a proxy. Mirror addresses can change; use the station's current documentation rather than guessing."
           }
         }
       ]
@@ -483,9 +467,25 @@ html.dark .cta { color: #1b1410; }
 .guide-body { max-width: 820px; }
 .guide-body .eyebrow { color: var(--brand-1); font-weight: 700; }
 .guide-body .hero-lead { max-width: none; }
+.guide-body .hero-title { text-wrap: balance; }
 .guide-sec { margin-top: 38px; }
 .guide-sec:first-child { margin-top: 10px; }
 .guide-p { margin-top: 15px; font-size: 15px; line-height: 1.95; color: var(--muted); }
+.breadcrumbs { margin-bottom: 22px; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.article-meta { margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.9; }
+.article-meta time { white-space: nowrap; }
+.article-toc { margin-top: 24px; padding: 18px 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.article-toc ol { list-style: decimal; padding-left: 22px; margin-top: 10px; font-size: 14px; }
+.article-toc li + li { margin-top: 8px; }
+.related-pages { margin-top: 32px; padding-top: 26px; border-top: 1px solid var(--line); }
+.comparison-scroll { max-width: 100%; overflow-x: auto; margin-top: 20px; border: 1px solid var(--line); border-radius: 8px; }
+.comparison-table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; line-height: 1.8; }
+.comparison-table caption { padding: 12px 16px; text-align: left; font-size: 13px; color: var(--muted); }
+.comparison-table th, .comparison-table td { padding: 12px 16px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.comparison-table thead { background: var(--bg-alt); }
+.comparison-table th[scope="row"] { width: 24%; }
+.comparison-table td { width: 38%; color: var(--muted); }
+.comparison-hint { display: none; margin-top: 15px; font-size: 12px; color: var(--muted); }
 @media (max-width: 960px) {
   .hero-grid { grid-template-columns: 1fr; grid-template-areas: "intro" "pick" "steps"; grid-template-rows: none; gap: 0; }
   .hero-intro .hero-lead { max-width: 65ch; }
@@ -531,6 +531,7 @@ html.dark .cta { color: #1b1410; }
   .setup-step { padding: 18px; }
   .guide-body { width: calc(100% - 36px); }
   .guide-sec .h2 { font-size: 21px; }
+  .comparison-hint { display: block; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
 
@@ -703,6 +704,7 @@ html.dark .cta { color: #1b1410; }
         </li>
       </ul>
       <div class="empty-state" id="empty-state" hidden><h3>No matching stations</h3><p>Try a station or model name, or clear filters to see all records.</p><button type="button" class="filter-reset" id="clear-filters">Clear filters</button></div>
+      <p class="read-more"><a href="agentrouter-vs-artbloom.html">AgentRouter vs artbloom: signup, credits and tool support (中文) →</a></p>
     </div>
   </section>
   <section class="setup-band" id="setup" aria-labelledby="setup-title">

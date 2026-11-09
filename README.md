@@ -1,11 +1,13 @@
 # AI 公益站清单
 
 实测可用的第三方 AI 公益站（中转站）清单，含倍率、注册即得额度、邀请规则与须知。
-覆盖 Claude Opus 5.5、Opus 4.8、GPT-6 Astra 与 DeepSeek V4.1 Flash，可用于 Claude Code 和 Codex。每条都标注实测日期。
+记录 Claude Code / Codex 接入支持、模型列表与实测日期；停用站点单独标明为历史记录。
 和一般的白嫖导航不同：这里按**可用状态和维护者指定顺序**排序，而不是只看送多少，并写明每个站能接哪个工具、要什么账号。
 
 **页面：https://jliushi.github.io/ai-relay/**
 **配置教程（Claude Code / Codex 从拿 key 到跑通 + 避坑）：https://jliushi.github.io/ai-relay/guide.html**
+
+**站点对比：https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html**
 
 零构建依赖、纯静态、无服务器。仿 [ijry/ai-switch](https://github.com/ijry/ai-switch)
 的 relay 页用原生 HTML/CSS/JS 重写（原项目 MIT 许可）。
@@ -13,12 +15,12 @@
 ## 清单
 
 <!-- RELAYS:START -->
-| 站点 | 域名 | 倍率 | 注册即得 | 1x 覆盖模型 | 实测日期 |
-| --- | --- | --- | --- | --- | --- |
-| [AgentRouter 公益站](https://agentrouter.org/register?aff=U0IJ) | `agentrouter.org` | 1x 倍率 | 注册即得 $100 额度 | gpt-6-astra、opus 5.5、deepseek v4.1 flash | 2026-10-10 |
-| [artbloom 公益站](https://api.artbloom.tech/signup?ref=5LVZCDPNRI) | `api.artbloom.tech` | 1x 倍率 | 注册即得 $100 额度 | opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7 | 2026-10-10 |
-| [justwoker 公益站](https://api.justwoker.icu/register?aff=XiYg) | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-10-10 |
-| [kktoken 公益站](https://kktoken.cc/sign-up?aff=8Zqi) | `kktoken.cc` | 1x 倍率 | 注册即得 $100 额度 | opus 5 | 2026-09-04 |
+| 站点 | 状态 | 域名 | 倍率 | 赠额记录 | 模型记录 | 实测日期 |
+| --- | --- | --- | --- | --- | --- | --- |
+| [AgentRouter 公益站](https://agentrouter.org/register?aff=U0IJ) | 列入可用清单 | `agentrouter.org` | 1x 倍率 | 注册即得 $100 额度 | gpt-6-astra、opus 5.5、deepseek v4.1 flash | 2026-10-10 |
+| [artbloom 公益站](https://api.artbloom.tech/signup?ref=5LVZCDPNRI) | 列入可用清单 | `api.artbloom.tech` | 1x 倍率 | 注册即得 $100 额度 | opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7 | 2026-10-10 |
+| justwoker 公益站 | 已不可用（历史记录） | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-10-10 |
+| kktoken 公益站 | 已不可用（历史记录） | `kktoken.cc` | 1x 倍率 | 注册即得 $100 额度 | opus 5 | 2026-09-04 |
 <!-- RELAYS:END -->
 
 上面的表格由 `node build.mjs` 从 `data.js` 生成，不要手改。
@@ -50,7 +52,7 @@ git add -A && git commit -m "update: 实测数据" && git push
 按访问当天的日期算，会自己越线。看到了就重新实测改日期，或者把该项删掉——不要
 只改日期不实测。
 
-链接里没有 `aff=` 的项，页脚不会显示返利披露，按钮也会变成「前往注册」。
+`aff=` 和 `ref=` 都作为邀请参数处理，并显示邀请披露。
 
 ## 重新生成预览图
 
@@ -108,4 +110,19 @@ favicon.svg
 
 统计用 Umami Cloud：在 `data.js` 的 `SITE.umamiId` 填 website id 后才加载脚本。每个「注册」入口都带 `data-umami-event="register"`，并按 `site`（站点 id）和 `place`（hero / pick / hero-alt / card）拆分，可以看哪个位置的按钮被点得多。
 
-`SITE.updated` 是内容有实质改动时手动改的日期，`sitemap.xml` 的 `lastmod`、`llms.txt` 的更新日期和结构化数据的 `dateModified` 都取它和各站实测日期中较晚的一个，不随构建当天变化。
+`SITE.updated` 是首页内容有实质改动时手动改的日期。首页 `lastmod`、`llms.txt` 的更新日期和结构化数据的 `dateModified` 取它和各站实测日期中较晚的一个。教程与科普页分别使用自己的 `published` / `updated`；对比页同时考虑所引用数据的更新。日期按 Asia/Shanghai 日历记录，不随重复构建变化，也不代替 `verifiedAt`。
+
+## SEO 检查与收录通知
+
+```bash
+node tests/build.mjs
+node --test tests/seo.mjs tests/indexnow.mjs
+```
+
+检查包含 canonical、双语 hreflang、站点地图日期、内链与锚点、可用站点结构化数据和推送失败处理。GitHub Actions 会执行相同检查，并确认生成文件已提交。
+
+`scripts/indexnow.mjs` 从站点地图读取全部公开页面，在部署后的 HTML、站点地图和密钥文件与本次提交一致后才通知 IndexNow；HTTP 200 / 202 表示提交被接受，不代表页面已收录。HTTP 4xx / 5xx 会让任务失败，可在 Pages 发布完成后手动重新运行 `IndexNow ping`。
+
+Google Search Console 使用 URL 前缀资源 `https://jliushi.github.io/ai-relay/`，站点地图地址为 `https://jliushi.github.io/ai-relay/sitemap.xml`。首页保留所有权验证标签。IndexNow 不负责 Google 收录；需在已有 Search Console 资源中查看站点地图和页面索引报告。
+
+这是 GitHub Pages 项目站，抓取器只在域名根路径 `/robots.txt` 读取 robots 规则，项目内 `/ai-relay/robots.txt` 不控制抓取。根路径返回 404 不会禁止抓取，因此不依赖这个文件发现站点地图。`_config.yml` 将模板、构建输入与测试排除出公开站点；`og.html` 保留 `noindex`，供生成分享预览图使用。

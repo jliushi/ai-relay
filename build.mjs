@@ -10,9 +10,10 @@
 =========================================================================== */
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { SITE, RELAYS, RISKS, FAQ, SETUP, OFFICIAL_FREE, GUIDE, EXPLAINER } from "./data.js";
+import { SITE, RELAYS, RISKS, FAQ, SETUP, OFFICIAL_FREE, GUIDE, EXPLAINER, COMPARISON } from "./data.js";
 
-const PAGES = [GUIDE, EXPLAINER];
+const PAGES = [GUIDE, EXPLAINER, COMPARISON];
+const liveRelays = RELAYS.filter((r) => !r.unavailable);
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) =>
@@ -32,6 +33,7 @@ const EXTRA = {};
 const tr = (zh, en) => { EXTRA[zh] = en; return zh; };
 const EN_URL = SITE.url + "index-en.html";
 const modified = latestDate > SITE.updated ? latestDate : SITE.updated;
+const pageModified = (page) => page === COMPARISON ? [page.updated, latestDate, SITE.updated].sort().at(-1) : page.updated;
 const umamiTag = () => SITE.umamiId ? `<script defer src="https://cloud.umami.is/script.js" data-website-id="${esc(SITE.umamiId)}"></script>` : "";
 /* 每个「注册」入口都带统计属性，Umami 按 site / place 拆开计数；没配 umamiId 时属性无副作用。 */
 function registerAttrs(r, place) {
@@ -212,22 +214,13 @@ ${items}
       <p class="of-source">${esc(OFFICIAL_FREE.source.replace(/itsfree\.ai/, ""))}<a href="${esc(OFFICIAL_FREE.sourceUrl)}" target="_blank" rel="noopener">itsfree.ai</a>。</p>`;
 }
 
-/* ---------- 结构化数据 ----------
-   拼在一个 @graph 里，节点之间用 @id 互相引用：
-     WebSite   —— 整个站是什么，挂 publisher。
-     Person    —— 作者/发布者，sameAs 指向 GitHub，把这一页和一个实体绑定。
-     WebPage   —— 这一页是什么，isPartOf 指回 WebSite，about/mentions 交代
-                  它讲的是哪些实体（AI 公益站、Claude Code、Codex、各模型）。
-     HowTo     —— 「配置方法」那一节的机读版。配置步骤是本页原创、高检索意图的
-                  内容，标成 HowTo 后能进搜索结果的步骤富摘要，也最容易被 AI 引用。
-     ItemList  —— 四个站点的有序清单。
-     FAQPage   —— 供搜索结果的问答富摘要。
-   AI 抓取器也吃这份 JSON —— 它比正文更容易被准确解析，是 GEO 里性价比最高的一件事。 */
+/* 结构化数据描述可见内容。FAQ / HowTo 标记不保证搜索引擎展示富结果。
+   可用清单与折叠历史记录分开，英文页的页面实体使用自己的 canonical。 */
 function jsonLd() {
   const dMod = modified;
-  const dPub = RELAYS.reduce((a, r) => (r.verifiedAt < a ? r.verifiedAt : a), "9999-12-31");
+  const dPub = SITE.published;
   const img = SITE.url + "og.png";
-  const models = [...new Set(RELAYS.flatMap((r) => r.models))];
+  const models = [...new Set(liveRelays.flatMap((r) => r.models))];
 
   const person = { "@type": "Person", "@id": SITE.url + "#author" };
   person.name = SITE.authorName;
@@ -253,6 +246,7 @@ function jsonLd() {
       description: SITE.description,
       inLanguage: "zh-CN",
       isPartOf: { "@id": SITE.url + "#website" },
+      mainEntity: { "@id": SITE.url + "#relay-list" },
       datePublished: dPub,
       dateModified: dMod,
       author: { "@id": person["@id"] },
@@ -284,13 +278,14 @@ function jsonLd() {
     },
     {
       "@type": "ItemList",
+      "@id": SITE.url + "#relay-list",
       name: "实测可用的 AI 公益站",
-      numberOfItems: RELAYS.length,
-      itemListElement: RELAYS.map((r, i) => ({
+      numberOfItems: liveRelays.length,
+      itemListElement: liveRelays.map((r, i) => ({
         "@type": "ListItem",
         position: i + 1,
         name: r.name,
-        url: `https://${r.host}`,
+        url: `${SITE.url}#relay-${r.id}`,
         description: [r.tools, r.eligibility, r.rate, r.signup, `覆盖模型：${r.models.join("、")}`].join("；"),
       })),
     },
@@ -323,8 +318,6 @@ function headHTML() {
 <meta name="keywords" content="${esc(SITE.keywords.join("，"))}">
 <meta name="author" content="${esc(SITE.authorName)}">
 <meta name="theme-color" content="#f7f5ef">
-<!-- 放行富摘要：允许大图预览、不限制文本摘要长度。搜索结果的问答富摘要和 AI 引用
-     都受这条约束，收紧了等于自己把可见度砍掉。 -->
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="${esc(SITE.url)}">
 <link rel="alternate" hreflang="zh-CN" href="${esc(SITE.url)}">
@@ -339,7 +332,7 @@ function headHTML() {
 <meta property="og:image" content="${esc(img)}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="${esc(SITE.brand)} — ${esc(RELAYS.map((r) => r.name.replace(/\s*公益站$/, "")).join(" / "))}">
+<meta property="og:image:alt" content="${esc(SITE.brand)} — ${esc(liveRelays.map(shortName).join(" / "))}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(SITE.title)}">
 <meta name="twitter:description" content="${esc(SITE.description)}">
@@ -365,7 +358,7 @@ ${alternates}
   </url>`).join("\n")}
 ${PAGES.map((p) => `  <url>
     <loc>${SITE.url}${p.slug}</loc>
-    <lastmod>${modified}</lastmod>
+    <lastmod>${pageModified(p)}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>`).join("\n")}
@@ -389,6 +382,7 @@ const llmsTxt = () => `# ${SITE.brand}
 页面地址：${SITE.url}
 配置教程：${SITE.url}${GUIDE.slug}
 公益站是什么（科普）：${SITE.url}${EXPLAINER.slug}
+AgentRouter 与 artbloom 对比：${SITE.url}${COMPARISON.slug}
 英文版：${EN_URL}
 最近更新：${modified}
 
@@ -404,11 +398,12 @@ ${RISKS.items.map((r) => `- **${r.head}**：${r.body}`).join("\n")}
 
 ${RELAYS.map((r) => `### ${r.name}
 
+- 状态：${r.unavailable ? "不可用；以下为历史记录，不作为当前注册建议" : "列入可用清单；以实测日期与当前公告为准"}
 - 域名：${r.host}
 - 工具接入：${r.tools}
 - 注册条件：${r.eligibility}
 - 倍率：${r.rate}
-- 注册即得：${r.signup}${r.invite ? `\n- 邀请奖励：${r.invite}` : ""}
+- ${r.unavailable ? "历史赠额" : "注册赠额"}：${r.signup}${r.invite ? `\n- 邀请奖励：${r.invite}` : ""}
 - 记录中的模型：${r.models.join("、")}
 - 实测：${r.tested}
 - 实测日期：${r.verifiedAt}${r.notes?.length ? `\n- 须知：${r.notes.join("；")}` : ""}${
@@ -492,7 +487,7 @@ function ogHTML() {
     <p class="eyebrow">${esc(SITE.brand)} · 实测清单</p>
     <h1>${esc(SITE.heroTitle)}</h1>
     <p class="lead">${esc(heroSub())}</p>
-    <div class="row">${rankRelays().map(({ r, credit }) => `<span class="chip">${esc(shortName(r))}${credit === null ? "" : ` · ${esc(money(credit))}`}</span>`).join("")}</div>
+    <div class="row">${rankRelays().filter(({ r }) => !r.unavailable).map(({ r, credit }) => `<span class="chip">${esc(shortName(r))}${credit === null ? "" : ` · ${esc(money(credit))}`}</span>`).join("")}</div>
     <div class="foot">
       <span>${esc(SITE.url.replace(/^https?:\/\//, "").replace(/\/$/, ""))}</span>
       <span>实测于 ${esc(fmtDate(latest))}</span>
@@ -507,21 +502,47 @@ function ogHTML() {
    复用主页的 <style> 和首屏主题 bootstrap（都从 template.html 抽出来传进来），
    外观和暗色模式跟主页一致；不带切换按钮，跟随已保存 / 系统的主题。
    专吃「Claude Code / Codex 中转站怎么配」这类长尾词，和首页两头互链。 */
+function comparisonHTML(ids) {
+  const relays = ids.map((id) => {
+    const relay = RELAYS.find((r) => r.id === id);
+    if (!relay) throw new Error(`对比页引用了不存在的站点：${id}`);
+    return relay;
+  });
+  const rows = [
+    ["清单状态", (r) => r.unavailable ? "已不可用，仅保留历史记录" : "列入可用清单"],
+    ["注册条件", (r) => r.eligibility],
+    ["工具接入记录", (r) => r.tools],
+    ["注册赠额记录", (r) => r.signup],
+    ["模型记录", (r) => r.models.join("、")],
+    ["最后实测", (r) => r.verifiedAt],
+    ["实测说明", (r) => r.tested],
+  ];
+  return `<p class="comparison-hint">左右滑动表格，查看两个站点的完整记录 →</p>
+        <div class="comparison-scroll" role="region" aria-label="站点对照表，可横向滚动" tabindex="0">
+        <table class="comparison-table"><caption>注册条件、工具支持与实测记录</caption>
+          <thead><tr><th scope="col">对比项</th>${relays.map((r) => `<th scope="col"><a href="./#relay-${esc(r.id)}">${esc(shortName(r))}</a></th>`).join("")}</tr></thead>
+          <tbody>${rows.map(([label, value]) => `<tr><th scope="row">${label}</th>${relays.map((r) => `<td>${esc(value(r))}</td>`).join("")}</tr>`).join("\n")}</tbody>
+        </table></div>`;
+}
+
 function pageHTML(page, sharedStyle, bootstrap) {
   const url = SITE.url + page.slug;
   const img = SITE.url + "og.png";
-  const dMod = modified;
-  const dPub = RELAYS.reduce((a, r) => (r.verifiedAt < a ? r.verifiedAt : a), "9999-12-31");
+  const dMod = pageModified(page);
+  const dPub = page.published;
+  const sectionId = (s, i) => s.id || `section-${i + 1}`;
 
   const sections = page.sections
-    .map((s) => {
+    .map((s, i) => {
       const paras = (s.body || []).map((p) => `        <p class="guide-p">${esc(p)}</p>`).join("\n");
       const code = s.code ? `        <pre class="setup-code"><code>${esc(s.code)}</code></pre>` : "";
       const list = s.list
         ? `        <ul class="pick-list">\n${s.list.map((x) => `          <li>${esc(x)}</li>`).join("\n")}\n        </ul>`
         : "";
       const after = s.after ? `        <p class="guide-p">${esc(s.after)}</p>` : "";
-      return `      <section class="guide-sec">\n        <h2 class="h2">${esc(s.h)}</h2>\n${[paras, code, list, after].filter(Boolean).join("\n")}\n      </section>`;
+      const table = s.compareRelays ? comparisonHTML(s.compareRelays) : "";
+      const links = s.links ? `<ul class="pick-list">${s.links.map((link) => `<li><a href="${esc(link.href)}">${esc(link.text)}</a></li>`).join("")}</ul>` : "";
+      return `      <section class="guide-sec" id="${esc(sectionId(s, i))}">\n        <h2 class="h2">${esc(s.h)}</h2>\n${[paras, table, code, list, after, links].filter(Boolean).join("\n")}\n      </section>`;
     })
     .join("\n");
 
@@ -530,9 +551,15 @@ function pageHTML(page, sharedStyle, bootstrap) {
     .map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.h, text: [...(s.body || []), s.after].filter(Boolean).join(" ") }));
 
   const graph = [
+    { "@type": "WebSite", "@id": SITE.url + "#website", url: SITE.url, name: SITE.brand, inLanguage: ["zh-CN", "en"] },
+    {
+      "@type": "WebPage", "@id": url, url, name: page.title,
+      inLanguage: "zh-CN", isPartOf: { "@id": SITE.url + "#website" },
+      mainEntity: { "@id": url + "#article" }, breadcrumb: { "@id": url + "#breadcrumb" },
+    },
     {
       "@type": page.articleType || "TechArticle",
-      "@id": url,
+      "@id": url + "#article",
       headline: page.title,
       description: page.description,
       inLanguage: "zh-CN",
@@ -541,7 +568,7 @@ function pageHTML(page, sharedStyle, bootstrap) {
       author: { "@type": "Person", name: SITE.authorName, url: SITE.author },
       publisher: { "@type": "Person", name: SITE.authorName, url: SITE.author },
       image: img,
-      mainEntityOfPage: url,
+      mainEntityOfPage: { "@id": url },
       isPartOf: { "@id": SITE.url + "#website" },
     },
     ...(howToSteps.length
@@ -549,6 +576,7 @@ function pageHTML(page, sharedStyle, bootstrap) {
       : []),
     {
       "@type": "BreadcrumbList",
+      "@id": url + "#breadcrumb",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: SITE.brand, item: SITE.url },
         { "@type": "ListItem", position: 2, name: page.breadcrumb, item: url },
@@ -576,10 +604,16 @@ function pageHTML(page, sharedStyle, bootstrap) {
 <meta property="og:title" content="${esc(page.title)}">
 <meta property="og:description" content="${esc(page.description)}">
 <meta property="og:image" content="${esc(img)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(SITE.brand)}">
+<meta property="article:published_time" content="${dPub}">
+<meta property="article:modified_time" content="${dMod}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(page.title)}">
 <meta name="twitter:description" content="${esc(page.description)}">
 <meta name="twitter:image" content="${esc(img)}">
+<meta name="twitter:image:alt" content="${esc(SITE.brand)}">
 <script type="application/ld+json">
 ${ld}
 </script>
@@ -605,15 +639,19 @@ ${umamiTag()}
 <main id="main">
   <section class="hero">
     <div class="wrap guide-body">
+      <nav class="breadcrumbs" aria-label="面包屑"><a href="./">${esc(SITE.brand)}</a><span aria-hidden="true"> / </span><span aria-current="page">${esc(page.breadcrumb)}</span></nav>
       <p class="eyebrow">${esc(page.eyebrow)}</p>
       <h1 class="hero-title">${esc(page.title)}</h1>
+      <p class="article-meta">作者 <a href="${esc(SITE.author)}">${esc(SITE.authorName)}</a> · 发布于 <time datetime="${dPub}">${dPub}</time> · 内容更新于 <time datetime="${dMod}">${dMod}</time></p>
       <p class="hero-lead">${esc(page.intro)} <a href="./#stations">去看清单 →</a></p>
+      <nav class="article-toc" aria-label="本文目录"><p class="block-head">本文目录</p><ol>${page.sections.map((s, i) => `<li><a href="#${esc(sectionId(s, i))}">${esc(s.h)}</a></li>`).join("")}</ol></nav>
     </div>
   </section>
   <section class="pick-band">
     <div class="wrap guide-body">
 ${sections}
       <p class="guide-p" style="margin-top:28px">${page.outro}</p>
+      <nav class="related-pages" aria-label="相关阅读"><h2 class="h2">相关阅读</h2><ul class="pick-list">${PAGES.filter((p) => p !== page).map((p) => `<li><a href="${esc(p.slug)}">${esc(p.title)}</a></li>`).join("")}</ul></nav>
     </div>
   </section>
 </main>
@@ -705,8 +743,22 @@ out = out.replace('<html lang="zh-CN">', '<html lang="en">')
   .replace('切换深色模式', 'Switch to dark mode');
 // Translate structured data values separately, preserving valid JSON.
 out = out.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/, (_, open, json, close) => {
-  const localize = value => typeof value === "string" ? (translations[value] ?? value) : Array.isArray(value) ? value.map(localize) : value && typeof value === "object" ? Object.fromEntries(Object.entries(value).map(([key, val]) => [key, localize(val)])) : value;
-  return open + JSON.stringify(localize(JSON.parse(json)), null, 2) + close;
+  const entries = Object.entries(translations).sort((a, b) => b[0].length - a[0].length);
+  const localize = value => typeof value === "string"
+    ? value === "zh-CN" ? "en" : translations[value] ?? entries.reduce((text, [zh, en]) => text.split(zh).join(en), value)
+    : Array.isArray(value) ? value.map(localize)
+    : value && typeof value === "object" ? Object.fromEntries(Object.entries(value).map(([key, val]) => [key, localize(val)])) : value;
+  // 从中文原始 JSON 读取，避免 HTML 转义/替换影响结构化数据里的引号。
+  const source = chinese.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1];
+  const data = localize(JSON.parse(source));
+  const webpage = data["@graph"].find((node) => node["@type"] === "WebPage");
+  webpage["@id"] = EN_URL;
+  webpage.url = EN_URL;
+  webpage.mainEntity = { "@id": EN_URL + "#relay-list" };
+  const list = data["@graph"].find((node) => node["@type"] === "ItemList");
+  list["@id"] = EN_URL + "#relay-list";
+  for (const item of list.itemListElement) item.url = item.url.replace(SITE.url + "#", EN_URL + "#");
+  return open + JSON.stringify(data, null, 2) + close;
 });
 writeFileSync("index-en.html", out);
 writeFileSync("sitemap.xml", sitemap());
@@ -730,10 +782,10 @@ for (const page of PAGES) {
    仓库第二个入口，手抄一份迟早和页面对不上。 */
 const readme = readFileSync("README.md", "utf8");
 const table = [
-  "| 站点 | 域名 | 倍率 | 注册即得 | 1x 覆盖模型 | 实测日期 |",
-  "| --- | --- | --- | --- | --- | --- |",
+  "| 站点 | 状态 | 域名 | 倍率 | 赠额记录 | 模型记录 | 实测日期 |",
+  "| --- | --- | --- | --- | --- | --- | --- |",
   ...RELAYS.map((r) =>
-    `| [${r.name}](${r.aff}) | \`${r.host}\` | ${r.rate} | ${r.signup} | ${r.models.join("、")} | ${r.verifiedAt} |`
+    `| ${r.unavailable ? r.name : `[${r.name}](${r.aff})`} | ${r.unavailable ? "已不可用（历史记录）" : "列入可用清单"} | \`${r.host}\` | ${r.rate} | ${r.signup} | ${r.models.join("、")} | ${r.verifiedAt} |`
   ),
 ].join("\n");
 

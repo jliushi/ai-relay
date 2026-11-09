@@ -4,3 +4,5 @@ draft-post.md
 
 # Local browser test screenshots, not published assets.
 .claude/screenshots/
+output/
+.playwright-cli/

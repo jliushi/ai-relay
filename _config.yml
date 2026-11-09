@@ -1,0 +1,12 @@
+# GitHub Pages serves the generated pages. Build inputs are not public pages.
+exclude:
+  - template.html
+  - data.js
+  - en.json
+  - build.mjs
+  - README.md
+  - tests
+  - scripts
+  - output
+  - .claude
+  - .playwright-cli

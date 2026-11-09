@@ -13,21 +13,21 @@ export const SITE = {
   repo: "https://github.com/jliushi/ai-relay",
   /* 内容有实质改动时手动改成当天日期。sitemap 的 lastmod、llms.txt 的「最近更新」、
      结构化数据的 dateModified 都取它和各站实测日期里较晚的那个，不再随构建日期乱跳。 */
-  updated: "2026-10-29",
+  updated: "2026-11-10",
+  published: "2026-09-04",
   author: "https://github.com/jliushi",
   authorName: "jliushi",
 
   /* IndexNow 的密钥：仓库根目录那个 <key>.txt 文件的内容就是这串，两处必须一致。
-     .github/workflows/indexnow.yml 每次 push 会拿它去通知 Bing / Yandex 重新抓取。
+     scripts/indexnow.mjs 在 Pages 发布完成后用它向 IndexNow 提交更新。
      换 key 就同时改这里、改那个 txt 文件名和内容。留空则跳过 IndexNow 通知。 */
   indexNowKey: "5274d490c7073e9630ce4cc455bb9c41",
 
   brand: "AI 公益站清单",
-  // 搜索结果里中文标题大约 30 字截断，关键词往前放。「大全」「清单」都留着 ——
-  // 实测这两个词的搜索结果是两拨人（大全偏导航站，清单偏具体对比），都要覆盖。
-  title: "AI 公益站大全 — Claude Code / Codex 免费额度实测清单",
+  // 标题说明页面用途；模型与额度的时效信息放在正文和实测记录里。
+  title: "AI 公益站清单：Claude Code / Codex 免费 API 额度与配置",
   description:
-    "实测可用的 AI 公益站（中转站）清单：注册即送免费额度，覆盖 Claude Opus 5.5、Opus 4.8、GPT-6 Astra 与 DeepSeek V4.1 Flash，可接入 Claude Code 和 Codex。逐站记录赠额、倍率、注册条件、邀请规则和实测日期，附最小配置方法。",
+    "对比 AgentRouter、artbloom 等 AI 公益站的免费 API 额度、注册条件与 Claude Code / Codex 接入支持。附实测日期、已停用站点记录、配置教程和常见报错排查，方便按账号与工具选择。",
   keywords: [
     "公益站",
     "公益站大全",
@@ -318,7 +318,9 @@ export const OFFICIAL_FREE = {
 --------------------------------------------------------------------------- */
 export const GUIDE = {
   slug: "guide.html",
-  title: "Claude Code / Codex 中转站配置教程 — 从拿 key 到跑通（附避坑）",
+  published: "2026-09-28",
+  updated: "2026-11-10",
+  title: "Claude Code / Codex 中转站配置教程：API Key、Base URL 与报错排查",
   description:
     "手把手教你用 AI 公益站 / 中转站的 key 配置 Claude Code 和 Codex：环境变量、settings.json、config.toml 的最小可用配置，以及 401/404、base_url 要不要加 /v1、content blocked、怎么切回官方订阅这些常见报错怎么排查。",
   keywords: [
@@ -407,6 +409,8 @@ export const GUIDE = {
 --------------------------------------------------------------------------- */
 export const EXPLAINER = {
   slug: "what-is-ai-relay.html",
+  published: "2026-09-28",
+  updated: "2026-11-10",
   articleType: "Article",
   title: "AI 公益站是什么？和官方 API、中转站的区别与风险讲清楚",
   description:
@@ -454,6 +458,52 @@ export const EXPLAINER = {
         "别把某一家当唯一入口，手上多备一两个，切换成本几乎为零。",
         "看实测日期：信息超过三个月大概率已经变了，以站点当前公告为准。",
       ],
+    },
+  ],
+};
+
+/* 按站点名称搜索的读者需要一张可比较的记录表。表格直接使用 RELAYS，
+   避免另抄一套赠额、模型和状态；本文日期与各站的实测日期分别显示。 */
+export const COMPARISON = {
+  slug: "agentrouter-vs-artbloom.html",
+  published: "2026-11-10",
+  updated: "2026-11-10",
+  articleType: "Article",
+  title: "AgentRouter 与 artbloom 对比：免费额度、注册条件与 Codex 支持",
+  description: "根据实测记录比较 AgentRouter 和 artbloom 的注册条件、免费 API 额度、Claude Code / Codex 支持与模型清单，说明 GitHub 老账号、新账号和不同工具的选择方法，附配置教程入口。",
+  keywords: ["AgentRouter", "artbloom", "AgentRouter 注册", "artbloom 公益站", "Codex 公益站", "Claude Code 免费 API"],
+  eyebrow: "站点对比",
+  breadcrumb: "AgentRouter 与 artbloom 对比",
+  intro: "选公益站先看账号能否注册、接口能否接入手上的工具，再看赠送额度。下面把 AgentRouter 与 artbloom 的实测记录放在一起，便于对照。",
+  outro: '选好站点后，按<a href="guide.html">Claude Code / Codex 配置教程</a>设置 API Key 与接口地址。想查看其他站点和停用记录，返回<a href="./#stations">完整公益站清单</a>。',
+  sections: [
+    {
+      id: "comparison",
+      h: "AgentRouter 与 artbloom 实测记录对照",
+      body: ["表内信息来自本站已有的注册与调用记录。最后实测日期针对站点，文章更新日期针对内容整理；历史赠额与模型名称请结合站点当前公告核对。"],
+      compareRelays: ["agentrouter", "artbloom"],
+    },
+    {
+      id: "account",
+      h: "有 GitHub 老账号和新账号，分别怎么选？",
+      body: ["先对照表中的注册条件和自己的 GitHub 账号注册时间。符合老账号条件时，可以继续比较工具支持；不符合时，优先查看标注“注册即可用”的入口。账号门槛与模型支持是两项独立条件，能注册不代表每个客户端都能接入。"],
+    },
+    {
+      id: "tools",
+      h: "只用 Claude Code，或还要接 Codex？",
+      body: ["Claude Code 与 Codex 使用不同的 API 协议。选择前应同时核对站点的接口文档、模型 ID 和客户端要求；仅提供 Anthropic 兼容接口的站点不能直接当作 Codex provider。表中只列已有记录中的工具支持，模型名字包含 GPT 或 Claude 不能代替接口兼容性检查。"],
+      links: [{ href: "guide.html", text: "查看 Claude Code / Codex 的配置步骤与报错排查" }],
+    },
+    {
+      id: "credit",
+      h: "免费额度是 API 余额，能用多久？",
+      body: ["赠额是站点账户里的 API 调用余额，不等于 Claude 或 ChatGPT 的官方订阅，也不是可提现金额。能用多久取决于模型、上下文长度、请求量和站点计费规则。先用短请求确认返回正常，再观察余额变化，能更直接地判断自己的使用成本。", "注册后看不到赠额时，核对邀请链接、登录状态和站点领取规则。无需为了领额度重复注册；先查看控制台与公告，再联系站点支持。"],
+    },
+    {
+      id: "records",
+      h: "这些记录怎样维护？",
+      body: ["每个站保留实测日期、注册方式、支持工具和已知限制。停用站点移到首页的历史记录，并停止展示注册链接。新的文章发布日期不会被当作新的调用实测。", "本页由 jliushi 整理。部分注册入口带邀请参数，注册可能给邀请人带来额度；这些链接在首页有标注。发现规则变化，可以通过仓库提交具体网址、变化内容和发生时间，反馈中请勿包含 API Key。"],
+      links: [{ href: "https://github.com/jliushi/ai-relay/issues", text: "反馈站点信息变化" }, { href: "what-is-ai-relay.html", text: "了解公益站与官方 API 的区别及使用风险" }],
     },
   ],
 };
