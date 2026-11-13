@@ -13,7 +13,7 @@ export const SITE = {
   repo: "https://github.com/jliushi/ai-relay",
   /* 内容有实质改动时手动改成当天日期。sitemap 的 lastmod、llms.txt 的「最近更新」、
      结构化数据的 dateModified 都取它和各站实测日期里较晚的那个，不再随构建日期乱跳。 */
-  updated: "2026-11-10",
+  updated: "2026-11-13",
   published: "2026-09-04",
   author: "https://github.com/jliushi",
   authorName: "jliushi",
@@ -113,7 +113,7 @@ export const RELAYS = [
     id: "artbloom",
     name: "artbloom 公益站",
     host: "api.artbloom.tech",
-    aff: "https://api.artbloom.tech/signup?ref=5LVZCDPNRI",
+    aff: "https://api.artbloom.tech/signup?ref=EK5LZ7OL5U",
     rate: "1x 倍率",
     signup: "注册即得 $100 额度",
     models: ["opus 5.5", "opus 5", "glm 5.3", "glm 5.3 flash", "grok 4.7"],

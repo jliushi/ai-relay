@@ -18,7 +18,7 @@
 | 站点 | 状态 | 域名 | 倍率 | 赠额记录 | 模型记录 | 实测日期 |
 | --- | --- | --- | --- | --- | --- | --- |
 | [AgentRouter 公益站](https://agentrouter.org/register?aff=U0IJ) | 列入可用清单 | `agentrouter.org` | 1x 倍率 | 注册即得 $100 额度 | gpt-6-astra、opus 5.5、deepseek v4.1 flash | 2026-10-10 |
-| [artbloom 公益站](https://api.artbloom.tech/signup?ref=5LVZCDPNRI) | 列入可用清单 | `api.artbloom.tech` | 1x 倍率 | 注册即得 $100 额度 | opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7 | 2026-10-10 |
+| [artbloom 公益站](https://api.artbloom.tech/signup?ref=EK5LZ7OL5U) | 列入可用清单 | `api.artbloom.tech` | 1x 倍率 | 注册即得 $100 额度 | opus 5.5、opus 5、glm 5.3、glm 5.3 flash、grok 4.7 | 2026-10-10 |
 | justwoker 公益站 | 已不可用（历史记录） | `api.justwoker.icu` | 0.65x 倍率 | 通过邀请链接注册即得 $70 额度 | opus 4.8、opus 5 | 2026-10-10 |
 | kktoken 公益站 | 已不可用（历史记录） | `kktoken.cc` | 1x 倍率 | 注册即得 $100 额度 | opus 5 | 2026-09-04 |
 <!-- RELAYS:END -->

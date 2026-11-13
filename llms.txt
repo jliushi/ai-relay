@@ -7,7 +7,7 @@
 公益站是什么（科普）：https://jliushi.github.io/ai-relay/what-is-ai-relay.html
 AgentRouter 与 artbloom 对比：https://jliushi.github.io/ai-relay/agentrouter-vs-artbloom.html
 英文版：https://jliushi.github.io/ai-relay/index-en.html
-最近更新：2026-11-10
+最近更新：2026-11-13
 
 ## 收录标准与免责
 
