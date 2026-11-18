@@ -13,7 +13,7 @@ export const SITE = {
   repo: "https://github.com/jliushi/ai-relay",
   /* 内容有实质改动时手动改成当天日期。sitemap 的 lastmod、llms.txt 的「最近更新」、
      结构化数据的 dateModified 都取它和各站实测日期里较晚的那个，不再随构建日期乱跳。 */
-  updated: "2026-11-13",
+  updated: "2026-11-18",
   published: "2026-09-04",
   author: "https://github.com/jliushi",
   authorName: "jliushi",
@@ -93,7 +93,7 @@ export const RELAYS = [
     id: "agentrouter",
     name: "AgentRouter 公益站",
     host: "agentrouter.org",
-    aff: "https://agentrouter.org/register?aff=U0IJ",
+    aff: "https://agentrouter.org/register?aff=76NE",
     rate: "1x 倍率",
     signup: "注册即得 $100 额度",
     invite: "每邀请一位新用户：新用户获得 $50 额度，邀请人获得 $100 额度。",
